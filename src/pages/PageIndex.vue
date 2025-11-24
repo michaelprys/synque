@@ -10,7 +10,7 @@ const storeLanguages = useStoreLanguages();
     <q-page class="q-ma-sm">
         <Teleport to="body">
             <q-dialog v-model="modelLanguage">
-                <q-card dark style="min-width: 37rem">
+                <q-card dark style="max-width: 37rem; width: 100%">
                     <q-card-section>
                         <div class="text-h5 text-center">Select a language</div>
                     </q-card-section>

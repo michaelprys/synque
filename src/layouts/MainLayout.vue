@@ -222,17 +222,23 @@ const isConfirmUpdatePwd = ref(false);
 
                             <ul class="flex items-center q-ml-md">
                                 <li>
-                                    <q-btn to="/" flat color="info">Home</q-btn>
+                                    <q-btn :to="{ name: 'home' }" flat color="info">Home</q-btn>
                                 </li>
                                 <li>
-                                    <q-btn to="/" flat color="info">Words</q-btn>
+                                    <q-btn :to="{ name: 'words' }" flat color="info">Words</q-btn>
+                                </li>
+                                <li>
+                                    <span
+                                        class="block q-pl-md text-info text-subtitle2 text-uppercase"
+                                        >Language: Chinese</span
+                                    >
                                 </li>
                             </ul>
                         </div>
 
                         <div class="flex items-center q-gutter-x-sm">
                             <!-- <span class="text-body2 text-info">Logged as "name"</span> -->
-                            <!-- <q-avatar class="bg-red" size="sm"> </q-avatar> -->
+                            <!-- <q-avatar color=red" size="sm"> </q-avatar> -->
                             <q-btn
                                 :to="{ name: 'login' }"
                                 icon="account_circle"

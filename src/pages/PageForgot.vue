@@ -1,32 +1,43 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+import getErrorMessage from 'src/utils/getErrorMessage';
+import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 
 const $q = useQuasar();
-
 const email = ref('');
-const accept = ref(false);
+const pending = ref(false);
 
-const onSubmit = () => {
-    if (!accept.value) {
+const sendResetLink = async () => {
+    pending.value = true;
+
+    try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
+            redirectTo: 'http://localhost:9000/#/reset-password'
+        });
+
+        if (error) throw error;
+
         $q.notify({
-            color: 'red-5',
+            color: 'positive',
+            textColor: 'white',
+            icon: 'check',
+            message: 'If this email exists, a reset link has been sent'
+        });
+    } catch (err) {
+        $q.notify({
+            color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: 'You need to accept the terms first'
+            message: getErrorMessage(err) ?? 'Something went wrong'
         });
-    } else {
-        $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-        });
+    } finally {
+        pending.value = false;
     }
 };
 
 const onReset = () => {
-    accept.value = false;
+    email.value = '';
 };
 </script>
 
@@ -42,7 +53,7 @@ const onReset = () => {
                 >Reset Password</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="onSubmit" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit="sendResetLink" @reset="onReset">
                 <div class="column">
                     <q-input
                         v-model="email"
@@ -60,9 +71,11 @@ const onReset = () => {
 
                 <div class="q-mt-lg">
                     <q-btn
+                        type="submit"
                         color="secondary"
                         style="width: 17.1875rem; opacity: 75%; border-radius: 0.375rem"
                         size="lg"
+                        :loading="pending"
                         >Send Reset Link
                     </q-btn>
                 </div>

@@ -3,7 +3,9 @@ import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import supabase from 'src/utils/supabase';
 import getErrorMessage from 'src/utils/getErrorMessage';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const $q = useQuasar();
 const termsAccepted = ref(false);
 const email = ref('');
@@ -14,8 +16,6 @@ const isPwd = ref(true);
 const isConfirmPwd = ref(true);
 
 const signUp = async () => {
-    pending.value = true;
-
     if (!termsAccepted.value) {
         $q.notify({
             color: 'red-5',
@@ -37,6 +37,8 @@ const signUp = async () => {
         return;
     }
 
+    pending.value = true;
+
     try {
         const { error } = await supabase.auth.signUp({
             email: email.value,
@@ -50,6 +52,8 @@ const signUp = async () => {
             icon: 'check',
             message: 'Sign up successful!'
         });
+
+        router.push({ name: 'login' });
     } catch (err) {
         $q.notify({
             color: 'negative',

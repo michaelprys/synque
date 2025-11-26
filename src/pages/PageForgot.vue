@@ -7,13 +7,14 @@ import { ref } from 'vue';
 const $q = useQuasar();
 const email = ref('');
 const pending = ref(false);
+const redirectTo = import.meta.env.VITE_APP_URL + '/#/reset-password';
 
 const sendResetLink = async () => {
     pending.value = true;
 
     try {
         const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-            redirectTo: 'http://localhost:9000/#/reset-password'
+            redirectTo
         });
 
         if (error) throw error;

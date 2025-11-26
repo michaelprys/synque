@@ -1,36 +1,84 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import supabase from 'src/utils/supabase';
+import getErrorMessage from 'src/utils/getErrorMessage';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const $q = useQuasar();
-
-const accept = ref(false);
 const newPassword = ref('');
 const confirmNewPassword = ref('');
 const isPwd = ref(true);
 const isConfirmPwd = ref(true);
+const pending = ref(false);
+const isReady = ref(false);
 
-const onSubmit = () => {
-    if (!accept.value) {
+const setNewPassword = async () => {
+    if (!isReady.value) {
+        $q.notify({ color: 'negative', message: 'Link is invalid or expired' });
+    }
+
+    if (newPassword.value !== confirmNewPassword.value) {
         $q.notify({
-            color: 'red-5',
+            color: 'negative',
+            icon: 'warning',
+            message: "Passwords don't match"
+        });
+
+        return;
+    }
+
+    pending.value = true;
+
+    try {
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword.value
+        });
+
+        if (error) throw error;
+
+        $q.notify({
+            color: 'positive',
+            icon: 'check',
+            message: 'New password has been successfully set!'
+        });
+
+        router.push({ name: 'home' });
+    } catch (err) {
+        $q.notify({
+            color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: 'You need to accept the license and terms first'
+            message: getErrorMessage(err) ?? 'Something went wrong'
         });
-    } else {
-        $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-        });
+    } finally {
+        pending.value = false;
     }
 };
 
 const onReset = () => {
-    accept.value = false;
+    newPassword.value = '';
+    confirmNewPassword.value = '';
 };
+
+onMounted(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+        console.log(event, session);
+
+        if (event === 'PASSWORD_RECOVERY') {
+            isReady.value = true;
+            $q.notify({
+                color: 'positive',
+                message: 'Link is valid - please enter new password'
+            });
+        }
+    });
+
+    onUnmounted(() => {
+        data.subscription.unsubscribe();
+    });
+});
 </script>
 
 <template>
@@ -41,11 +89,11 @@ const onReset = () => {
             style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem"
         >
             <h1 class="sr-only">Reset Password</h1>
-            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center"
+            <span class="text-h4 col-2" content style="grid-column: 2; justify-self: center"
                 >Reset Password</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="onSubmit" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit="setNewPassword" @reset="onReset">
                 <q-input
                     v-model="newPassword"
                     class="q-mt-md"
@@ -54,17 +102,16 @@ const onReset = () => {
                     dark
                     :type="isPwd ? 'password' : 'text'"
                 >
-                    <template #prepend>
-                        <q-icon name="lock" />
-                    </template>
+                    <template #prepend=""> <q-icon name="lock"> </q-icon></template>
 
-                    <template #append>
+                    <template #append="">
                         <q-icon
-                            :name="isPwd ? 'visibility_off' : 'visibility'"
                             class="cursor-pointer"
+                            :name="isPwd ? 'visibility_off' : 'visibility'"
                             @click="isPwd = !isPwd"
-                        />
-                    </template>
+                        >
+                        </q-icon
+                    ></template>
                 </q-input>
 
                 <q-input
@@ -75,21 +122,21 @@ const onReset = () => {
                     dark
                     :type="isConfirmPwd ? 'password' : 'text'"
                 >
-                    <template #prepend>
-                        <q-icon name="lock" />
-                    </template>
+                    <template #prepend=""> <q-icon name="lock"> </q-icon></template>
 
-                    <template #append>
+                    <template #append="">
                         <q-icon
-                            :name="isConfirmPwd ? 'visibility_off' : 'visibility'"
                             class="cursor-pointer"
+                            :name="isConfirmPwd ? 'visibility_off' : 'visibility'"
                             @click="isConfirmPwd = !isConfirmPwd"
-                        />
-                    </template>
+                        >
+                        </q-icon
+                    ></template>
                 </q-input>
 
                 <div class="q-mt-lg">
                     <q-btn
+                        type="submit"
                         color="secondary"
                         style="width: 17.1875rem; opacity: 75%; border-radius: 0.375rem"
                         size="lg"

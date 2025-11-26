@@ -25,7 +25,7 @@
         "**/.gitignore": true,
         "**/.vscode": true,
         "**/.quasar": true,
-        "**/.prettierrc.json": true,
+        "**/.prettierrc.json": false,
         "**/tsconfig.json": true
     },
     "explorerExclude.backup": {}

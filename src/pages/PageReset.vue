@@ -36,10 +36,12 @@ const onReset = () => {
 <template>
     <q-page class="q-ma-sm">
         <section
-            class="column text-center items-center q-pa-lg bg-dark q-mx-auto"
-            style="max-width: 30rem; margin-top: 14rem; border-radius: 0.75rem"
+            id="reset-password"
+            class="column q-pa-lg bg-dark q-mx-auto items-center text-center"
+            style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem"
         >
-            <span content class="col-2 text-h4" style="grid-column: 2; justify-self: center"
+            <h1 class="sr-only">Reset Password</h1>
+            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center"
                 >Reset Password</span
             >
 
@@ -95,7 +97,7 @@ const onReset = () => {
                     </q-btn>
                 </div>
 
-                <div class="flex q-mt-lg flex-center">
+                <div class="q-mt-lg flex-center flex">
                     <RouterLink class="text-subtitle1" :to="{ name: 'login' }">
                         Back to Login
                     </RouterLink>

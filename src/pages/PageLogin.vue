@@ -1,48 +1,62 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
+import supabase from 'src/utils/supabase';
+import getErrorMessage from 'src/utils/getErrorMessage';
 
 const $q = useQuasar();
-
+const pending = ref(false);
 const email = ref('');
-const accept = ref(false);
 const password = ref('');
 const isPwd = ref(true);
 
-const onSubmit = () => {
-    if (!accept.value) {
+const login = async () => {
+    pending.value = true;
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email.value,
+            password: password.value
+        });
+
+        if (error) throw error;
+
         $q.notify({
-            color: 'red-5',
+            color: 'positive',
+            icon: 'arrow',
+            message: `Hello, ${data.user?.user_metadata}!`
+        });
+    } catch (err) {
+        $q.notify({
+            color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: 'You need to accept the license and terms first'
+            message: getErrorMessage(err) ?? 'Incorrect login or password'
         });
-    } else {
-        $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-        });
+    } finally {
+        pending.value = false;
     }
 };
 
 const onReset = () => {
-    accept.value = false;
+    email.value = '';
+    password.value = '';
 };
 </script>
 
 <template>
     <q-page class="q-ma-sm">
         <section
-            class="column text-center items-center q-pa-lg bg-dark q-mx-auto"
-            style="max-width: 30rem; margin-top: 13rem; border-radius: 0.75rem"
+            id="login"
+            class="column q-pa-lg bg-dark q-mx-auto items-center text-center"
+            style="max-width: 33rem; margin-top: 13rem; border-radius: 0.5rem"
         >
-            <span content class="col-2 text-h4" style="grid-column: 2; justify-self: center"
+            <h1 class="sr-only">Login</h1>
+            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center"
                 >Login</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="onSubmit" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit="login" @reset="onReset">
                 <q-input v-model="email" standout type="email" dark label="Email">
                     <template #prepend>
                         <q-icon name="mail" />
@@ -72,25 +86,27 @@ const onReset = () => {
 
                 <div class="q-mt-lg">
                     <q-btn
+                        type="submit"
                         color="secondary"
                         style="width: 17.1875rem; opacity: 75%; border-radius: 0.375rem"
                         size="lg"
-                        >Login
+                    >
+                        Login
                     </q-btn>
                 </div>
 
-                <div class="flex q-mt-lg flex-center">
+                <div class="q-mt-lg flex-center flex">
                     <RouterLink
                         class="text-subtitle1"
                         :to="{ name: 'forgot-password' }"
-                        style="width: 110px"
+                        style="width: 6.875rem"
                     >
                         Forgot</RouterLink
                     >
                     <RouterLink
                         class="text-subtitle1"
                         :to="{ name: 'sign-up' }"
-                        style="width: 110px"
+                        style="width: 6.875rem"
                     >
                         Sign Up
                     </RouterLink>

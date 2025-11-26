@@ -12,6 +12,11 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageWords.vue'),
                 name: 'words'
             },
+            // {
+            //     path: 'deleted-words',
+            //     component: () => import('pages/PageDeletedWords.vue'),
+            //     name: 'deleted-words'
+            // },
             { path: 'login', component: () => import('pages/PageLogin.vue'), name: 'login' },
             { path: 'sign-up', component: () => import('pages/PageSignUp.vue'), name: 'sign-up' },
             {

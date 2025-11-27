@@ -54,7 +54,7 @@ const onReset = () => {
                 >Reset Password</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="sendResetLink" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit.prevent="sendResetLink" @reset="onReset">
                 <div class="column">
                     <q-input
                         v-model="email"

@@ -93,7 +93,7 @@ onMounted(() => {
                 >Reset Password</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="setNewPassword" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit.prevent="setNewPassword" @reset="onReset">
                 <q-input
                     v-model="newPassword"
                     class="q-mt-md"

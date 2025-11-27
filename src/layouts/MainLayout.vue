@@ -18,13 +18,13 @@ const theme = ref(0);
 const themeOptions = ref(['Ivory', 'Midnight', 'Jade', 'Earth', 'Crimson', 'Frost']);
 const fontSizeOptions = ref(['Small', 'Medium', 'Large']);
 const modelAvatar = ref(null);
-const modelUpdatePassword = ref(null);
-const modelConfirmUpdatePassword = ref(null);
 const isUpdatePwd = ref(false);
 const isConfirmUpdatePwd = ref(false);
 const email = ref<string | undefined>(undefined);
 const pending = ref(false);
 const user = ref();
+const password = ref('');
+const confirmPassword = ref('');
 
 const logout = async () => {
     pending.value = true;
@@ -47,6 +47,48 @@ const logout = async () => {
     } finally {
         pending.value = false;
     }
+};
+
+const updatePassword = async () => {
+    if (password.value !== confirmPassword.value) {
+        $q.notify({
+            color: 'negative',
+            icon: 'warning',
+            message: "Passwords don't match"
+        });
+
+        return;
+    }
+
+    pending.value = true;
+
+    try {
+        const { error } = await supabase.auth.updateUser({
+            password: password.value
+        });
+
+        if (error) throw error;
+
+        $q.notify({
+            type: 'positive',
+            message: 'The password was updated'
+        });
+        router.push({ name: 'home' });
+    } catch (err) {
+        $q.notify({
+            type: 'negative',
+            message: getErrorMessage(err) ?? 'Something went wrong'
+        });
+    } finally {
+        pending.value = false;
+        password.value = '';
+        confirmPassword.value = '';
+    }
+};
+
+const onReset = () => {
+    password.value = '';
+    confirmPassword.value = '';
 };
 
 onMounted(async () => {
@@ -118,54 +160,66 @@ onMounted(async () => {
                                     label="Change Avatar"
                                 />
                             </div>
-                            <div class="title column q-pt-lg text-subtitle1 justify-between">
-                                Update password
-
-                                <q-input
-                                    v-model="modelUpdatePassword"
-                                    class="q-pt-lg"
-                                    filled
-                                    dark
-                                    :type="isUpdatePwd ? 'password' : 'text'"
-                                    hint="New password"
-                                >
-                                    <template #append>
-                                        <q-icon
-                                            :name="isUpdatePwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isUpdatePwd = !isUpdatePwd"
-                                        />
-                                    </template>
-                                </q-input>
-                                <q-input
-                                    v-model="modelConfirmUpdatePassword"
-                                    filled
-                                    dark
-                                    :type="isConfirmUpdatePwd ? 'password' : 'text'"
-                                    hint="Confirm New password"
-                                >
-                                    <template #append>
-                                        <q-icon
-                                            :name="
-                                                isConfirmUpdatePwd ? 'visibility_off' : 'visibility'
-                                            "
-                                            class="cursor-pointer"
-                                            @click="isConfirmUpdatePwd = !isConfirmUpdatePwd"
-                                        />
-                                    </template>
-                                </q-input>
-                            </div>
-                            <q-btn
-                                class="q-mb-md q-ml-auto text-primary block bg-white"
-                                label="Update"
-                                style="
-                                    max-width: 10rem;
-                                    max-height: 2.5rem;
-                                    height: 100%;
-                                    width: 100%;
-                                "
+                            <q-form
+                                class="title column q-pt-lg text-subtitle1 justify-between"
+                                @submit.prevent="updatePassword"
+                                @reset="onReset"
                             >
-                            </q-btn>
+                                <div>
+                                    Update password
+
+                                    <q-input
+                                        v-model="password"
+                                        class="q-pt-lg"
+                                        filled
+                                        dark
+                                        :type="isUpdatePwd ? 'password' : 'text'"
+                                        hint="New password"
+                                    >
+                                        <template #append>
+                                            <q-icon
+                                                :name="
+                                                    isUpdatePwd ? 'visibility_off' : 'visibility'
+                                                "
+                                                class="cursor-pointer"
+                                                @click="isUpdatePwd = !isUpdatePwd"
+                                            />
+                                        </template>
+                                    </q-input>
+                                    <q-input
+                                        v-model="confirmPassword"
+                                        filled
+                                        dark
+                                        :type="isConfirmUpdatePwd ? 'password' : 'text'"
+                                        hint="Confirm New password"
+                                    >
+                                        <template #append>
+                                            <q-icon
+                                                :name="
+                                                    isConfirmUpdatePwd
+                                                        ? 'visibility_off'
+                                                        : 'visibility'
+                                                "
+                                                class="cursor-pointer"
+                                                @click="isConfirmUpdatePwd = !isConfirmUpdatePwd"
+                                            />
+                                        </template>
+                                    </q-input>
+
+                                    <q-btn
+                                        type="submit"
+                                        class="q-mb-md q-ml-auto text-primary block bg-white"
+                                        label="Update"
+                                        style="
+                                            max-width: 10rem;
+                                            max-height: 2.5rem;
+                                            height: 100%;
+                                            width: 100%;
+                                        "
+                                    >
+                                    </q-btn>
+                                </div>
+                            </q-form>
                         </q-tab-panel>
 
                         <q-tab-panel

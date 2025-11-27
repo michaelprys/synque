@@ -60,7 +60,7 @@ const onReset = () => {
                 >Login</span
             >
 
-            <q-form class="q-mt-lg full-width" @submit="login" @reset="onReset">
+            <q-form class="q-mt-lg full-width" @submit.prevent="login" @reset="onReset">
                 <q-input v-model="email" standout type="email" dark label="Email">
                     <template #prepend>
                         <q-icon name="mail" />

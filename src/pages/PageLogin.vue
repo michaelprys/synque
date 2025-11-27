@@ -3,7 +3,9 @@ import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import supabase from 'src/utils/supabase';
 import getErrorMessage from 'src/utils/getErrorMessage';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const $q = useQuasar();
 const pending = ref(false);
 const email = ref('');
@@ -14,7 +16,7 @@ const login = async () => {
     pending.value = true;
 
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email: email.value,
             password: password.value
         });
@@ -23,9 +25,11 @@ const login = async () => {
 
         $q.notify({
             color: 'positive',
-            icon: 'arrow',
-            message: `Hello, ${data.user?.user_metadata}!`
+            icon: 'check',
+            message: `Sign in successful!`
         });
+
+        router.push({ name: 'home' });
     } catch (err) {
         $q.notify({
             color: 'negative',

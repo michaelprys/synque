@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import supabase from 'src/utils/supabase';
+import getErrorMessage from 'src/utils/getErrorMessage';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const $q = useQuasar();
 const modelSettings = ref(false);
 const modelTab = ref('profile');
 const modelSplitter = ref(20);
@@ -16,6 +22,46 @@ const modelUpdatePassword = ref(null);
 const modelConfirmUpdatePassword = ref(null);
 const isUpdatePwd = ref(false);
 const isConfirmUpdatePwd = ref(false);
+const email = ref<string | undefined>(undefined);
+const pending = ref(false);
+const user = ref();
+
+const logout = async () => {
+    pending.value = true;
+
+    try {
+        const { error } = await supabase.auth.signOut();
+
+        if (error) throw error;
+
+        $q.notify({
+            type: 'positive',
+            message: 'Logout successful!'
+        });
+        router.push({ name: 'home' });
+    } catch (err) {
+        $q.notify({
+            type: 'negative',
+            message: getErrorMessage(err) ?? 'Something went wrong'
+        });
+    } finally {
+        pending.value = false;
+    }
+};
+
+onMounted(async () => {
+    try {
+        await supabase.auth.onAuthStateChange((event, session) => {
+            user.value = session?.user ?? null;
+            email.value = session?.user.email;
+        });
+
+        console.log(email.value);
+        console.log('Session is active');
+    } catch (err) {
+        console.error(getErrorMessage(err) || 'Something went wrong');
+    }
+});
 </script>
 
 <template>
@@ -265,38 +311,69 @@ const isConfirmUpdatePwd = ref(false);
                             <li>
                                 <q-btn :to="{ name: 'words' }" flat color="info">Words</q-btn>
                             </li>
-                            <li>
-                                <span
-                                    class="current-language q-pl-md text-info text-subtitle2 text-uppercase"
-                                    >Language: Chinese</span
-                                >
-                                <span
-                                    class="current-language-alias q-pl-md text-info text-subtitle2 text-uppercase"
-                                    >Lang: CN</span
-                                >
-                            </li>
                         </ul>
                     </div>
 
                     <div class="q-gutter-x-sm flex items-center">
-                        <!-- <span class="text-body2 text-info">Logged as "name"</span> -->
-                        <!-- <q-avatar color=red" size="sm"> </q-avatar> -->
-                        <q-btn
-                            :to="{ name: 'login' }"
-                            icon="account_circle"
-                            color="info"
-                            dense
-                            flat
-                        />
-                        <!-- <q-btn icon="logout" color="info" dense flat /> -->
+                        <q-btn label="Account" icon="account_circle" text-color="info" flat>
+                            <q-menu dark>
+                                <div class="row no-wrap q-pa-md" style="width: 100%">
+                                    <div class="column items-center q-mx-auto">
+                                        <q-avatar v-if="user" size="72px">
+                                            <img src="https://unsplash.it/100" />
+                                        </q-avatar>
 
-                        <q-btn
-                            icon="settings"
-                            dense
-                            flat
-                            color="info"
-                            @click="modelSettings = true"
-                        >
+                                        <div v-if="user" class="text-subtitle1 q-mt-md q-mb-xs">
+                                            {{ email }}
+                                        </div>
+
+                                        <span
+                                            v-if="user"
+                                            class="q-px-sm q-py-xs q-mb-md bg-secondary rounded-borders current-language text-caption text-uppercase"
+                                            >Language: <span class="text-blue">Chinese</span>
+                                        </span>
+
+                                        <q-list class="full-width text-center">
+                                            <q-item
+                                                v-if="user"
+                                                v-close-popup
+                                                clickable
+                                                active-class="text-white"
+                                            >
+                                                <q-item-section @click="modelSettings = true"
+                                                    >Settings</q-item-section
+                                                >
+                                            </q-item>
+                                            <q-item
+                                                v-if="!user"
+                                                v-close-popup
+                                                clickable
+                                                active-class="text-white"
+                                                :to="{ name: 'login' }"
+                                            >
+                                                <q-item-section>Login</q-item-section>
+                                            </q-item>
+                                            <q-item
+                                                v-close-popup
+                                                active-class="text-white"
+                                                clickable
+                                                :to="{ name: 'sign-up' }"
+                                            >
+                                                <q-item-section> Sign Up </q-item-section>
+                                            </q-item>
+                                            <q-item
+                                                v-if="user"
+                                                v-close-popup
+                                                clickable
+                                                active-class="text-white"
+                                                @click="logout"
+                                            >
+                                                <q-item-section>Logout</q-item-section>
+                                            </q-item>
+                                        </q-list>
+                                    </div>
+                                </div>
+                            </q-menu>
                         </q-btn>
                     </div>
                 </q-toolbar>

@@ -83,7 +83,7 @@ const onReset = () => {
 
                 <div class="q-mt-lg flex-center flex">
                     <RouterLink class="text-subtitle1" :to="{ name: 'login' }">
-                        Back to Login
+                        Go to Login
                     </RouterLink>
                 </div>
             </q-form>

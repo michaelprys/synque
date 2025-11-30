@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref } from 'vue';
-import supabase from 'src/utils/supabase';
 import getErrorMessage from 'src/utils/getErrorMessage';
+import supabase from 'src/utils/supabase';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

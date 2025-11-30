@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ItemWord from 'src/components/ItemWord.vue';
+import ItemWordCard from 'src/components/ItemWordCard.vue';
 </script>
 
 <template>
-    <ItemWord />
+    <ItemWordCard />
 </template>
 
 <style lang="scss" scoped></style>

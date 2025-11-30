@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ItemWords from 'src/components/ItemWords.vue';
+import ItemWordList from 'src/components/ItemWordList.vue';
 </script>
 
 <template>
-    <ItemWords />
+    <ItemWordList />
 </template>
 
 <style lang="scss" scoped></style>

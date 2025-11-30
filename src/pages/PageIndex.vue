@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useStoreLanguages } from 'src/stores/storeLanguages';
+import { ref } from 'vue';
 
 const modelLanguage = ref(false);
 const storeLanguages = useStoreLanguages();
@@ -9,7 +9,7 @@ const storeLanguages = useStoreLanguages();
 <template>
     <q-page class="q-ma-sm">
         <Teleport to="body">
-            <q-dialog v-model="modelLanguage" backdrop-filter="brightness(60%)">
+            <q-dialog v-model="modelLanguage">
                 <q-card dark style="max-width: 50rem; width: 100%">
                     <q-card-section>
                         <div class="text-h5 q-mt-xs text-center">Select a language</div>
@@ -24,7 +24,7 @@ const storeLanguages = useStoreLanguages();
                         />
                         <span
                             v-if="storeLanguages.filteredLanguages.length === 0"
-                            class="text-subtitle1 text-warning q-pt-md block"
+                            class="text-subtitle1 text-negative q-pt-md block"
                             >Such a language does not exist
                         </span>
                         <div class="scroll" style="max-height: 30rem; overflow-y: auto">
@@ -39,7 +39,7 @@ const storeLanguages = useStoreLanguages();
                                 <q-btn
                                     v-for="(lang, idx) in storeLanguages.filteredLanguages"
                                     :key="idx"
-                                    class="full-width q-px-md q-py-sm text-h6 bg-secondary flex items-start"
+                                    class="full-width q-px-md q-py-sm text-h6 bg-primary flex items-start"
                                     clickable
                                     square
                                     @click="storeLanguages.selectLanguage(lang.name)"
@@ -65,8 +65,8 @@ const storeLanguages = useStoreLanguages();
 
         <section id="home" class="column items-center" style="margin-top: 13rem">
             <h1 class="sr-only">Home</h1>
-            <q-img src="~assets/synque-logo.png" width="7.5rem" />
-            <span class="text-h4 q-mt-md" style="color: #005a8b">Synque</span>
+            <q-img src="~assets/synque-logo.png" width="7.5rem" height="7.625rem" />
+            <span class="text-h4 q-mt-md text-accent">Synque</span>
             <span class="text-h4 q-mt-lg text-center">Learn in sync with your mind</span>
             <!-- <span class="text-h4 text-center q-mt-lg"
                 >True memory is forged in the moment <br />
@@ -75,14 +75,8 @@ const storeLanguages = useStoreLanguages();
             <div class="q-gutter-x-lg q-mt-xl flex">
                 <q-btn
                     size="lg"
-                    text-color="white"
-                    color="accent"
-                    style="
-                        width: 12.8769rem;
-                        font-weight: 400;
-                        font-size: 1rem;
-                        background-color: #002e5a;
-                    "
+                    color="secondary"
+                    style="width: 12.8769rem; font-weight: 400; font-size: 1rem"
                     @click="modelLanguage = true"
                 >
                     Choose Language
@@ -90,27 +84,21 @@ const storeLanguages = useStoreLanguages();
                 <!-- <q-btn
                     :to="{ name: 'learn' }"
                     size="lg"
-                    text-color="white"
                     style="
                         width: 12.8769rem;
                         font-weight: 400;
                         font-size: 1rem;
-                        background-color: #002e5a;
+
                     "
                 >
                     Learn recent
                 </q-btn> -->
 
                 <q-btn
+                    color="secondary"
                     :to="{ name: 'learn' }"
                     size="lg"
-                    text-color="white"
-                    style="
-                        width: 12.8769rem;
-                        font-weight: 400;
-                        font-size: 1rem;
-                        background-color: #002e5a;
-                    "
+                    style="width: 12.8769rem; font-weight: 400; font-size: 1rem"
                 >
                     Start Learning
                 </q-btn>

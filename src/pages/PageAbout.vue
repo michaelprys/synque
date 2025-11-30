@@ -6,7 +6,7 @@
             <h1 class="sr-only">About</h1>
             <div
                 style="max-width: 70rem; width: 100%; border-radius: 0.5rem"
-                class="bg-dark q-mb-xl q-pa-lg q-mx-auto"
+                class="q-mb-xl q-pa-lg q-mx-auto"
             >
                 <div>
                     <h3 class="q-mt-md">What is Synque?</h3>
@@ -14,6 +14,8 @@
                         class="q-mt-lg full-width"
                         style="max-height: 25rem; border-radius: 0.5rem"
                         src="https://unsplash.it/1920"
+                        width="67rem"
+                        height="25rem"
                     />
                     <p class="q-mt-lg text-h6 text-justify">
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt optio
@@ -39,15 +41,15 @@
                         <q-img
                             class="q-mt-lg"
                             style="width: calc(50% - 1.5rem); height: 25rem; border-radius: 0.5rem"
-                            width="1920"
-                            height="1080"
+                            width="32.75rem"
+                            height="25rem"
                             src="https://unsplash.it/1920"
                         />
                         <q-img
                             class="q-mt-lg"
                             style="width: calc(50% - 1.5rem); height: 25rem; border-radius: 0.5rem"
-                            width="1920"
-                            height="1080"
+                            width="32.75rem"
+                            height="25rem"
                             src="https://unsplash.it/1920"
                         />
                     </div>

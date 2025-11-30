@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { onMounted, onUnmounted, ref } from 'vue';
-import supabase from 'src/utils/supabase';
 import getErrorMessage from 'src/utils/getErrorMessage';
+import supabase from 'src/utils/supabase';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -146,7 +146,7 @@ onMounted(() => {
 
                 <div class="q-mt-lg flex-center flex">
                     <RouterLink class="text-subtitle1" :to="{ name: 'login' }">
-                        Back to Login
+                        Go to Login
                     </RouterLink>
                 </div>
             </q-form>

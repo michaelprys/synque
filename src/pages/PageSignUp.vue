@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref } from 'vue';
-import supabase from 'src/utils/supabase';
 import getErrorMessage from 'src/utils/getErrorMessage';
+import supabase from 'src/utils/supabase';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -141,7 +141,7 @@ const onReset = () => {
                         <div class="q-ml-sm">
                             <span> I accept </span>
                             <router-link
-                                class="text-warning"
+                                class="text-accent"
                                 style="text-decoration: underline; text-underline-offset: 0.2rem"
                                 :to="{ name: 'terms' }"
                             >
@@ -164,7 +164,7 @@ const onReset = () => {
 
                 <div class="q-mt-lg flex-center flex">
                     <RouterLink class="text-subtitle1" :to="{ name: 'login' }">
-                        Back to Login
+                        Go to Login
                     </RouterLink>
                 </div>
             </q-form>

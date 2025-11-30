@@ -3,7 +3,7 @@
         <section id="terms" class="flex">
             <h1 class="sr-only">Terms</h1>
             <div
-                class="bg-dark q-mb-xl q-pa-lg q-mx-auto"
+                class="q-mb-xl q-pa-lg q-mx-auto"
                 style="border-radius: 0.5rem; max-width: 70rem; width: 100%"
             >
                 <div class="text-center">

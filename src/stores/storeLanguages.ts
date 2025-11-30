@@ -1,5 +1,5 @@
-import { defineStore, acceptHMRUpdate } from 'pinia';
-import { ref, computed } from 'vue';
+import { acceptHMRUpdate, defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 import langJson from '../data/languages.json';
 
 export type Language = {

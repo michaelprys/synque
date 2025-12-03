@@ -14,8 +14,8 @@ const storeTheme = useStoreTheme(),
     router = useRouter(),
     modelSplitter = ref(20),
     modelNewCards = ref(2),
-    $q = useQuasar(),
     modelMaxCards = ref(2),
+    $q = useQuasar(),
     modelForgetSpeed = ref(true),
     modelFontSize = ref(1),
     fontSizeOptions = ref(['Small', 'Medium', 'Large']),
@@ -167,6 +167,28 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                 />
                             </div>
 
+                            <div class="title text-subtitle1">
+                                <div class="flex items-center">
+                                    <span>Level:</span>
+                                    <q-badge class="q-ml-sm text-subtitle1" color="secondary">
+                                        {{
+                                            storeStudySettings.levels[
+                                                storeStudySettings.currentLevel
+                                            ]
+                                        }}
+                                    </q-badge>
+                                </div>
+                                <div>
+                                    <q-slider
+                                        v-model="storeStudySettings.currentLevel"
+                                        color="accent"
+                                        track-color="secondary"
+                                        markers
+                                        :min="0"
+                                        :max="3"
+                                    />
+                                </div>
+                            </div>
                             <div class="title text-subtitle1">
                                 <div class="flex items-center">
                                     <span>New cards/day:</span>

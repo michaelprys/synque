@@ -7,7 +7,10 @@ const storeWordCard = useStoreWordCard();
 const storeStudySettings = useStoreStudySettings();
 
 onMounted(() => {
-    storeWordCard.sendWordCardData(storeStudySettings.currentTopics);
+    storeWordCard.sendWordCardData(
+        storeStudySettings.currentTopics,
+        storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
+    );
 });
 </script>
 

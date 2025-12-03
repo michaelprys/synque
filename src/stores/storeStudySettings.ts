@@ -31,9 +31,11 @@ export const useStoreStudySettings = defineStore(
             'House',
             'Actions'
         ];
+        const levels = ref(['Beginner', 'Intermediate', 'Advanced', 'Native']);
 
         const currentLanguage = ref('English');
         const currentTopics = ref<string[]>([]);
+        const currentLevel = ref(0);
 
         const setLanguage = (lang: string) => {
             currentLanguage.value = lang;
@@ -43,13 +45,20 @@ export const useStoreStudySettings = defineStore(
             currentTopics.value = topics;
         };
 
+        const setLevel = (level: number) => {
+            currentLevel.value = level;
+        };
+
         return {
             languages,
             studyTopics,
             currentLanguage,
             currentTopics,
+            currentLevel,
+            levels,
             setLanguage,
-            setStudyTopics
+            setStudyTopics,
+            setLevel
         };
     },
     { persist: true }

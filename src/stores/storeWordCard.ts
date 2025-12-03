@@ -9,7 +9,7 @@ export const useStoreWordCard = defineStore(
         const pending = ref(false);
         const error = ref<string | null>(null);
 
-        const sendWordCardData = async (themes: string[]) => {
+        const sendWordCardData = async (themes: string[], level: string) => {
             try {
                 const res = await fetch(
                     'https://qfwdugediwznexgeqqjz.supabase.co/functions/v1/synque-card-generation',
@@ -20,7 +20,7 @@ export const useStoreWordCard = defineStore(
                             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`,
                             apikey: import.meta.env.VITE_SUPABASE_KEY
                         },
-                        body: JSON.stringify({ themes })
+                        body: JSON.stringify({ themes, level })
                     }
                 );
 

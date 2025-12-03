@@ -2,7 +2,7 @@
 import { useQuasar } from 'quasar';
 import BtnClose from 'src/components/BtnClose.vue';
 import { themes } from 'src/data/themes';
-import { useStoreLanguages } from 'src/stores/storeLanguages';
+import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { useStoreTheme } from 'src/stores/storeThemes';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import supabase from 'src/utils/supabase';
@@ -77,14 +77,15 @@ defineExpose({
     openDialog
 });
 
-const storeLanguages = useStoreLanguages();
-const languages = ref(storeLanguages.languages);
+const storeStudySettings = useStoreStudySettings();
+const languages = ref(storeStudySettings.languages);
+const topics = ref(storeStudySettings.studyTopics);
 
 const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
     doneFn(() => {
         const search = val.toLowerCase();
 
-        languages.value = storeLanguages.languages.filter((l) =>
+        languages.value = storeStudySettings.languages.filter((l) =>
             l.name.toLowerCase().includes(search)
         );
     });
@@ -120,32 +121,53 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
 
                             <BtnClose />
 
-                            <q-select
-                                v-model="storeLanguages.currentLanguage"
-                                :options="languages"
-                                dark
-                                color="accent"
-                                filled
-                                style="width: 33.33%"
-                                option-label="name"
-                                emit-value
-                                map-options
-                                use-input
-                                fill-input
-                                hide-selected
-                                input-debounce="0"
-                                @filter="filterFn"
-                            >
-                                <template #no-option>
-                                    <q-item>
-                                        <q-item-section class="text-grey">
-                                            No such language
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
+                            <div class="title text-subtitle1">
+                                <span>Target language:</span>
 
-                            <div class="title text-subtitle1 q-pt-lg">
+                                <q-select
+                                    v-model="storeStudySettings.currentLanguage"
+                                    color="accent"
+                                    class="q-mt-lg"
+                                    :options="languages"
+                                    dark
+                                    filled
+                                    option-label="name"
+                                    emit-value
+                                    map-options
+                                    style="width: 33.33%"
+                                    use-input
+                                    fill-input
+                                    hide-selected
+                                    input-debounce="0"
+                                    @filter="filterFn"
+                                >
+                                    <template #no-option>
+                                        <q-item>
+                                            <q-item-section class="text-grey">
+                                                No such language
+                                            </q-item-section>
+                                        </q-item>
+                                    </template>
+                                </q-select>
+                            </div>
+
+                            <div class="title q-mt-lg text-subtitle1">
+                                <span>Preferred Topics:</span>
+
+                                <q-select
+                                    v-model="storeStudySettings.currentTopics"
+                                    class="q-mt-lg"
+                                    filled
+                                    dark
+                                    color="negative"
+                                    multiple
+                                    :options="topics"
+                                    counter
+                                    style="width: 33.33%"
+                                />
+                            </div>
+
+                            <div class="title text-subtitle1">
                                 <div class="flex items-center">
                                     <span>New cards/day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
@@ -163,7 +185,7 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                     />
                                 </div>
                             </div>
-                            <div class="title q-py-lg text-subtitle1">
+                            <div class="title q-mt-lg text-subtitle1">
                                 <div class="flex items-center">
                                     <span>New cards/day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
@@ -181,7 +203,7 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                     />
                                 </div>
                             </div>
-                            <div class="title text-subtitle1">
+                            <div class="title q-mt-lg text-subtitle1">
                                 <span> Forget speed </span>
                                 <q-toggle
                                     v-model="modelForgetSpeed"
@@ -276,19 +298,10 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
 
                             <BtnClose />
 
-                            <div class="text-subtitle1 q-ma-none">
-                                Interface language:
-
-                                <q-badge
-                                    class="q-ml-xs text-subtitle1 flex-center flex"
-                                    color="secondary"
-                                >
-                                    Some language
-                                </q-badge>
-                            </div>
+                            <div class="text-subtitle1 q-ma-none">Interface language:</div>
 
                             <q-select
-                                v-model="storeLanguages.currentLanguage"
+                                v-model="storeStudySettings.currentLanguage"
                                 class="q-mt-lg"
                                 dark
                                 filled

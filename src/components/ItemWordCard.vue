@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useStoreCard } from 'src/stores/storeCard';
+import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { useStoreWordCard } from 'src/stores/storeWordCard';
 import { onMounted } from 'vue';
 
-const storeCard = useStoreCard();
+const storeWordCard = useStoreWordCard();
+const storeStudySettings = useStoreStudySettings();
 
-onMounted(async () => {
-    storeCard.sendCardData('Generate a random word only');
+onMounted(() => {
+    storeWordCard.sendWordCardData(storeStudySettings.currentTopics);
 });
 </script>
 
@@ -27,20 +29,15 @@ onMounted(async () => {
                             class="text-h3 text-lowercase col-2"
                             style="grid-column: 2; justify-self: center"
                         >
-                            {{ storeCard.result.text }}
+                            {{ storeWordCard.result?.word }}
                         </span>
-                        <!-- <span
-                            class="text-sm text-lowercase"
-                            style="grid-column: 3; justify-self: end"
-                            >321</span
-                        > -->
                     </div>
 
                     <div class="flex-center q-mt-md q-gutter-x-sm flex">
                         <q-btn icon="volume_down" flat round size="lg" padding="xs"></q-btn>
-                        <span class="text-lowercase text-h6" style="opacity: 60%"
-                            >[transcription]</span
-                        >
+                        <span class="text-lowercase text-h6" style="opacity: 60%">{{
+                            storeWordCard.result?.transcription
+                        }}</span>
                     </div>
                 </div>
 
@@ -69,7 +66,7 @@ onMounted(async () => {
 
                 <div class="column items-center">
                     <p class="text-h5 q-mt-lg full-width" style="max-width: 36.25rem">
-                        {{ storeCard.result.text }}
+                        {{ storeWordCard.result?.sentence }}
                     </p>
 
                     <q-btn

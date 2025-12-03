@@ -1,5 +1,12 @@
 <script setup lang="ts">
-defineProps({});
+import { useStoreCard } from 'src/stores/storeCard';
+import { onMounted } from 'vue';
+
+const storeCard = useStoreCard();
+
+onMounted(async () => {
+    storeCard.sendCardData('Generate a random word only');
+});
 </script>
 
 <template>
@@ -20,7 +27,7 @@ defineProps({});
                             class="text-h3 text-lowercase col-2"
                             style="grid-column: 2; justify-self: center"
                         >
-                            Word
+                            {{ storeCard.result.text }}
                         </span>
                         <!-- <span
                             class="text-sm text-lowercase"
@@ -62,7 +69,7 @@ defineProps({});
 
                 <div class="column items-center">
                     <p class="text-h5 q-mt-lg full-width" style="max-width: 36.25rem">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                        {{ storeCard.result.text }}
                     </p>
 
                     <q-btn
@@ -78,13 +85,13 @@ defineProps({});
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
                     <q-btn
                         color="secondary"
-                        style="opacity: 75%; width: 8.75rem; border-radius: 0.375rem"
+                        style="width: 8.75rem; border-radius: 0.375rem"
                         size="lg"
                         >I Know
                     </q-btn>
                     <q-btn
                         color="secondary"
-                        style="opacity: 75%; width: 8.75rem; border-radius: 0.375rem"
+                        style="width: 8.75rem; border-radius: 0.375rem"
                         size="lg"
                         >Next</q-btn
                     >

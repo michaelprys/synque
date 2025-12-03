@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+import BtnClose from 'src/components/BtnClose.vue';
 import { themes } from 'src/data/themes';
+import { useStoreLanguages } from 'src/stores/storeLanguages';
 import { useStoreTheme } from 'src/stores/storeThemes';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import supabase from 'src/utils/supabase';
@@ -8,7 +10,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeTheme = useStoreTheme(),
-    modelTab = ref('profile'),
+    modelTab = ref('study'),
     router = useRouter(),
     modelSplitter = ref(20),
     modelNewCards = ref(2),
@@ -74,6 +76,19 @@ const openDialog = () => {
 defineExpose({
     openDialog
 });
+
+const storeLanguages = useStoreLanguages();
+const languages = ref(storeLanguages.languages);
+
+const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
+    doneFn(() => {
+        const search = val.toLowerCase();
+
+        languages.value = storeLanguages.languages.filter((l) =>
+            l.name.toLowerCase().includes(search)
+        );
+    });
+};
 </script>
 
 <template>
@@ -86,9 +101,9 @@ defineExpose({
             >
                 <template #before>
                     <q-tabs v-model="modelTab" vertical class="tabs col">
-                        <q-tab style="height: 6rem" name="profile" label="Profile" />
-                        <q-tab style="height: 6rem" name="appearance" label="Appearance" />
                         <q-tab style="height: 6rem" name="study" label="Study" />
+                        <q-tab style="height: 6rem" name="profile" label="Profile" />
+                        <q-tab style="height: 6rem" name="preferences" label="preferences" />
                     </q-tabs>
                 </template>
 
@@ -100,8 +115,88 @@ defineExpose({
                         class="bg-primary full-height overflow-hidden"
                         animated
                     >
+                        <q-tab-panel name="study" class="col q-pa-md full-height">
+                            <h2 class="text-h5 q-py-lg">Study</h2>
+
+                            <BtnClose />
+
+                            <q-select
+                                v-model="storeLanguages.currentLanguage"
+                                :options="languages"
+                                dark
+                                color="accent"
+                                filled
+                                style="width: 33.33%"
+                                option-label="name"
+                                emit-value
+                                map-options
+                                use-input
+                                fill-input
+                                hide-selected
+                                input-debounce="0"
+                                @filter="filterFn"
+                            >
+                                <template #no-option>
+                                    <q-item>
+                                        <q-item-section class="text-grey">
+                                            No such language
+                                        </q-item-section>
+                                    </q-item>
+                                </template>
+                            </q-select>
+
+                            <div class="title text-subtitle1 q-pt-lg">
+                                <div class="flex items-center">
+                                    <span>New cards/day:</span>
+                                    <q-badge class="q-ml-sm text-subtitle1" color="secondary">
+                                        {{ modelNewCards }}
+                                    </q-badge>
+                                </div>
+                                <div>
+                                    <q-slider
+                                        v-model="modelNewCards"
+                                        color="accent"
+                                        track-color="secondary"
+                                        markers
+                                        :min="0"
+                                        :max="10"
+                                    />
+                                </div>
+                            </div>
+                            <div class="title q-py-lg text-subtitle1">
+                                <div class="flex items-center">
+                                    <span>New cards/day:</span>
+                                    <q-badge class="q-ml-sm text-subtitle1" color="secondary">
+                                        {{ modelMaxCards }}
+                                    </q-badge>
+                                </div>
+                                <div>
+                                    <q-slider
+                                        v-model="modelMaxCards"
+                                        color="accent"
+                                        track-color="secondary"
+                                        markers
+                                        :min="0"
+                                        :max="10"
+                                    />
+                                </div>
+                            </div>
+                            <div class="title text-subtitle1">
+                                <span> Forget speed </span>
+                                <q-toggle
+                                    v-model="modelForgetSpeed"
+                                    size="xl"
+                                    color="accent"
+                                    :label="modelForgetSpeed === true ? 'Slow' : 'Fast'"
+                                />
+                            </div>
+                        </q-tab-panel>
+
                         <q-tab-panel name="profile" class="column q-pa-md bg-primary full-height">
                             <h2 class="text-h5 q-py-lg">Profile</h2>
+
+                            <BtnClose />
+
                             <div class="title q-py-lg text-subtitle1 flex items-center">
                                 <q-avatar color="red" text-color="white" />
                                 <q-file
@@ -163,6 +258,7 @@ defineExpose({
                                         class="q-mb-md q-ml-auto block"
                                         color="accent"
                                         label="Update"
+                                        text-color="black"
                                         style="
                                             max-width: 10rem;
                                             max-height: 2.5rem;
@@ -175,8 +271,46 @@ defineExpose({
                             </q-form>
                         </q-tab-panel>
 
-                        <q-tab-panel name="appearance" class="q-pa-md col bg-primary full-height">
-                            <h2 class="text-h5 q-py-lg">Appearance</h2>
+                        <q-tab-panel name="preferences" class="q-pa-md col bg-primary full-height">
+                            <h2 class="text-h5 q-py-lg">Preferences</h2>
+
+                            <BtnClose />
+
+                            <div class="text-subtitle1 q-ma-none">
+                                Interface language:
+
+                                <q-badge
+                                    class="q-ml-xs text-subtitle1 flex-center flex"
+                                    color="secondary"
+                                >
+                                    Some language
+                                </q-badge>
+                            </div>
+
+                            <q-select
+                                v-model="storeLanguages.currentLanguage"
+                                class="q-mt-lg"
+                                dark
+                                filled
+                                use-input
+                                color="accent"
+                                hide-selected
+                                option-label="name"
+                                fill-input
+                                input-debounce="0"
+                                style="width: 32%"
+                                :options="languages"
+                                @filter="filterFn"
+                            >
+                                <template #no-option>
+                                    <q-item>
+                                        <q-item-section class="text-grey">
+                                            No such language
+                                        </q-item-section>
+                                    </q-item>
+                                </template>
+                            </q-select>
+
                             <div class="title q-py-lg text-subtitle1">
                                 <div>
                                     Current Theme:
@@ -206,7 +340,7 @@ defineExpose({
                                 </div>
                             </div>
 
-                            <div class="title q-py-lg text-subtitle1">
+                            <div class="title q-mt-lg text-subtitle1">
                                 <div class="flex items-center">
                                     <span>Font Size:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
@@ -223,55 +357,6 @@ defineExpose({
                                         :max="2"
                                     />
                                 </div>
-                            </div>
-                        </q-tab-panel>
-
-                        <q-tab-panel name="study" class="col q-pa-md bg-primary full-height">
-                            <h2 class="text-h5 q-py-lg">Study</h2>
-                            <div class="title q-py-lg text-subtitle1">
-                                <div class="flex items-center">
-                                    <span>New cards/day:</span>
-                                    <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ modelNewCards }}
-                                    </q-badge>
-                                </div>
-                                <div>
-                                    <q-slider
-                                        v-model="modelNewCards"
-                                        color="accent"
-                                        track-color="secondary"
-                                        markers
-                                        :min="0"
-                                        :max="10"
-                                    />
-                                </div>
-                            </div>
-                            <div class="title q-py-lg text-subtitle1">
-                                <div class="flex items-center">
-                                    <span>New cards/day:</span>
-                                    <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ modelMaxCards }}
-                                    </q-badge>
-                                </div>
-                                <div>
-                                    <q-slider
-                                        v-model="modelMaxCards"
-                                        color="accent"
-                                        track-color="secondary"
-                                        markers
-                                        :min="0"
-                                        :max="10"
-                                    />
-                                </div>
-                            </div>
-                            <div class="title text-subtitle1 q-py-lg">
-                                <span> Forget speed </span>
-                                <q-toggle
-                                    v-model="modelForgetSpeed"
-                                    size="xl"
-                                    color="accent"
-                                    :label="modelForgetSpeed === true ? 'Slow' : 'Fast'"
-                                />
                             </div>
                         </q-tab-panel>
                     </q-tab-panels>

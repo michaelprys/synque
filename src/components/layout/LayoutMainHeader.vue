@@ -96,20 +96,15 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                 </span>
 
                                 <q-list class="full-width text-center">
-                                    <q-item
-                                        v-if="user"
-                                        v-close-popup
-                                        active-class="active"
-                                        clickable
-                                    >
+                                    <q-item v-if="user" v-close-popup class="text-white" clickable>
                                         <q-item-section @click="refDialogSettings?.openDialog"
-                                            >Settings</q-item-section
+                                            >Properties</q-item-section
                                         >
                                     </q-item>
                                     <q-item
                                         v-if="!user"
                                         v-close-popup
-                                        active-class="active"
+                                        class="text-white"
                                         clickable
                                         :to="{ name: 'login' }"
                                     >
@@ -117,7 +112,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                     </q-item>
                                     <q-item
                                         v-close-popup
-                                        active-class="active"
+                                        class="text-white"
                                         clickable
                                         :to="{ name: 'sign-up' }"
                                     >
@@ -126,7 +121,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                     <q-item
                                         v-if="user"
                                         v-close-popup
-                                        active-class="active"
+                                        class="text-white"
                                         clickable
                                         @click="logout"
                                     >

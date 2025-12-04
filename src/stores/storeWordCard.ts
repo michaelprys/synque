@@ -5,11 +5,36 @@ import { ref } from 'vue';
 export const useStoreWordCard = defineStore(
     'card',
     () => {
-        const result = ref<{ word: string; transcription: string; sentence: string } | null>(null);
+        const wordData = ref<{ word: string; transcription: string; sentence: string } | null>(
+            null
+        );
+        const imageData = ref<string>('');
         const pending = ref(false);
         const error = ref<string | null>(null);
 
-        const sendWordCardData = async (themes: string[], level: string) => {
+        const findImage = async (name: string) => {
+            try {
+                pending.value = true;
+
+                const res = await fetch(
+                    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}`
+                );
+
+                if (!res.ok) {
+                    const errMsg = await res.text();
+                    throw new Error(`${res.status}: ${errMsg}`);
+                }
+
+                const data = await res.json();
+                imageData.value = data.results?.[0]?.url || '';
+            } catch (err) {
+                console.error(getErrorMessage(err) || 'Something went wrong');
+            } finally {
+                pending.value = false;
+            }
+        };
+
+        const sendWordCardData = async (language: string, topics: string[], level: string) => {
             try {
                 const res = await fetch(
                     'https://qfwdugediwznexgeqqjz.supabase.co/functions/v1/synque-card-generation',
@@ -20,7 +45,7 @@ export const useStoreWordCard = defineStore(
                             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`,
                             apikey: import.meta.env.VITE_SUPABASE_KEY
                         },
-                        body: JSON.stringify({ themes, level })
+                        body: JSON.stringify({ language, topics, level })
                     }
                 );
 
@@ -31,8 +56,11 @@ export const useStoreWordCard = defineStore(
                 }
 
                 const data = await res.json();
+                wordData.value = JSON.parse(data.text);
 
-                result.value = JSON.parse(data.text);
+                if (wordData.value) {
+                    await findImage(wordData.value.word);
+                }
             } catch (err) {
                 error.value = getErrorMessage(err);
             } finally {
@@ -42,7 +70,9 @@ export const useStoreWordCard = defineStore(
 
         return {
             sendWordCardData,
-            result
+            findImage,
+            wordData,
+            imageData
         };
     },
 

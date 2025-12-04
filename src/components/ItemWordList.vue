@@ -44,9 +44,9 @@ const deleteWord = () => {
     <q-page class="q-ma-sm flex">
         <section class="q-mx-auto text-center" style="max-width: 60rem; width: 100%">
             <div style="width: 100%; border-radius: 0.5rem" class="q-mb-xl q-pa-lg">
-                <h3 class="text-h4">Total words: 132</h3>
-
                 <div v-if="words.length != 0">
+                    <h3 class="text-h4">Total words: 132</h3>
+
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
                             <!-- <q-btn -->
@@ -63,6 +63,18 @@ const deleteWord = () => {
                                 label="Review"
                             />
                         </div>
+
+                        <q-tabs
+                            dense
+                            class="q-mt-lg"
+                            active-color="accent"
+                            indicator-color="accent"
+                            align="justify"
+                            narrow-indicator
+                        >
+                            <q-tab class="bg-primary" name="learned" label="Learned" />
+                            <q-tab class="bg-primary" name="in-progress" label="In progress" />
+                        </q-tabs>
 
                         <div class="row q-mt-lg items-center justify-between">
                             <div class="col">
@@ -130,17 +142,25 @@ const deleteWord = () => {
                                     </q-item-section>
 
                                     <q-item-section side class="q-pr-none">
-                                        <div class="q-gutter-x-md flex">
+                                        <div class="flex">
                                             <q-btn
                                                 :to="{ name: 'review' }"
-                                                size="sm"
+                                                size="xs"
                                                 flat
                                                 color="gray"
                                                 style="width: 2rem; height: 2rem"
                                                 icon="import_contacts"
                                             ></q-btn>
+                                            <!-- <q-btn
+                                                :to="{ name: 'review' }"
+                                                size="xs"
+                                                flat
+                                                color="gray"
+                                                style="width: 2rem; height: 2rem"
+                                                icon="arrow_forward"
+                                            ></q-btn> -->
                                             <q-btn
-                                                size="sm"
+                                                size="xs"
                                                 flat
                                                 color="gray"
                                                 style="width: 2rem; height: 2rem"

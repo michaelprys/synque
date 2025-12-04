@@ -8,6 +8,7 @@ const storeStudySettings = useStoreStudySettings();
 
 onMounted(() => {
     storeWordCard.sendWordCardData(
+        storeStudySettings.currentLanguage.name,
         storeStudySettings.currentTopics,
         storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
     );
@@ -32,14 +33,14 @@ onMounted(() => {
                             class="text-h3 text-lowercase col-2"
                             style="grid-column: 2; justify-self: center"
                         >
-                            {{ storeWordCard.result?.word }}
+                            {{ storeWordCard.wordData?.word }}
                         </span>
                     </div>
 
                     <div class="flex-center q-mt-md q-gutter-x-sm flex">
                         <q-btn icon="volume_down" flat round size="lg" padding="xs"></q-btn>
                         <span class="text-lowercase text-h6" style="opacity: 60%">{{
-                            storeWordCard.result?.transcription
+                            storeWordCard.wordData?.transcription
                         }}</span>
                     </div>
                 </div>
@@ -52,7 +53,7 @@ onMounted(() => {
                         <q-img
                             class="full-width"
                             style="border-radius: 0.375rem"
-                            src="https://unsplash.it/1920/1080"
+                            :src="storeWordCard.imageData"
                             width="720px"
                             height="370px"
                         />
@@ -69,7 +70,7 @@ onMounted(() => {
 
                 <div class="column items-center">
                     <p class="text-h5 q-mt-lg full-width" style="max-width: 36.25rem">
-                        {{ storeWordCard.result?.sentence }}
+                        {{ storeWordCard.wordData?.sentence }}
                     </p>
 
                     <q-btn
@@ -83,17 +84,14 @@ onMounted(() => {
                 </div>
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
-                    <q-btn
-                        color="secondary"
-                        style="width: 8.75rem; border-radius: 0.375rem"
-                        size="lg"
-                        >I Know
+                    <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
+                        >Again
                     </q-btn>
-                    <q-btn
-                        color="secondary"
-                        style="width: 8.75rem; border-radius: 0.375rem"
-                        size="lg"
-                        >Next</q-btn
+                    <!-- <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
+                        >Review
+                    </q-btn> -->
+                    <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
+                        >Good</q-btn
                     >
                 </div>
             </div>

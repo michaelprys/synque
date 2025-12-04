@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import ItemSettings from 'src/components/ItemSettings.vue';
+import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+const storeStudySettings = useStoreStudySettings();
 
 onMounted(async () => {
     try {
@@ -92,7 +95,8 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                 <span
                                     v-if="user"
                                     class="q-px-sm q-py-xs q-mb-md bg-negative rounded-borders current-language text-caption text-dark text-uppercase"
-                                    >Language: <span>Chinese</span>
+                                    >Language:
+                                    <span>{{ storeStudySettings.currentLanguage.name }}</span>
                                 </span>
 
                                 <q-list class="full-width text-center">

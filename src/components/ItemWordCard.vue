@@ -38,7 +38,19 @@ onMounted(() => {
                     </div>
 
                     <div class="flex-center q-mt-md q-gutter-x-sm flex">
-                        <q-btn icon="volume_down" flat round size="lg" padding="xs"></q-btn>
+                        <q-btn
+                            icon="volume_down"
+                            flat
+                            round
+                            size="lg"
+                            padding="xs"
+                            @click="
+                                storeWordCard.synthesizeSpeech(
+                                    storeWordCard.wordData?.word ?? '',
+                                    storeStudySettings.currentLanguage?.voiceId ?? ''
+                                )
+                            "
+                        ></q-btn>
                         <span class="text-lowercase text-h6" style="opacity: 60%">{{
                             storeWordCard.wordData?.transcription
                         }}</span>
@@ -80,6 +92,12 @@ onMounted(() => {
                         round
                         size="lg"
                         padding="xs"
+                        @click="
+                            storeWordCard.synthesizeSpeech(
+                                storeWordCard.wordData?.sentence ?? '',
+                                storeStudySettings.currentLanguage?.voiceId ?? ''
+                            )
+                        "
                     ></q-btn>
                 </div>
 

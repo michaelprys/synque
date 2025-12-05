@@ -5,9 +5,11 @@ import { ref } from 'vue';
 export const useStoreWordCard = defineStore(
     'card',
     () => {
-        const wordData = ref<{ word: string; transcription: string; sentence: string } | null>(
-            null
-        );
+        const wordData = ref<{
+            word: string;
+            transcription: string;
+            sentence: string;
+        } | null>(null);
         const imageData = ref<string>('');
         const pending = ref(false);
         const error = ref<string | null>(null);
@@ -68,14 +70,46 @@ export const useStoreWordCard = defineStore(
             }
         };
 
+        const synthesizeSpeech = async (text: string, voiceId: string) => {
+            try {
+                pending.value = true;
+
+                const res = await fetch('http://localhost:54321/functions/v1/synthesize-speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        apikey: import.meta.env.VITE_SUPABASE_KEY,
+                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`
+                    },
+                    body: JSON.stringify({ text, voiceId })
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    throw new Error(`TTS error ${res.status}: ${err}`);
+                }
+
+                const data = await res.json();
+
+                if (data.audio) {
+                    const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                    audio.play().catch((e) => console.warn('Cannot be played:', e));
+                }
+            } catch (err) {
+                console.error(getErrorMessage(err));
+            } finally {
+                pending.value = false;
+            }
+        };
+
         return {
-            sendWordCardData,
-            findImage,
             wordData,
-            imageData
+            imageData,
+            findImage,
+            sendWordCardData,
+            synthesizeSpeech
         };
     },
-
     { persist: true }
 );
 

@@ -1,39 +1,42 @@
-import { acceptHMRUpdate, defineStore } from 'pinia';
-import langJson from 'src/data/languages.json';
-import { ref } from 'vue';
+import { acceptHMRUpdate, defineStore } from "pinia";
+import langJson from "src/data/languages.json";
+import { ref } from "vue";
 
 export type Language = {
-    code?: string;
+    voiceId?: string;
     name: string;
 };
 
 export const useStoreStudySettings = defineStore(
-    'storeStudySettings',
+    "storeStudySettings",
     () => {
         const languages: Language[] = langJson;
         const studyTopics = [
-            'Sports',
-            'Clothing',
-            'Food',
-            'Travel',
-            'Work',
-            'School',
-            'Animals',
-            'Nature',
-            'Technology',
-            'Music',
-            'Art',
-            'Emotions',
-            'Greetings',
-            'Numbers',
-            'Colors',
-            'Family',
-            'House',
-            'Actions'
+            "Sports",
+            "Clothing",
+            "Food",
+            "Travel",
+            "Work",
+            "School",
+            "Animals",
+            "Nature",
+            "Technology",
+            "Music",
+            "Art",
+            "Emotions",
+            "Greetings",
+            "Numbers",
+            "Colors",
+            "Family",
+            "House",
+            "Actions",
         ];
-        const levels = ref(['Beginner', 'Intermediate', 'Advanced', 'Native']);
+        const levels = ref(["Beginner", "Intermediate", "Advanced", "Native"]);
 
-        const currentLanguage = ref<Language>({ code: 'en', name: 'English' });
+        const currentLanguage = ref<Language>({
+            voiceId: "TX3LPaxmHKxFdv7VOQHJ",
+            name: "English",
+        });
         const currentTopics = ref<string[]>([]);
         const currentLevel = ref(0);
 
@@ -53,12 +56,14 @@ export const useStoreStudySettings = defineStore(
             currentLevel,
             levels,
             setStudyTopics,
-            setLevel
+            setLevel,
         };
     },
-    { persist: true }
+    { persist: true },
 );
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useStoreStudySettings, import.meta.hot));
+    import.meta.hot.accept(
+        acceptHMRUpdate(useStoreStudySettings, import.meta.hot),
+    );
 }

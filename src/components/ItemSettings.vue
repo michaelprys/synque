@@ -124,6 +124,7 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                             <div class="title text-subtitle1">
                                 <span>Target language:</span>
 
+                                <!-- TODO: Add a note for languages that are actively being learned  -->
                                 <q-select
                                     v-model="storeStudySettings.currentLanguage"
                                     color="accent"

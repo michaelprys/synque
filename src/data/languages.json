@@ -1,77 +1,527 @@
 [
-    { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "name": "Afrikaans" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Arabic" },
-    { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Armenian" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Assamese" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Azerbaijani" },
-    { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Belarusian" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Bengali" },
-    { "voiceId": "pqHfZKP75CvOlQylNhV4", "name": "Bosnian" },
-    { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "name": "Bulgarian" },
-    { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "name": "Catalan" },
-    { "voiceId": "DowyQ68vDpgFYdWVGjc3", "name": "Cantonese" },
-    { "voiceId": "FGY2WhTYpPnrIDTdsKH5", "name": "Cebuano" },
-    { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Chichewa" },
-    { "voiceId": "bIHbv24MWmeRgasZH58o", "name": "Croatian" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Czech" },
-    { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "name": "Danish" },
-    { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Dutch" },
-    { "voiceId": "2qfp6zPuviqeCOZIE9RZ", "name": "English" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Estonian" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Filipino" },
-    { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Finnish" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "French" },
-    { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "name": "Galician" },
-    { "voiceId": "pqHfZKP75CvOlQylNhV4", "name": "Georgian" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "German" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Greek" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Gujarati" },
-    { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Hausa" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Hebrew" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Hindi" },
-    { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "name": "Hungarian" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Icelandic" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Indonesian" },
-    { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Irish" },
-    { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Italian" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Japanese" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Javanese" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Kannada" },
-    { "voiceId": "pqHfZKP75CvOlQylNhV4", "name": "Kazakh" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Kirghiz" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Korean" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Latvian" },
-    { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Lingala" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Lithuanian" },
-    { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Luxembourgish" },
-    { "voiceId": "pqHfZKP75CvOlQylNhV4", "name": "Macedonian" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Malay" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Malayalam" },
-    { "voiceId": "DowyQ68vDpgFYdWVGjc3", "name": "Mandarin Chinese" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Marathi" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Nepali" },
-    { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "name": "Norwegian" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Pashto" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Persian" },
-    { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Polish" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Portuguese" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Punjabi" },
-    { "voiceId": "bIHbv24MWmeRgasZH58o", "name": "Romanian" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Russian" },
-    { "voiceId": "pqHfZKP75CvOlQylNhV4", "name": "Serbian" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Sindhi" },
-    { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Slovak" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Slovenian" },
-    { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Somali" },
-    { "voiceId": "5IDdqnXnlsZ1FCxoOFYg", "name": "Spanish" },
-    { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Swahili" },
-    { "voiceId": "XB0fDUnXU5powFXDhCwa", "name": "Swedish" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Tamil" },
-    { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Telugu" },
-    { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Thai" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Turkish" },
-    { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Ukrainian" },
-    { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Urdu" },
-    { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Vietnamese" },
-    { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Welsh" }
+    {
+        "name": "Afrikaans",
+        "voices": [
+            { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Arabic",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "female" }
+        ]
+    },
+    {
+        "name": "Armenian",
+        "voices": [
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Assamese",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Azerbaijani",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Belarusian",
+        "voices": [
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "Bengali",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "female" }
+        ]
+    },
+    {
+        "name": "Bosnian",
+        "voices": [
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "male" },
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "female" }
+        ]
+    },
+    {
+        "name": "Bulgarian",
+        "voices": [
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "male" },
+            { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "type": "female" }
+        ]
+    },
+    {
+        "name": "Catalan",
+        "voices": [
+            { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "type": "male" },
+            { "voiceId": "DowyQ68vDpgFYdWVGjc3", "type": "female" }
+        ]
+    },
+    {
+        "name": "Cantonese",
+        "voices": [
+            { "voiceId": "DowyQ68vDpgFYdWVGjc3", "type": "male" },
+            { "voiceId": "FGY2WhTYpPnrIDTdsKH5", "type": "female" }
+        ]
+    },
+    {
+        "name": "Cebuano",
+        "voices": [
+            { "voiceId": "FGY2WhTYpPnrIDTdsKH5", "type": "male" },
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "female" }
+        ]
+    },
+    {
+        "name": "Chichewa",
+        "voices": [
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "male" },
+            { "voiceId": "bIHbv24MWmeRgasZH58o", "type": "female" }
+        ]
+    },
+    {
+        "name": "Croatian",
+        "voices": [
+            { "voiceId": "bIHbv24MWmeRgasZH58o", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Czech",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "female" }
+        ]
+    },
+    {
+        "name": "Danish",
+        "voices": [
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "male" },
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Dutch",
+        "voices": [
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "male" },
+            { "voiceId": "2qfp6zPuviqeCOZIE9RZ", "type": "female" }
+        ]
+    },
+    {
+        "name": "English",
+        "voices": [
+            { "voiceId": "2qfp6zPuviqeCOZIE9RZ", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Estonian",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Filipino",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "female" }
+        ]
+    },
+    {
+        "name": "Finnish",
+        "voices": [
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "French",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "type": "female" }
+        ]
+    },
+    {
+        "name": "Galician",
+        "voices": [
+            { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "type": "male" },
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "female" }
+        ]
+    },
+    {
+        "name": "Georgian",
+        "voices": [
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "German",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Greek",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Gujarati",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "female" }
+        ]
+    },
+    {
+        "name": "Hausa",
+        "voices": [
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Hebrew",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Hindi",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "female" }
+        ]
+    },
+    {
+        "name": "Hungarian",
+        "voices": [
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Icelandic",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Indonesian",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Irish",
+        "voices": [
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "male" },
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "female" }
+        ]
+    },
+    {
+        "name": "Italian",
+        "voices": [
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "Japanese",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Javanese",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Kannada",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "female" }
+        ]
+    },
+    {
+        "name": "Kazakh",
+        "voices": [
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Kirghiz",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "Korean",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Latvian",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "female" }
+        ]
+    },
+    {
+        "name": "Lingala",
+        "voices": [
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Lithuanian",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Luxembourgish",
+        "voices": [
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "male" },
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "female" }
+        ]
+    },
+    {
+        "name": "Macedonian",
+        "voices": [
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Malay",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Malayalam",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "DowyQ68vDpgFYdWVGjc3", "type": "female" }
+        ]
+    },
+    {
+        "name": "Mandarin Chinese",
+        "voices": [
+            { "voiceId": "DowyQ68vDpgFYdWVGjc3", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Marathi",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Nepali",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "female" }
+        ]
+    },
+    {
+        "name": "Norwegian",
+        "voices": [
+            { "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Pashto",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Persian",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "female" }
+        ]
+    },
+    {
+        "name": "Polish",
+        "voices": [
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "Portuguese",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Punjabi",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "bIHbv24MWmeRgasZH58o", "type": "female" }
+        ]
+    },
+    {
+        "name": "Romanian",
+        "voices": [
+            { "voiceId": "bIHbv24MWmeRgasZH58o", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Russian",
+        "voices": [
+            { "voiceId": "kwajW3Xh5svCeKU5ky2S", "type": "male" },
+            { "voiceId": "gedzfqL7OGdPbwm0ynTP", "type": "female" }
+        ]
+    },
+    {
+        "name": "Serbian",
+        "voices": [
+            { "voiceId": "pqHfZKP75CvOlQylNhV4", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Sindhi",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "female" }
+        ]
+    },
+    {
+        "name": "Slovak",
+        "voices": [
+            { "voiceId": "nPczCjzI2devNBz1zQrb", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Slovenian",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "female" }
+        ]
+    },
+    {
+        "name": "Somali",
+        "voices": [
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "male" },
+            { "voiceId": "5IDdqnXnlsZ1FCxoOFYg", "type": "female" }
+        ]
+    },
+    {
+        "name": "Spanish",
+        "voices": [
+            { "voiceId": "5IDdqnXnlsZ1FCxoOFYg", "type": "male" },
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "female" }
+        ]
+    },
+    {
+        "name": "Swahili",
+        "voices": [
+            { "voiceId": "cjVigY5qzO86Huf0OWal", "type": "male" },
+            { "voiceId": "XB0fDUnXU5powFXDhCwa", "type": "female" }
+        ]
+    },
+    {
+        "name": "Swedish",
+        "voices": [
+            { "voiceId": "XB0fDUnXU5powFXDhCwa", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Tamil",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Telugu",
+        "voices": [
+            { "voiceId": "cgSgspJ2msm6clMCkdW9", "type": "male" },
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "female" }
+        ]
+    },
+    {
+        "name": "Thai",
+        "voices": [
+            { "voiceId": "iP95p4xoKVk53GoZ742B", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Turkish",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "female" }
+        ]
+    },
+    {
+        "name": "Ukrainian",
+        "voices": [
+            { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "type": "male" },
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "female" }
+        ]
+    },
+    {
+        "name": "Urdu",
+        "voices": [
+            { "voiceId": "EXAVITQu4vr4xnSDxMaL", "type": "male" },
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "female" }
+        ]
+    },
+    {
+        "name": "Vietnamese",
+        "voices": [
+            { "voiceId": "9BWtsMINqrJLrRacOk9x", "type": "male" },
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "female" }
+        ]
+    },
+    {
+        "name": "Welsh",
+        "voices": [
+            { "voiceId": "onwK4e9ZLuTAKqWW03F9", "type": "male" },
+            { "voiceId": "zWSsRd3J6WyZFl12aGMB", "type": "female" }
+        ]
+    }
 ]

@@ -96,7 +96,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                     v-if="user"
                                     class="q-px-sm q-py-xs q-mb-md bg-negative rounded-borders current-language text-caption text-dark text-uppercase"
                                     >Language:
-                                    <span>{{ storeStudySettings.currentLanguage.name }}</span>
+                                    <span>{{ storeStudySettings.currentLanguage }}</span>
                                 </span>
 
                                 <q-list class="full-width text-center">

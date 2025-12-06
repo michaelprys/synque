@@ -6,7 +6,7 @@ import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { useStoreTheme } from 'src/stores/storeThemes';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import supabase from 'src/utils/supabase';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeTheme = useStoreTheme(),
@@ -78,18 +78,26 @@ defineExpose({
 });
 
 const storeStudySettings = useStoreStudySettings();
-const languages = ref(storeStudySettings.languages);
+const languageOptions = ref<string[]>([]);
+
 const topics = ref(storeStudySettings.studyTopics);
 
-const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
-    doneFn(() => {
-        const search = val.toLowerCase();
-
-        languages.value = storeStudySettings.languages.filter((l) =>
-            l.name.toLowerCase().includes(search)
-        );
+const filterLanguages = (val: string, update: (cb: () => void) => void) => {
+    update(() => {
+        const needle = val.toLowerCase();
+        if (!val) {
+            languageOptions.value = storeStudySettings.languages.map((l) => l.name);
+        } else {
+            languageOptions.value = storeStudySettings.languages
+                .map((l) => l.name)
+                .filter((name) => name.toLowerCase().includes(needle));
+        }
     });
 };
+
+onMounted(() => {
+    languageOptions.value = storeStudySettings.languages.map((lang) => lang.name);
+});
 </script>
 
 <template>
@@ -129,18 +137,16 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                     v-model="storeStudySettings.currentLanguage"
                                     color="accent"
                                     class="q-mt-lg"
-                                    :options="languages"
+                                    :options="languageOptions"
                                     dark
                                     filled
                                     option-label="name"
-                                    emit-value
-                                    map-options
                                     style="width: 33.33%"
                                     use-input
                                     fill-input
                                     hide-selected
                                     input-debounce="0"
-                                    @filter="filterFn"
+                                    @filter="filterLanguages"
                                 >
                                     <template #no-option>
                                         <q-item>
@@ -149,6 +155,21 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                             </q-item-section>
                                         </q-item>
                                     </template>
+                                </q-select>
+                            </div>
+                            <div class="title text-subtitle1 q-mt-lg">
+                                <span>Preferred Voice:</span>
+
+                                <q-select
+                                    v-model="storeStudySettings.currentVoiceType"
+                                    color="accent"
+                                    class="q-mt-lg"
+                                    :options="storeStudySettings.voiceTypes"
+                                    dark
+                                    filled
+                                    style="width: 33.33%"
+                                    input-debounce="0"
+                                >
                                 </q-select>
                             </div>
 
@@ -335,8 +356,8 @@ const filterFn = (val: string, doneFn: (cb: () => void) => void) => {
                                 fill-input
                                 input-debounce="0"
                                 style="width: 32%"
-                                :options="languages"
-                                @filter="filterFn"
+                                :options="languageOptions"
+                                @filter="filterLanguages"
                             >
                                 <template #no-option>
                                     <q-item>

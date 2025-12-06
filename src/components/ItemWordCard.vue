@@ -8,7 +8,7 @@ const storeStudySettings = useStoreStudySettings();
 
 onMounted(() => {
     storeWordCard.sendWordCardData(
-        storeStudySettings.currentLanguage.name,
+        storeStudySettings.currentLanguage,
         storeStudySettings.currentTopics,
         storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
     );
@@ -47,7 +47,7 @@ onMounted(() => {
                             @click="
                                 storeWordCard.synthesizeSpeech(
                                     storeWordCard.wordData?.word ?? '',
-                                    storeStudySettings.currentLanguage?.voiceId ?? ''
+                                    storeStudySettings.currentVoiceId ?? ''
                                 )
                             "
                         ></q-btn>
@@ -95,7 +95,7 @@ onMounted(() => {
                         @click="
                             storeWordCard.synthesizeSpeech(
                                 storeWordCard.wordData?.sentence ?? '',
-                                storeStudySettings.currentLanguage?.voiceId ?? ''
+                                storeStudySettings.currentVoiceId ?? ''
                             )
                         "
                     ></q-btn>

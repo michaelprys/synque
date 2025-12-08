@@ -1,5 +1,7 @@
+import { Database } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import langJson from 'src/data/languages.json';
+import supabase from 'src/utils/supabase';
 import { ref, watch } from 'vue';
 
 type Voice = {
@@ -12,40 +14,42 @@ export type Language = {
     voices: Voice[];
 };
 
+type StudySettings = Database['public']['Tables']['study_settings']['Row'];
+
 export const useStoreStudySettings = defineStore(
     'storeStudySettings',
     () => {
-        const languages: Language[] = langJson;
-        const studyTopics = [
-            'Sports',
-            'Clothing',
-            'Food',
-            'Travel',
-            'Work',
-            'School',
-            'Animals',
-            'Nature',
-            'Technology',
-            'Music',
-            'Art',
-            'Emotions',
-            'Greetings',
-            'Numbers',
-            'Colors',
-            'Family',
-            'House',
-            'Actions'
-        ];
-        const levels = ref(['Beginner', 'Intermediate', 'Advanced', 'Native']);
-        const voiceTypes = ref(['Male', 'Female']);
-        const currentTopics = ref<string[]>([]);
-        const currentLevel = ref(0);
-        const currentLanguage = ref('English');
-        const currentVoiceType = ref('Male');
-        const currentVoiceId = ref<string>('');
+        const languages: Language[] = langJson,
+            studyTopics = [
+                'Sports',
+                'Clothing',
+                'Food',
+                'Travel',
+                'Work',
+                'School',
+                'Animals',
+                'Nature',
+                'Technology',
+                'Music',
+                'Art',
+                'Emotions',
+                'Greetings',
+                'Numbers',
+                'Colors',
+                'Family',
+                'House',
+                'Actions'
+            ],
+            levels = ref(['Beginner', 'Intermediate', 'Advanced', 'Native']),
+            voiceTypes = ref(['Male', 'Female']),
+            currentTopics = ref<string[]>([]),
+            currentLevel = ref(0),
+            currentTargetLanguage = ref('English'),
+            currentVoiceType = ref('Male'),
+            currentVoiceId = ref('2qfp6zPuviqeCOZIE9RZ');
 
         const updateVoiceId = () => {
-            const lang = languages.find((l) => l.name === currentLanguage.value);
+            const lang = languages.find((l) => l.name === currentTargetLanguage.value);
             if (!lang) {
                 currentVoiceId.value = '';
                 return;
@@ -64,19 +68,63 @@ export const useStoreStudySettings = defineStore(
             currentVoiceId.value = voice!.voiceId;
         };
 
-        watch([currentLanguage, currentVoiceType], updateVoiceId, { immediate: true });
+        const loadSettings = async (userId: string) => {
+            const { data, error } = await supabase
+                .from('study_settings')
+                .select<'*', StudySettings>('*')
+                .eq('user_id', userId)
+                .single();
+
+            if (error) return;
+
+            if (data) {
+                currentTopics.value = data.topics;
+                currentLevel.value = levels.value.indexOf(data.level);
+                currentTargetLanguage.value = data.target_language;
+                currentVoiceType.value = data.voice_type;
+            }
+            console.log('Settings updated', levels.value[currentLevel.value]);
+        };
+
+        const updateSettings = async (field: string, value) => {
+            try {
+                const {
+                    data: { user },
+                    error: userError
+                } = await supabase.auth.getUser();
+                console.log('after getUser', user);
+                if (userError) throw userError;
+
+                if (!user) {
+                    console.warn('User not logged in');
+                    return;
+                }
+
+                await supabase
+                    .from('study_settings')
+                    .upsert({ [field]: value, user_id: user.id }, { onConflict: 'user_id' });
+
+                console.log(`✔ settings updated: ${field} =`, value);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        watch([currentTargetLanguage, currentVoiceType], updateVoiceId, { immediate: true });
 
         return {
             languages,
             studyTopics,
             voiceTypes,
-            currentLanguage,
+            currentTargetLanguage,
             currentTopics,
             currentVoiceType,
             currentVoiceId,
             currentLevel,
             levels,
-            updateVoiceId
+            updateVoiceId,
+            loadSettings,
+            updateSettings
         };
     },
     { persist: true }

@@ -2,17 +2,17 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import { ref } from 'vue';
 
-export const useStoreWordCard = defineStore(
-    'card',
+export const useStoreGenerateCard = defineStore(
+    'storeGenerateCard',
     () => {
         const wordData = ref<{
-            word: string;
-            transcription: string;
-            sentence: string;
-        } | null>(null);
-        const imageData = ref<string>('');
-        const pending = ref(false);
-        const error = ref<string | null>(null);
+                word: string;
+                transcription: string;
+                sentence: string;
+            } | null>(null),
+            imageData = ref<string>(''),
+            pending = ref(false),
+            error = ref<string | null>(null);
 
         const findImage = async (name: string) => {
             try {
@@ -28,7 +28,8 @@ export const useStoreWordCard = defineStore(
                 }
 
                 const data = await res.json();
-                imageData.value = data.results?.[0]?.url || '';
+                const url = data.results?.[0]?.url || '';
+                imageData.value = url ? `${url}?t=${Date.now()}` : '';
             } catch (err) {
                 console.error(getErrorMessage(err) || 'Something went wrong');
             } finally {
@@ -36,16 +37,22 @@ export const useStoreWordCard = defineStore(
             }
         };
 
+        const refreshImage = async () => {
+            if (wordData.value) {
+                await findImage(wordData.value.word);
+            }
+        };
+
         const sendWordCardData = async (language: string, topics: string[], level: string) => {
             try {
                 const res = await fetch(
-                    'https://qfwdugediwznexgeqqjz.supabase.co/functions/v1/synque-card-generation',
+                    `${import.meta.url.VITE_SUPABASE_URL}/functions/v1/synque-card-generation`,
                     {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`,
-                            apikey: import.meta.env.VITE_SUPABASE_KEY
+                            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
+                            apikey: import.meta.env.VITE_SUPABASE_API_KEY
                         },
                         body: JSON.stringify({ language, topics, level })
                     }
@@ -78,8 +85,8 @@ export const useStoreWordCard = defineStore(
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        apikey: import.meta.env.VITE_SUPABASE_KEY,
-                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`
+                        apikey: import.meta.env.VITE_SUPABASE_API_KEY,
+                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`
                     },
                     body: JSON.stringify({ text, voiceId })
                 });
@@ -107,12 +114,13 @@ export const useStoreWordCard = defineStore(
             imageData,
             findImage,
             sendWordCardData,
-            synthesizeSpeech
+            synthesizeSpeech,
+            refreshImage
         };
     },
     { persist: true }
 );
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useStoreWordCard, import.meta.hot));
+    import.meta.hot.accept(acceptHMRUpdate(useStoreGenerateCard, import.meta.hot));
 }

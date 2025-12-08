@@ -27,6 +27,7 @@ const router = useRouter(),
     user = ref();
 
 const logout = async () => {
+    console.log('logout called');
     pending.value = true;
 
     try {
@@ -80,7 +81,8 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
             </div>
 
             <div class="q-gutter-x-sm flex items-center">
-                <q-btn label="Account" icon="account_circle" flat>
+                <span class="text-subtitle2 text-bold text-italic">⚡ 12</span>
+                <q-btn class="q-ml-md" label="Account" icon="account_circle" flat>
                     <q-menu dark>
                         <div class="row no-wrap q-pa-md" style="width: 100%">
                             <div class="column items-center q-mx-auto">
@@ -96,7 +98,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                                     v-if="user"
                                     class="q-px-sm q-py-xs q-mb-md bg-negative rounded-borders current-language text-caption text-dark text-uppercase"
                                     >Language:
-                                    <span>{{ storeStudySettings.currentLanguage }}</span>
+                                    <span>{{ storeStudySettings.currentTargetLanguage }}</span>
                                 </span>
 
                                 <q-list class="full-width text-center">

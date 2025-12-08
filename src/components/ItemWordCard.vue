@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { useStoreFlashCard } from 'src/stores/storeFlashCard';
+import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { useStoreWordCard } from 'src/stores/storeWordCard';
 import { onMounted } from 'vue';
 
-const storeWordCard = useStoreWordCard();
+const storeGenerateCard = useStoreGenerateCard();
+const storeFlashCard = useStoreFlashCard();
 const storeStudySettings = useStoreStudySettings();
 
 onMounted(() => {
-    storeWordCard.sendWordCardData(
-        storeStudySettings.currentLanguage,
+    storeGenerateCard.sendWordCardData(
+        storeStudySettings.currentTargetLanguage,
         storeStudySettings.currentTopics,
         storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
     );
@@ -33,7 +35,7 @@ onMounted(() => {
                             class="text-h3 text-lowercase col-2"
                             style="grid-column: 2; justify-self: center"
                         >
-                            {{ storeWordCard.wordData?.word }}
+                            {{ storeGenerateCard.wordData?.word }}
                         </span>
                     </div>
 
@@ -45,14 +47,14 @@ onMounted(() => {
                             size="lg"
                             padding="xs"
                             @click="
-                                storeWordCard.synthesizeSpeech(
-                                    storeWordCard.wordData?.word ?? '',
+                                storeGenerateCard.synthesizeSpeech(
+                                    storeGenerateCard.wordData?.word ?? '',
                                     storeStudySettings.currentVoiceId ?? ''
                                 )
                             "
                         ></q-btn>
                         <span class="text-lowercase text-h6" style="opacity: 60%">{{
-                            storeWordCard.wordData?.transcription
+                            storeGenerateCard.wordData?.transcription
                         }}</span>
                     </div>
                 </div>
@@ -65,7 +67,7 @@ onMounted(() => {
                         <q-img
                             class="full-width"
                             style="border-radius: 0.375rem"
-                            :src="storeWordCard.imageData"
+                            :src="storeGenerateCard.imageData"
                             width="720px"
                             height="370px"
                         />
@@ -76,13 +78,14 @@ onMounted(() => {
                             round
                             flat
                             style="width: 2rem; height: 2rem; top: 0.3rem; right: 0.3rem"
+                            @click="storeGenerateCard.refreshImage"
                         />
                     </div>
                 </q-card>
 
                 <div class="column items-center">
                     <p class="text-h5 q-mt-lg full-width" style="max-width: 36.25rem">
-                        {{ storeWordCard.wordData?.sentence }}
+                        {{ storeGenerateCard.wordData?.sentence }}
                     </p>
 
                     <q-btn
@@ -93,8 +96,8 @@ onMounted(() => {
                         size="lg"
                         padding="xs"
                         @click="
-                            storeWordCard.synthesizeSpeech(
-                                storeWordCard.wordData?.sentence ?? '',
+                            storeGenerateCard.synthesizeSpeech(
+                                storeGenerateCard.wordData?.sentence ?? '',
                                 storeStudySettings.currentVoiceId ?? ''
                             )
                         "
@@ -102,13 +105,18 @@ onMounted(() => {
                 </div>
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
-                    <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
+                    <q-btn
+                        color="secondary"
+                        style="width: 8rem; border-radius: 0.375rem"
+                        size="lg"
+                        @click="storeFlashCard.resetInterval"
                         >Again
                     </q-btn>
-                    <!-- <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
-                        >Review
-                    </q-btn> -->
-                    <q-btn color="secondary" style="width: 8rem; border-radius: 0.375rem" size="lg"
+                    <q-btn
+                        color="secondary"
+                        style="width: 8rem; border-radius: 0.375rem"
+                        size="lg"
+                        @click="storeFlashCard.extendInterval"
                         >Good</q-btn
                     >
                 </div>

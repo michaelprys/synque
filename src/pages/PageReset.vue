@@ -63,9 +63,7 @@ const onReset = () => {
 };
 
 onMounted(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-        console.log(event, session);
-
+    const { data } = supabase.auth.onAuthStateChange((event) => {
         if (event === 'PASSWORD_RECOVERY') {
             isReady.value = true;
             $q.notify({

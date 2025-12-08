@@ -49,13 +49,6 @@ const deleteWord = () => {
 
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
-                            <!-- <q-btn -->
-                            <!-- style="width: 14rem" -->
-                            <!-- class="bg-info" -->
-                            <!-- disable -->
-                            <!-- icon="repeat" -->
-                            <!-- label="Practice Selected" -->
-                            <!-- /> -->
                             <q-btn
                                 style="max-width: 12rem; width: 100%"
                                 class="q-mx-auto bg-secondary"
@@ -63,18 +56,6 @@ const deleteWord = () => {
                                 label="Review"
                             />
                         </div>
-
-                        <q-tabs
-                            dense
-                            class="q-mt-lg"
-                            active-color="accent"
-                            indicator-color="accent"
-                            align="justify"
-                            narrow-indicator
-                        >
-                            <q-tab class="bg-primary" name="learned" label="Learned" />
-                            <q-tab class="bg-primary" name="in-progress" label="In progress" />
-                        </q-tabs>
 
                         <div class="row q-mt-lg items-center justify-between">
                             <div class="col">
@@ -100,36 +81,18 @@ const deleteWord = () => {
                                 />
                             </div>
                         </div>
-
-                        <!-- <div class="flex justify-between items-center q-mt-lg">
-                            <div class="flex items-center">
-                                <q-checkbox v-model="val" class="text-h6 q-ml-md" dark>
-                                    <template #default>
-                                        <span class="block text-h6 q-ml-md">All</span>
-                                    </template>
-                                </q-checkbox>
-                            </div>
-
-                            <div class="flex q-gutter-x-md q-mr-md">
-                                <q-btn
-                                    size="sm"
-                                    class="bg-negative"
-                                    style="width: 2rem; height: 2rem"
-                                    icon="delete"
-                                ></q-btn>
-                            </div>
-                        </div> -->
                     </div>
 
                     <q-infinite-scroll :offset="150" @load="onLoad">
                         <q-list class="word-list q-mt-sm" dark>
                             <q-item v-for="(item, index) in items" :key="index" class="q-pa-sm">
-                                <div
+                                <q-btn
+                                    :class="{ 'word-card': $q.platform.is.mobile }"
+                                    :ripple="!$q.platform.is.mobile"
                                     class="bg-primary q-pa-md full-width rounded-borders flex justify-between"
                                 >
                                     <q-item-section>
                                         <div class="q-gutter-x-md flex items-center">
-                                            <!-- <q-checkbox v-model="val" dark /> -->
                                             <q-img
                                                 class="rounded-borders"
                                                 style="width: 3rem; height: 3rem"
@@ -141,7 +104,7 @@ const deleteWord = () => {
                                         </div>
                                     </q-item-section>
 
-                                    <q-item-section side class="q-pr-none">
+                                    <q-item-section side class="q-pr-none action-buttons">
                                         <div class="flex">
                                             <q-btn
                                                 :to="{ name: 'review' }"
@@ -151,14 +114,7 @@ const deleteWord = () => {
                                                 style="width: 2rem; height: 2rem"
                                                 icon="import_contacts"
                                             ></q-btn>
-                                            <!-- <q-btn
-                                                :to="{ name: 'review' }"
-                                                size="xs"
-                                                flat
-                                                color="gray"
-                                                style="width: 2rem; height: 2rem"
-                                                icon="arrow_forward"
-                                            ></q-btn> -->
+
                                             <q-btn
                                                 size="xs"
                                                 flat
@@ -169,7 +125,7 @@ const deleteWord = () => {
                                             ></q-btn>
                                         </div>
                                     </q-item-section>
-                                </div>
+                                </q-btn>
                             </q-item>
                         </q-list>
 
@@ -196,5 +152,14 @@ const deleteWord = () => {
 .word-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.word-card {
+    pointer-events: none;
+}
+
+.word-card .action-buttons,
+.word-card .action-buttons * {
+    pointer-events: auto !important;
 }
 </style>

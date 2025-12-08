@@ -3,11 +3,11 @@ import { setCssVar } from 'quasar';
 import { Theme, themes } from 'src/data/themes';
 import { ref } from 'vue';
 
-export const useStoreTheme = defineStore(
-    'theme',
+export const useStorePreferences = defineStore(
+    'storePreferences',
     () => {
-        const theme = ref('Bluemoon');
-        const savedTheme = localStorage.getItem('theme');
+        const theme = ref('Bluemoon'),
+            savedTheme = localStorage.getItem('theme');
 
         const applyTheme = (name: string) => {
             const selectedTheme: Theme | undefined = themes[name];
@@ -31,9 +31,12 @@ export const useStoreTheme = defineStore(
             applyTheme(themeObj.theme);
         }
 
+        // const changeAvatar = (avatar_url: string) => {};
+
         return {
             theme,
             applyTheme
+            // changeAvatar
         };
     },
 
@@ -41,5 +44,5 @@ export const useStoreTheme = defineStore(
 );
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useStoreTheme, import.meta.hot));
+    import.meta.hot.accept(acceptHMRUpdate(useStorePreferences, import.meta.hot));
 }

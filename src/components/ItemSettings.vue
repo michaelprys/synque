@@ -2,29 +2,28 @@
 import { useQuasar } from 'quasar';
 import BtnClose from 'src/components/BtnClose.vue';
 import { themes } from 'src/data/themes';
+import { useStorePreferences } from 'src/stores/storePreferences';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { useStoreTheme } from 'src/stores/storeThemes';
 import getErrorMessage from 'src/utils/getErrorMessage';
 import supabase from 'src/utils/supabase';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-const storeTheme = useStoreTheme(),
+const storePreferences = useStorePreferences(),
     modelTab = ref('study'),
     router = useRouter(),
     modelSplitter = ref(20),
-    modelNewCards = ref(2),
-    modelMaxCards = ref(2),
     $q = useQuasar(),
-    modelForgetSpeed = ref(true),
     modelFontSize = ref(1),
     fontSizeOptions = ref(['Small', 'Medium', 'Large']),
-    modelAvatar = ref(null),
+    modelAvatar = ref<File | null>(null),
     isUpdatePwd = ref(true),
     pending = ref(false),
     isConfirmUpdatePwd = ref(true),
     password = ref(''),
     modelDialog = ref(false),
+    modelNewCards = ref(20),
+    modelMaxReviews = ref(120),
     confirmPassword = ref('');
 
 const updatePassword = async () => {
@@ -95,6 +94,41 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
     });
 };
 
+const uploadAvatar = async () => {
+    if (!modelAvatar.value) return;
+
+    const file = modelAvatar.value;
+
+    const {
+        data: { user }
+    } = async () => await supabase.auth.getUser();
+
+    const filePath = `${user.id}/avatar.jpg`;
+
+    const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+    if (error) {
+        throw uploadError;
+    }
+
+    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
+
+    const publicUrl = urlData.publicUrl;
+
+    const { error: dbError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+    if (dbError) throw dbError;
+};
+
+watchEffect(() => {
+    console.log(storeStudySettings.currentLevel);
+});
+
 onMounted(() => {
     languageOptions.value = storeStudySettings.languages.map((lang) => lang.name);
 });
@@ -124,7 +158,7 @@ onMounted(() => {
                         class="bg-primary full-height overflow-hidden"
                         animated
                     >
-                        <q-tab-panel name="study" class="col q-pa-md full-height">
+                        <q-tab-panel name="study" class="relative col q-pa-md full-height">
                             <h2 class="text-h5 q-py-lg">Study</h2>
 
                             <BtnClose />
@@ -134,7 +168,7 @@ onMounted(() => {
 
                                 <!-- TODO: Add a note for languages that are actively being learned  -->
                                 <q-select
-                                    v-model="storeStudySettings.currentLanguage"
+                                    v-model="storeStudySettings.currentTargetLanguage"
                                     color="accent"
                                     class="q-mt-lg"
                                     :options="languageOptions"
@@ -158,7 +192,7 @@ onMounted(() => {
                                 </q-select>
                             </div>
                             <div class="title text-subtitle1 q-mt-lg">
-                                <span>Preferred Voice:</span>
+                                <span>Voice:</span>
 
                                 <q-select
                                     v-model="storeStudySettings.currentVoiceType"
@@ -174,7 +208,7 @@ onMounted(() => {
                             </div>
 
                             <div class="title q-mt-lg text-subtitle1">
-                                <span>Preferred Topics:</span>
+                                <span>Topics:</span>
 
                                 <q-select
                                     v-model="storeStudySettings.currentTopics"
@@ -203,17 +237,25 @@ onMounted(() => {
                                 <div>
                                     <q-slider
                                         v-model="storeStudySettings.currentLevel"
+                                        class="q-mt-lg"
                                         color="accent"
                                         track-color="secondary"
                                         markers
                                         :min="0"
                                         :max="3"
+                                        @update:model-value="
+                                            (newCurrentLevel) =>
+                                                storeStudySettings.updateSettings(
+                                                    'level',
+                                                    storeStudySettings.levels[newCurrentLevel]
+                                                )
+                                        "
                                     />
                                 </div>
                             </div>
                             <div class="title text-subtitle1">
                                 <div class="flex items-center">
-                                    <span>New cards/day:</span>
+                                    <span>New Cards / Day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
                                         {{ modelNewCards }}
                                     </q-badge>
@@ -221,44 +263,42 @@ onMounted(() => {
                                 <div>
                                     <q-slider
                                         v-model="modelNewCards"
+                                        class="q-mt-lg"
                                         color="accent"
                                         track-color="secondary"
                                         markers
-                                        :min="0"
-                                        :max="10"
+                                        step="10"
+                                        :min="10"
+                                        :max="100"
                                     />
                                 </div>
                             </div>
-                            <div class="title q-mt-lg text-subtitle1">
+                            <div class="title text-subtitle1">
                                 <div class="flex items-center">
-                                    <span>New cards/day:</span>
+                                    <span>Max reviews / Day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ modelMaxCards }}
+                                        {{ modelMaxReviews }}
                                     </q-badge>
                                 </div>
                                 <div>
                                     <q-slider
-                                        v-model="modelMaxCards"
+                                        v-model="modelMaxReviews"
+                                        class="q-mt-lg"
                                         color="accent"
                                         track-color="secondary"
                                         markers
-                                        :min="0"
-                                        :max="10"
+                                        step="1000"
+                                        :min="120"
+                                        :max="10000"
                                     />
                                 </div>
                             </div>
-                            <div class="title q-mt-lg text-subtitle1">
-                                <span> Forget speed </span>
-                                <q-toggle
-                                    v-model="modelForgetSpeed"
-                                    size="xl"
-                                    color="accent"
-                                    :label="modelForgetSpeed === true ? 'Slow' : 'Fast'"
-                                />
-                            </div>
                         </q-tab-panel>
 
-                        <q-tab-panel name="profile" class="column q-pa-md bg-primary full-height">
+                        <q-tab-panel
+                            name="profile"
+                            class="relative column q-pa-md bg-primary full-height"
+                        >
                             <h2 class="text-h5 q-py-lg">Profile</h2>
 
                             <BtnClose />
@@ -271,6 +311,7 @@ onMounted(() => {
                                     dark
                                     borderless
                                     label="Change Avatar"
+                                    @update:model-value="uploadAvatar"
                                 />
                             </div>
                             <q-form
@@ -337,7 +378,10 @@ onMounted(() => {
                             </q-form>
                         </q-tab-panel>
 
-                        <q-tab-panel name="preferences" class="q-pa-md col bg-primary full-height">
+                        <q-tab-panel
+                            name="preferences"
+                            class="relative q-pa-md col bg-primary full-height"
+                        >
                             <h2 class="text-h5 q-py-lg">Preferences</h2>
 
                             <BtnClose />
@@ -345,7 +389,7 @@ onMounted(() => {
                             <div class="text-subtitle1 q-ma-none">Interface language:</div>
 
                             <q-select
-                                v-model="storeStudySettings.currentLanguage"
+                                v-model="storeStudySettings.currentTargetLanguage"
                                 class="q-mt-lg"
                                 dark
                                 filled
@@ -375,10 +419,10 @@ onMounted(() => {
                                         class="q-ml-xs text-subtitle1 flex-center flex"
                                         color="secondary"
                                         :style="{
-                                            color: themes[storeTheme.theme]?.textColor
+                                            color: themes[storePreferences.theme]?.textColor
                                         }"
                                     >
-                                        {{ storeTheme.theme }}
+                                        {{ storePreferences.theme }}
                                     </q-badge>
                                 </div>
                                 <div class="themes q-mt-md">
@@ -390,7 +434,7 @@ onMounted(() => {
                                             color: theme.textColor,
                                             backgroundColor: theme.secondary
                                         }"
-                                        @click="storeTheme.applyTheme(key)"
+                                        @click="storePreferences.applyTheme(key)"
                                     >
                                         {{ key }}
                                     </q-btn>

@@ -35,7 +35,7 @@
         "**/.gitattributes": true,
         "**/CVS": true,
         ".idea": true,
-        ".vscode": true,
+        ".vscode": false,
         "LICENSE": true,
         "**/.gitignore": true,
         "**/.npmrc": true,

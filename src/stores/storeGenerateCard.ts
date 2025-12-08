@@ -100,7 +100,7 @@ export const useStoreGenerateCard = defineStore(
 
                 if (data.audio) {
                     const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-                    audio.play().catch((e) => console.warn('Cannot be played:', e));
+                    audio.play().catch((e) => console.error('Cannot be played:', e));
                 }
             } catch (err) {
                 console.error(getErrorMessage(err));

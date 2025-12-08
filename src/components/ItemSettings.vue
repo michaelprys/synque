@@ -22,8 +22,6 @@ const storePreferences = useStorePreferences(),
     isConfirmUpdatePwd = ref(true),
     password = ref(''),
     modelDialog = ref(false),
-    modelNewCards = ref(20),
-    modelMaxReviews = ref(120),
     confirmPassword = ref('');
 
 const updatePassword = async () => {
@@ -181,6 +179,13 @@ onMounted(() => {
                                     hide-selected
                                     input-debounce="0"
                                     @filter="filterLanguages"
+                                    @update:model-value="
+                                        (val) =>
+                                            storeStudySettings.updateSettings(
+                                                'target_language',
+                                                val
+                                            )
+                                    "
                                 >
                                     <template #no-option>
                                         <q-item>
@@ -203,6 +208,10 @@ onMounted(() => {
                                     filled
                                     style="width: 33.33%"
                                     input-debounce="0"
+                                    @update:model-value="
+                                        (val) =>
+                                            storeStudySettings.updateSettings('voice_type', val)
+                                    "
                                 >
                                 </q-select>
                             </div>
@@ -220,6 +229,9 @@ onMounted(() => {
                                     :options="topics"
                                     counter
                                     style="width: 33.33%"
+                                    @update:model-value="
+                                        (val) => storeStudySettings.updateSettings('topics', val)
+                                    "
                                 />
                             </div>
 
@@ -257,12 +269,12 @@ onMounted(() => {
                                 <div class="flex items-center">
                                     <span>New Cards / Day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ modelNewCards }}
+                                        {{ storeStudySettings.currentNewCardsPerDay }}
                                     </q-badge>
                                 </div>
                                 <div>
                                     <q-slider
-                                        v-model="modelNewCards"
+                                        v-model="storeStudySettings.currentNewCardsPerDay"
                                         class="q-mt-lg"
                                         color="accent"
                                         track-color="secondary"
@@ -270,6 +282,13 @@ onMounted(() => {
                                         step="10"
                                         :min="10"
                                         :max="100"
+                                        @update:model-value="
+                                            (val) =>
+                                                storeStudySettings.updateSettings(
+                                                    'new_cards_per_day',
+                                                    val
+                                                )
+                                        "
                                     />
                                 </div>
                             </div>
@@ -277,12 +296,12 @@ onMounted(() => {
                                 <div class="flex items-center">
                                     <span>Max reviews / Day:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ modelMaxReviews }}
+                                        {{ storeStudySettings.currentMaxReviewsPerDay }}
                                     </q-badge>
                                 </div>
                                 <div>
                                     <q-slider
-                                        v-model="modelMaxReviews"
+                                        v-model="storeStudySettings.currentMaxReviewsPerDay"
                                         class="q-mt-lg"
                                         color="accent"
                                         track-color="secondary"
@@ -290,6 +309,13 @@ onMounted(() => {
                                         step="1000"
                                         :min="120"
                                         :max="10000"
+                                        @update:model-value="
+                                            (val) =>
+                                                storeStudySettings.updateSettings(
+                                                    'max_reviews_per_day',
+                                                    val
+                                                )
+                                        "
                                     />
                                 </div>
                             </div>

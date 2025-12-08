@@ -46,7 +46,9 @@ export const useStoreStudySettings = defineStore(
             currentLevel = ref(0),
             currentTargetLanguage = ref('English'),
             currentVoiceType = ref('Male'),
-            currentVoiceId = ref('2qfp6zPuviqeCOZIE9RZ');
+            currentVoiceId = ref('2qfp6zPuviqeCOZIE9RZ'),
+            currentNewCardsPerDay = ref(20),
+            currentMaxReviewsPerDay = ref(120);
 
         const updateVoiceId = () => {
             const lang = languages.find((l) => l.name === currentTargetLanguage.value);
@@ -82,8 +84,9 @@ export const useStoreStudySettings = defineStore(
                 currentLevel.value = levels.value.indexOf(data.level);
                 currentTargetLanguage.value = data.target_language;
                 currentVoiceType.value = data.voice_type;
+                currentNewCardsPerDay.value = data.new_cards_per_day;
+                currentMaxReviewsPerDay.value = data.max_reviews_per_day;
             }
-            console.log('Settings updated', levels.value[currentLevel.value]);
         };
 
         const updateSettings = async (field: string, value) => {
@@ -92,19 +95,13 @@ export const useStoreStudySettings = defineStore(
                     data: { user },
                     error: userError
                 } = await supabase.auth.getUser();
-                console.log('after getUser', user);
                 if (userError) throw userError;
 
-                if (!user) {
-                    console.warn('User not logged in');
-                    return;
-                }
+                if (!user) return;
 
                 await supabase
                     .from('study_settings')
                     .upsert({ [field]: value, user_id: user.id }, { onConflict: 'user_id' });
-
-                console.log(`✔ settings updated: ${field} =`, value);
             } catch (err) {
                 console.error(err);
             }
@@ -124,7 +121,9 @@ export const useStoreStudySettings = defineStore(
             levels,
             updateVoiceId,
             loadSettings,
-            updateSettings
+            updateSettings,
+            currentNewCardsPerDay,
+            currentMaxReviewsPerDay
         };
     },
     { persist: true }

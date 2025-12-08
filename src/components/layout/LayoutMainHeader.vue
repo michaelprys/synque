@@ -27,7 +27,6 @@ const router = useRouter(),
     user = ref();
 
 const logout = async () => {
-    console.log('logout called');
     pending.value = true;
 
     try {

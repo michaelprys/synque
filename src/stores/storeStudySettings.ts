@@ -1,6 +1,7 @@
 import { Database } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import langJson from 'src/data/languages.json';
+import { getAuthUser } from 'src/utils/getAuthUser';
 import supabase from 'src/utils/supabase';
 import { ref, watch } from 'vue';
 
@@ -91,13 +92,7 @@ export const useStoreStudySettings = defineStore(
 
         const updateSettings = async (field: string, value) => {
             try {
-                const {
-                    data: { user },
-                    error: userError
-                } = await supabase.auth.getUser();
-                if (userError) throw userError;
-
-                if (!user) return;
+                const user = await getAuthUser();
 
                 await supabase
                     .from('study_settings')

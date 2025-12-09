@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -11,9 +11,12 @@ const pending = ref(false);
 const email = ref('');
 const password = ref('');
 const isPwd = ref(true);
+const pending = ref(false),
+    error = ref<string | null>(null);
 
 const login = async () => {
     pending.value = true;
+    error.value = null;
 
     try {
         const { error } = await supabase.auth.signInWithPassword({
@@ -35,7 +38,7 @@ const login = async () => {
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: getErrorMessage(err) ?? 'Incorrect login or password'
+            message: handleError(err) ?? 'Incorrect login or password'
         });
     } finally {
         pending.value = false;

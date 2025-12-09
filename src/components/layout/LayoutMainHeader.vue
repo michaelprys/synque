@@ -2,32 +2,40 @@
 import { useQuasar } from 'quasar';
 import ItemSettings from 'src/components/ItemSettings.vue';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeStudySettings = useStoreStudySettings();
 
+const pending = ref(false),
+    error = ref<string | null>(null);
+
 onMounted(async () => {
+    pending.value = true;
+    error.value = null;
+
     try {
         await supabase.auth.onAuthStateChange((event, session) => {
             user.value = session?.user ?? null;
             email.value = session?.user.email;
         });
     } catch (err) {
-        console.error(getErrorMessage(err) || 'Something went wrong');
+        console.error(handleError(err));
+
+        error.value = handleError(err);
     }
 });
 
 const router = useRouter(),
     $q = useQuasar(),
     email = ref<string | undefined>(undefined),
-    pending = ref(false),
     user = ref();
 
 const logout = async () => {
     pending.value = true;
+    error.value = null;
 
     try {
         const { error } = await supabase.auth.signOut();
@@ -42,7 +50,7 @@ const logout = async () => {
     } catch (err) {
         $q.notify({
             type: 'negative',
-            message: getErrorMessage(err) ?? 'Something went wrong'
+            message: handleError(err)
         });
     } finally {
         pending.value = false;

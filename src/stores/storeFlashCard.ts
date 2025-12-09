@@ -1,5 +1,8 @@
+import type { Tables, TablesInsert } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import { getAuthUser } from 'src/utils/getAuthUser';
+import handleError from 'src/utils/handleError';
+import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 
 export const useStoreFlashCard = defineStore(
@@ -7,56 +10,68 @@ export const useStoreFlashCard = defineStore(
     () => {
         const pending = ref(false),
             error = ref<string | null>(null);
+        const cardData = ref<Tables<'flashcards'>[]>([]);
+        const resetInterval = async (card: Omit<TablesInsert<'flashcards'>, 'user_id'>) => {
+            pending.value = true;
+            error.value = null;
 
-        const resetInterval = async () => {
             try {
-                pending.value = true;
+                const user = await getAuthUser();
 
-                const res = await fetch('http://localhost:54321/functions/v1/synthesize-speech', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        apikey: import.meta.env.VITE_SUPABASE_API_KEY,
-                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`
-                    },
-                    body: JSON.stringify({})
+                const { error: flashCardsError } = await supabase.from('flashcards').insert({
+                    ...card,
+                    user_id: user.id
                 });
 
-                if (!res.ok) {
-                    const err = await res.text();
-                    throw new Error(`Error ${res.status}: ${err}`);
-                }
-
-                const data = await res.json();
+                if (flashCardsError) throw flashCardsError;
             } catch (err) {
-                error.value = getErrorMessage(err);
+                error.value = handleError(err);
             } finally {
                 pending.value = false;
             }
         };
 
-        const extendInterval = async () => {
-            try {
-                pending.value = true;
+        const extendInterval = async (card: Omit<TablesInsert<'flashcards'>, 'user_id'>) => {
+            pending.value = true;
+            error.value = null;
 
-                const res = await fetch('http://localhost:54321/functions/v1/synthesize-speech', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        apikey: import.meta.env.VITE_SUPABASE_API_KEY,
-                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`
-                    },
-                    body: JSON.stringify({})
+            try {
+                const user = await getAuthUser();
+
+                const { error: flashCardsError } = await supabase.from('flashcards').insert({
+                    ...card,
+                    user_id: user.id
                 });
 
-                if (!res.ok) {
-                    const err = await res.text();
-                    throw new Error(`Error ${res.status}: ${err}`);
-                }
-
-                const data = await res.json();
+                if (flashCardsError) throw flashCardsError;
             } catch (err) {
-                error.value = getErrorMessage(err);
+                error.value = handleError(err);
+            } finally {
+                pending.value = false;
+            }
+        };
+
+        const loadFlashCard = async () => {
+            pending.value = true;
+            error.value = null;
+
+            try {
+                const user = await getAuthUser();
+
+                const { data, error: flashCardError } = await supabase
+                    .from('flashcards')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .returns<Tables<'flashcards'>[]>();
+
+                if (flashCardError) throw new Error(handleError(flashCardError));
+
+                cardData.value = data ?? [];
+                console.log('cardData: ', cardData.value);
+            } catch (err) {
+                console.error(handleError(err));
+
+                error.value = handleError(err);
             } finally {
                 pending.value = false;
             }
@@ -64,9 +79,12 @@ export const useStoreFlashCard = defineStore(
 
         return {
             resetInterval,
-            extendInterval
+            extendInterval,
+            loadFlashCard,
+            cardData
         };
     },
+
     { persist: true }
 );
 

@@ -1,12 +1,21 @@
 <script setup lang="ts">
+import type { TablesInsert } from 'app/database.types';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 const storeGenerateCard = useStoreGenerateCard();
 const storeFlashCard = useStoreFlashCard();
 const storeStudySettings = useStoreStudySettings();
+
+const flashcardData = computed<Omit<TablesInsert<'flashcards'>, 'user_id'>>(() => ({
+    image_url: storeGenerateCard.imageData,
+    sentence: storeGenerateCard.wordData?.sentence,
+    word: storeGenerateCard.wordData?.word,
+    transcription: storeGenerateCard.wordData?.transcription,
+    language: storeStudySettings.currentTargetLanguage
+}));
 
 onMounted(() => {
     storeGenerateCard.sendWordCardData(
@@ -109,14 +118,14 @@ onMounted(() => {
                         color="secondary"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.resetInterval"
+                        @click="storeFlashCard.resetInterval(flashcardData)"
                         >Again
                     </q-btn>
                     <q-btn
                         color="secondary"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.extendInterval"
+                        @click="storeFlashCard.extendInterval(flashcardData)"
                         >Good</q-btn
                     >
                 </div>

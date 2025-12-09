@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -13,6 +13,8 @@ const isPwd = ref(true);
 const isConfirmPwd = ref(true);
 const pending = ref(false);
 const isReady = ref(false);
+const pending = ref(false),
+    error = ref<string | null>(null);
 
 const setNewPassword = async () => {
     if (!isReady.value) {
@@ -30,6 +32,7 @@ const setNewPassword = async () => {
     }
 
     pending.value = true;
+    error.value = null;
 
     try {
         const { error } = await supabase.auth.updateUser({
@@ -50,7 +53,7 @@ const setNewPassword = async () => {
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: getErrorMessage(err) ?? 'Something went wrong'
+            message: handleError(err)
         });
     } finally {
         pending.value = false;

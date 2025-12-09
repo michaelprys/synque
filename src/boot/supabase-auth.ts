@@ -1,12 +1,12 @@
 import { defineBoot } from '#q-app/wrappers';
-import type { Session } from '@supabase/supabase-js';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { getAuthUser } from 'src/utils/getAuthUser';
 import supabase from 'src/utils/supabase';
 
 export default defineBoot(async () => {
     const store = useStoreStudySettings();
 
-    const handleLoadSettings = async (session: Session | null) => {
+    const handleLoadSettings = async (session) => {
         if (session?.user) {
             await store.loadSettings(session.user.id);
         }
@@ -18,7 +18,7 @@ export default defineBoot(async () => {
         }
     });
 
-    const { data: session } = await supabase.auth.getUser();
+    const user = await getAuthUser();
 
-    await handleLoadSettings(session);
+    await handleLoadSettings(user);
 });

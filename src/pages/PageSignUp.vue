@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -14,6 +14,8 @@ const pending = ref(false);
 const confirmPassword = ref('');
 const isPwd = ref(true);
 const isConfirmPwd = ref(true);
+const pending = ref(false),
+    error = ref<string | null>(null);
 
 const signUp = async () => {
     if (!termsAccepted.value) {
@@ -38,6 +40,7 @@ const signUp = async () => {
     }
 
     pending.value = true;
+    error.value = null;
 
     try {
         const { error } = await supabase.auth.signUp({
@@ -59,7 +62,7 @@ const signUp = async () => {
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: getErrorMessage(err) ?? 'Something went wrong'
+            message: handleError(err)
         });
     } finally {
         pending.value = false;

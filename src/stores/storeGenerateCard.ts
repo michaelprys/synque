@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import handleError from 'src/utils/handleError';
 import { ref } from 'vue';
 
 export const useStoreGenerateCard = defineStore(
@@ -15,9 +15,10 @@ export const useStoreGenerateCard = defineStore(
             error = ref<string | null>(null);
 
         const findImage = async (name: string) => {
-            try {
-                pending.value = true;
+            pending.value = true;
+            error.value = null;
 
+            try {
                 const res = await fetch(
                     `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}`
                 );
@@ -31,7 +32,9 @@ export const useStoreGenerateCard = defineStore(
                 const url = data.results?.[0]?.url || '';
                 imageData.value = url ? `${url}?t=${Date.now()}` : '';
             } catch (err) {
-                console.error(getErrorMessage(err) || 'Something went wrong');
+                console.error(handleError(err));
+
+                error.value = handleError(err);
             } finally {
                 pending.value = false;
             }
@@ -44,9 +47,12 @@ export const useStoreGenerateCard = defineStore(
         };
 
         const sendWordCardData = async (language: string, topics: string[], level: string) => {
+            pending.value = true;
+            error.value = null;
+
             try {
                 const res = await fetch(
-                    `${import.meta.url.VITE_SUPABASE_URL}/functions/v1/synque-card-generation`,
+                    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/synque-card-generation`,
                     {
                         method: 'POST',
                         headers: {
@@ -71,7 +77,7 @@ export const useStoreGenerateCard = defineStore(
                     await findImage(wordData.value.word);
                 }
             } catch (err) {
-                error.value = getErrorMessage(err);
+                error.value = handleError(err);
             } finally {
                 pending.value = false;
             }
@@ -103,7 +109,7 @@ export const useStoreGenerateCard = defineStore(
                     audio.play().catch((e) => console.error('Cannot be played:', e));
                 }
             } catch (err) {
-                console.error(getErrorMessage(err));
+                console.error(handleError(err));
             } finally {
                 pending.value = false;
             }

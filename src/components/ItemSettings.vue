@@ -4,7 +4,8 @@ import BtnClose from 'src/components/BtnClose.vue';
 import { themes } from 'src/data/themes';
 import { useStorePreferences } from 'src/stores/storePreferences';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import getErrorMessage from 'src/utils/getErrorMessage';
+import { getAuthUser } from 'src/utils/getAuthUser';
+import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
@@ -52,7 +53,7 @@ const updatePassword = async () => {
     } catch (err) {
         $q.notify({
             type: 'negative',
-            message: getErrorMessage(err) ?? 'Something went wrong'
+            message: handleError(err)
         });
     } finally {
         pending.value = false;
@@ -97,9 +98,7 @@ const uploadAvatar = async () => {
 
     const file = modelAvatar.value;
 
-    const {
-        data: { user }
-    } = async () => await supabase.auth.getUser();
+    const user = await getAuthUser();
 
     const filePath = `${user.id}/avatar.jpg`;
 
@@ -107,9 +106,7 @@ const uploadAvatar = async () => {
         .from('avatars')
         .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
-    if (error) {
-        throw uploadError;
-    }
+    if (uploadError) throw uploadError;
 
     const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
 

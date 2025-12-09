@@ -1,6 +1,6 @@
-const getErrorMessage = (error: unknown) => {
+const handleError = (error: unknown) => {
     if (error instanceof Error) return error.message;
     return String(error);
 };
 
-export default getErrorMessage;
+export default handleError;

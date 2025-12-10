@@ -17,30 +17,51 @@ export type Database = {
       flashcards: {
         Row: {
           created_at: string
+          difficulty: number
+          due: string | null
           id: string
           image_url: string | null
           language: string | null
+          lapses: number
+          last_review: string | null
+          reps: number
           sentence: string | null
+          stability: number
+          state: string
           transcription: string | null
           user_id: string | null
           word: string | null
         }
         Insert: {
           created_at?: string
+          difficulty?: number
+          due?: string | null
           id?: string
           image_url?: string | null
           language?: string | null
+          lapses?: number
+          last_review?: string | null
+          reps?: number
           sentence?: string | null
+          stability?: number
+          state?: string
           transcription?: string | null
           user_id?: string | null
           word?: string | null
         }
         Update: {
           created_at?: string
+          difficulty?: number
+          due?: string | null
           id?: string
           image_url?: string | null
           language?: string | null
+          lapses?: number
+          last_review?: string | null
+          reps?: number
           sentence?: string | null
+          stability?: number
+          state?: string
           transcription?: string | null
           user_id?: string | null
           word?: string | null
@@ -79,7 +100,7 @@ export type Database = {
           max_reviews_per_day: number | null
           new_cards_per_day: number | null
           target_language: string | null
-          topics: string | null
+          topics: string[] | null
           user_id: string | null
           voice_type: string | null
         }
@@ -90,7 +111,7 @@ export type Database = {
           max_reviews_per_day?: number | null
           new_cards_per_day?: number | null
           target_language?: string | null
-          topics?: string | null
+          topics?: string[] | null
           user_id?: string | null
           voice_type?: string | null
         }
@@ -101,7 +122,7 @@ export type Database = {
           max_reviews_per_day?: number | null
           new_cards_per_day?: number | null
           target_language?: string | null
-          topics?: string | null
+          topics?: string[] | null
           user_id?: string | null
           voice_type?: string | null
         }

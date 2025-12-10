@@ -3,47 +3,87 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { getAuthUser } from 'src/utils/getAuthUser';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
+import { createEmptyCard, fsrs, generatorParameters, Rating, RecordLogItem, State } from 'ts-fsrs';
 import { ref } from 'vue';
+
+const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
 export const useStoreFlashCard = defineStore(
     'storeFlashCard',
     () => {
-        const pending = ref(false),
-            error = ref<string | null>(null);
+        const pending = ref(false);
+        const error = ref<string | null>(null);
         const cardData = ref<Tables<'flashcards'>[]>([]);
-        const resetInterval = async (card: Omit<TablesInsert<'flashcards'>, 'user_id'>) => {
+
+        const review = async (
+            cardId: number | null,
+            rating: Rating,
+            flashcardData: Omit<TablesInsert<'flashcards'>, 'user_id'>
+        ) => {
             pending.value = true;
             error.value = null;
 
             try {
                 const user = await getAuthUser();
+                let card = createEmptyCard();
 
-                const { error: flashCardsError } = await supabase.from('flashcards').insert({
-                    ...card,
-                    user_id: user.id
-                });
+                if (cardId) {
+                    const { data } = await supabase
+                        .from('flashcards')
+                        .select('*')
+                        .eq('id', cardId.toString())
+                        .single();
 
-                if (flashCardsError) throw flashCardsError;
-            } catch (err) {
-                error.value = handleError(err);
-            } finally {
-                pending.value = false;
-            }
-        };
+                    if (data) {
+                        card = {
+                            ...card,
+                            due: new Date(data.due!),
+                            last_review: data.last_review ? new Date(data.last_review) : new Date(),
+                            stability: data.stability ?? card.stability,
+                            difficulty: data.difficulty ?? card.difficulty,
+                            reps: data.reps ?? card.reps,
+                            lapses: data.lapses ?? card.lapses,
+                            state: (data.state as unknown as State) ?? card.state
+                        };
+                    }
+                }
 
-        const extendInterval = async (card: Omit<TablesInsert<'flashcards'>, 'user_id'>) => {
-            pending.value = true;
-            error.value = null;
+                const scheduling = f.repeat(card, new Date()) as unknown as Record<
+                    Rating,
+                    RecordLogItem
+                >;
 
-            try {
-                const user = await getAuthUser();
+                const newCard = scheduling[rating]?.card;
+                if (!newCard) throw new Error('FSRS returned empty card');
 
-                const { error: flashCardsError } = await supabase.from('flashcards').insert({
-                    ...card,
-                    user_id: user.id
-                });
+                const fsrsFields = {
+                    due: newCard.due.toISOString(),
+                    last_review: newCard.last_review
+                        ? newCard.last_review.toISOString()
+                        : new Date().toISOString(),
+                    stability: newCard.stability,
+                    difficulty: newCard.difficulty,
+                    reps: newCard.reps,
+                    lapses: newCard.lapses,
+                    state: newCard.state.toString()
+                };
 
-                if (flashCardsError) throw flashCardsError;
+                if (!cardId) {
+                    await supabase.from('flashcards').insert({
+                        user_id: user.id,
+                        word: flashcardData.word ?? null,
+                        sentence: flashcardData.sentence ?? null,
+                        transcription: flashcardData.transcription ?? null,
+                        image_url: flashcardData.image_url ?? null,
+                        language: flashcardData.language ?? null,
+                        ...fsrsFields
+                    });
+                } else {
+                    await supabase
+                        .from('flashcards')
+                        .update(fsrsFields)
+                        .eq('id', cardId.toString());
+                }
             } catch (err) {
                 error.value = handleError(err);
             } finally {
@@ -57,34 +97,23 @@ export const useStoreFlashCard = defineStore(
 
             try {
                 const user = await getAuthUser();
-
-                const { data, error: flashCardError } = await supabase
+                const { data } = await supabase
                     .from('flashcards')
                     .select('*')
                     .eq('user_id', user.id)
                     .returns<Tables<'flashcards'>[]>();
 
-                if (flashCardError) throw new Error(handleError(flashCardError));
-
                 cardData.value = data ?? [];
-                console.log('cardData: ', cardData.value);
             } catch (err) {
-                console.error(handleError(err));
-
                 error.value = handleError(err);
+                console.error(error.value);
             } finally {
                 pending.value = false;
             }
         };
 
-        return {
-            resetInterval,
-            extendInterval,
-            loadFlashCard,
-            cardData
-        };
+        return { cardData, review, loadFlashCard };
     },
-
     { persist: true }
 );
 

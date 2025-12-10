@@ -3,6 +3,7 @@ import type { TablesInsert } from 'app/database.types';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { Rating } from 'ts-fsrs';
 import { computed, onMounted } from 'vue';
 
 const storeGenerateCard = useStoreGenerateCard();
@@ -10,12 +11,14 @@ const storeFlashCard = useStoreFlashCard();
 const storeStudySettings = useStoreStudySettings();
 
 const flashcardData = computed<Omit<TablesInsert<'flashcards'>, 'user_id'>>(() => ({
-    image_url: storeGenerateCard.imageData,
-    sentence: storeGenerateCard.wordData?.sentence,
-    word: storeGenerateCard.wordData?.word,
-    transcription: storeGenerateCard.wordData?.transcription,
-    language: storeStudySettings.currentTargetLanguage
+    image_url: storeGenerateCard.imageData ?? null,
+    sentence: storeGenerateCard.wordData?.sentence ?? null,
+    word: storeGenerateCard.wordData?.word ?? null,
+    transcription: storeGenerateCard.wordData?.transcription ?? null,
+    language: storeStudySettings.currentTargetLanguage ?? null
 }));
+
+const payload = flashcardData;
 
 onMounted(() => {
     storeGenerateCard.sendWordCardData(
@@ -115,18 +118,32 @@ onMounted(() => {
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
                     <q-btn
-                        color="secondary"
+                        color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.resetInterval(flashcardData)"
+                        @click="storeFlashCard.review(null, Rating.Again, payload)"
                         >Again
                     </q-btn>
                     <q-btn
-                        color="secondary"
+                        color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.extendInterval(flashcardData)"
-                        >Good</q-btn
+                        @click="storeFlashCard.review(null, Rating.Hard, payload)"
+                        >Hard
+                    </q-btn>
+                    <q-btn
+                        color="positive"
+                        style="width: 8rem; border-radius: 0.375rem"
+                        size="lg"
+                        @click="storeFlashCard.review(null, Rating.Good, payload)"
+                        >Good
+                    </q-btn>
+                    <q-btn
+                        color="accent"
+                        style="width: 8rem; border-radius: 0.375rem"
+                        size="lg"
+                        @click="storeFlashCard.review(null, Rating.Easy, payload)"
+                        >Easy</q-btn
                     >
                 </div>
             </div>

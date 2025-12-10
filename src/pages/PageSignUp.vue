@@ -5,16 +5,15 @@ import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
-const $q = useQuasar();
-const termsAccepted = ref(false);
-const email = ref('');
-const password = ref('');
-const pending = ref(false);
-const confirmPassword = ref('');
-const isPwd = ref(true);
-const isConfirmPwd = ref(true);
-const pending = ref(false),
+const router = useRouter(),
+    $q = useQuasar(),
+    termsAccepted = ref(false),
+    email = ref(''),
+    password = ref(''),
+    pending = ref(false),
+    confirmPassword = ref(''),
+    isPwd = ref(true),
+    isConfirmPwd = ref(true),
     error = ref<string | null>(null);
 
 const signUp = async () => {

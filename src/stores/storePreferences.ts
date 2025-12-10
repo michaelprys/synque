@@ -1,16 +1,16 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { setCssVar } from 'quasar';
 import { Theme, themes } from 'src/data/themes';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export const useStorePreferences = defineStore(
     'storePreferences',
     () => {
-        const theme = ref('Bluemoon'),
-            savedTheme = localStorage.getItem('theme');
+        const theme = ref('Bluemoon');
 
         const applyTheme = (name: string) => {
             const selectedTheme: Theme | undefined = themes[name];
+
             if (!selectedTheme) return;
 
             setCssVar('primary', selectedTheme.primary);
@@ -26,12 +26,17 @@ export const useStorePreferences = defineStore(
             theme.value = name;
         };
 
-        if (savedTheme) {
-            const themeObj = JSON.parse(savedTheme);
-            applyTheme(themeObj.theme);
-        }
+        // const changeAvatar = (avatar_url: string) => {};ъ
 
-        // const changeAvatar = (avatar_url: string) => {};
+        watch(
+            theme,
+            (newTheme) => {
+                applyTheme(newTheme);
+            },
+            {
+                immediate: true
+            }
+        );
 
         return {
             theme,

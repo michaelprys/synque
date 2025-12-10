@@ -11,7 +11,6 @@ const newPassword = ref('');
 const confirmNewPassword = ref('');
 const isPwd = ref(true);
 const isConfirmPwd = ref(true);
-const pending = ref(false);
 const isReady = ref(false);
 const pending = ref(false),
     error = ref<string | null>(null);

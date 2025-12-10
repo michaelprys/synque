@@ -7,7 +7,7 @@ import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { getAuthUser } from 'src/utils/getAuthUser';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
-import { onMounted, ref, watchEffect } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storePreferences = useStorePreferences(),
@@ -119,10 +119,6 @@ const uploadAvatar = async () => {
 
     if (dbError) throw dbError;
 };
-
-watchEffect(() => {
-    console.log(storeStudySettings.currentLevel);
-});
 
 onMounted(() => {
     languageOptions.value = storeStudySettings.languages.map((lang) => lang.name);
@@ -253,11 +249,18 @@ onMounted(() => {
                                         :min="0"
                                         :max="3"
                                         @update:model-value="
-                                            (newCurrentLevel) =>
-                                                storeStudySettings.updateSettings(
-                                                    'level',
-                                                    storeStudySettings.levels[newCurrentLevel]
-                                                )
+                                            (newCurrentLevel) => {
+                                                if (newCurrentLevel !== null) {
+                                                    const level =
+                                                        storeStudySettings.levels[
+                                                            newCurrentLevel
+                                                        ] ?? null;
+                                                    storeStudySettings.updateSettings(
+                                                        'level',
+                                                        level
+                                                    );
+                                                }
+                                            }
                                         "
                                     />
                                 </div>
@@ -276,7 +279,7 @@ onMounted(() => {
                                         color="accent"
                                         track-color="secondary"
                                         markers
-                                        step="10"
+                                        :step="10"
                                         :min="10"
                                         :max="100"
                                         @update:model-value="
@@ -303,7 +306,7 @@ onMounted(() => {
                                         color="accent"
                                         track-color="secondary"
                                         markers
-                                        step="1000"
+                                        :step="1000"
                                         :min="120"
                                         :max="10000"
                                         @update:model-value="
@@ -450,16 +453,16 @@ onMounted(() => {
                                 </div>
                                 <div class="themes q-mt-md">
                                     <q-btn
-                                        v-for="(theme, key) in themes"
-                                        :key="key"
+                                        v-for="(theme, name) in themes"
+                                        :key="name"
                                         class="col"
                                         :style="{
                                             color: theme.textColor,
                                             backgroundColor: theme.secondary
                                         }"
-                                        @click="storePreferences.applyTheme(key)"
+                                        @click="storePreferences.applyTheme(name)"
                                     >
-                                        {{ key }}
+                                        {{ name }}
                                     </q-btn>
                                 </div>
                             </div>

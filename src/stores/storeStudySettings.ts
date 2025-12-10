@@ -81,16 +81,16 @@ export const useStoreStudySettings = defineStore(
             if (error) return;
 
             if (data) {
-                currentTopics.value = data.topics;
-                currentLevel.value = levels.value.indexOf(data.level);
-                currentTargetLanguage.value = data.target_language;
-                currentVoiceType.value = data.voice_type;
-                currentNewCardsPerDay.value = data.new_cards_per_day;
-                currentMaxReviewsPerDay.value = data.max_reviews_per_day;
+                currentTopics.value = (data.topics as string[] | null) ?? [];
+                currentLevel.value = levels.value.indexOf(data.level ?? 'Easy');
+                currentTargetLanguage.value = data.target_language ?? 'English';
+                currentVoiceType.value = data.voice_type ?? 'Male';
+                currentNewCardsPerDay.value = data.new_cards_per_day ?? 20;
+                currentMaxReviewsPerDay.value = data.max_reviews_per_day ?? 120;
             }
         };
 
-        const updateSettings = async (field: string, value) => {
+        const updateSettings = async (field: string, value: string | string[] | number | null) => {
             try {
                 const user = await getAuthUser();
 

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
+import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { onMounted, ref } from 'vue';
+
+const storeStudySettings = useStoreStudySettings();
 
 defineProps({
     title: {
@@ -46,7 +49,10 @@ onMounted(async () => {
         <section class="q-mx-auto text-center" style="max-width: 60rem; width: 100%">
             <div style="width: 100%; border-radius: 0.5rem" class="q-mb-xl q-pa-lg">
                 <div v-if="storeFlashCard.cardData.length !== 0">
-                    <h3 class="text-h4">Total words: 132</h3>
+                    <h3 class="text-h4">
+                        {{ storeStudySettings.currentTargetLanguage }}:
+                        {{ storeFlashCard.cardData.length }} words
+                    </h3>
 
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
@@ -101,7 +107,7 @@ onMounted(async () => {
                                                 style="width: 3rem; height: 3rem"
                                                 width="3rem"
                                                 height="3rem"
-                                                :src="card.image_url"
+                                                :src="card.image_url ?? undefined"
                                             />
                                             <span class="text-subtitle1 block">
                                                 {{ card.word }}

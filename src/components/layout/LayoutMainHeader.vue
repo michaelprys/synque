@@ -88,7 +88,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
             </div>
 
             <div class="q-gutter-x-sm flex items-center">
-                <span class="text-subtitle2 text-bold text-italic">⚡ 12</span>
+                <span class="text-subtitle2 text-bold text-italic">🌀 12</span>
                 <q-btn class="q-ml-md" label="Account" icon="account_circle" flat>
                     <q-menu dark>
                         <div class="row no-wrap q-pa-md" style="width: 100%">

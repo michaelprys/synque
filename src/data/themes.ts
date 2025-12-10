@@ -30,7 +30,7 @@ export const themes: Record<string, Theme> = {
         accent: '#88aadd',
         dark: '#0a0e18',
         darkPage: '#131d2f',
-        positive: '#7ab8e6',
+        positive: '#48B79C',
         negative: '#e68ba3',
         info: '#7799cc',
         warning: '#d8c080',

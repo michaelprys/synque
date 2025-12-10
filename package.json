@@ -16,14 +16,13 @@
     },
     "dependencies": {
         "@elevenlabs/elevenlabs-js": "^2.26.0",
-        "@google/genai": "^1.30.0",
-        "@huggingface/inference": "^4.13.4",
         "@quasar/extras": "^1.16.4",
         "@supabase/supabase-js": "^2.84.0",
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.7.1",
         "quasar": "^2.16.0",
         "supabase": "^2.64.1",
+        "ts-fsrs": "^5.2.3",
         "vue": "^3.5.22",
         "vue-router": "^4.0.12"
     },

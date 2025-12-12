@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import type { TablesInsert } from 'app/database.types';
+import type { Database } from 'app/database.types';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { Rating } from 'ts-fsrs';
-import { computed, onMounted } from 'vue';
+import type { Ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
-const storeGenerateCard = useStoreGenerateCard();
-const storeFlashCard = useStoreFlashCard();
-const storeStudySettings = useStoreStudySettings();
+const storeGenerateCard = useStoreGenerateCard(),
+    storeFlashCard = useStoreFlashCard(),
+    storeStudySettings = useStoreStudySettings();
 
-const flashcardData = computed<Omit<TablesInsert<'flashcards'>, 'user_id'>>(() => ({
+type FlashcardInsert = Database['public']['Tables']['flashcards']['Insert'];
+
+const flashcardData = computed<Omit<FlashcardInsert, 'user_id'>>(() => ({
     image_url: storeGenerateCard.imageData ?? null,
     sentence: storeGenerateCard.wordData?.sentence ?? null,
     word: storeGenerateCard.wordData?.word ?? null,
@@ -18,17 +21,43 @@ const flashcardData = computed<Omit<TablesInsert<'flashcards'>, 'user_id'>>(() =
     language: storeStudySettings.currentTargetLanguage ?? null
 }));
 
-const handleSendWordCardData = () =>
-    storeGenerateCard.sendWordCardData(
+const handleSendWordCardData = async () =>
+    await storeGenerateCard.sendWordCardData(
         storeStudySettings.currentTargetLanguage,
         storeStudySettings.currentTopics,
         storeGenerateCard.wordData?.word ?? null,
         storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
     );
 
-const handleReview = (rating: Rating) => {
-    storeFlashCard.review(null, rating, flashcardData.value);
-    handleSendWordCardData();
+const pendingAgain = ref(false);
+const pendingHard = ref(false);
+const pendingGood = ref(false);
+const pendingEasy = ref(false);
+
+const handleReview = async (rating: Rating) => {
+    let btn: Ref<boolean> | undefined;
+
+    switch (rating) {
+        case Rating.Again:
+            btn = pendingAgain;
+            break;
+        case Rating.Hard:
+            btn = pendingHard;
+            break;
+        case Rating.Good:
+            btn = pendingGood;
+            break;
+        case Rating.Easy:
+            btn = pendingEasy;
+            break;
+        default:
+            throw new Error('Invalid rating');
+    }
+
+    btn.value = true;
+    await storeFlashCard.review(null, rating, flashcardData.value);
+    await handleSendWordCardData();
+    btn.value = false;
 };
 
 onMounted(() => {
@@ -125,38 +154,54 @@ onMounted(() => {
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
                     <q-btn
+                        :loading="pendingAgain"
                         text-color="primary"
                         color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         @click="handleReview(Rating.Again)"
                         >Again
+                        <template #loading>
+                            <q-spinner-facebook />
+                        </template>
                     </q-btn>
                     <q-btn
+                        :loading="pendingHard"
                         text-color="primary"
                         color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         @click="handleReview(Rating.Hard)"
                         >Hard
+                        <template #loading>
+                            <q-spinner-facebook />
+                        </template>
                     </q-btn>
                     <q-btn
+                        :loading="pendingGood"
                         text-color="primary"
                         color="positive"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         @click="handleReview(Rating.Good)"
                         >Good
+                        <template #loading>
+                            <q-spinner-facebook />
+                        </template>
                     </q-btn>
                     <q-btn
+                        :loading="pendingEasy"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         l
                         @click="handleReview(Rating.Easy)"
-                        >Easy</q-btn
-                    >
+                        >Easy
+                        <template #loading>
+                            <q-spinner-facebook />
+                        </template>
+                    </q-btn>
                 </div>
             </div>
         </section>

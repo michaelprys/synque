@@ -35,7 +35,7 @@
         "**/.gitattributes": true,
         "**/CVS": true,
         ".idea": true,
-        ".vscode": false,
+        ".vscode": true,
         "LICENSE": true,
         "**/.gitignore": true,
         "**/.npmrc": true,
@@ -47,7 +47,8 @@
         "**/pnpm-lock.yaml": true,
         "**/pnpm-workspace.yaml": true,
         "**/postcss.config.js": true,
-        "**/tsconfig.json": true
+        "**/tsconfig.json": true,
+        "**/quasar.config.ts.temporary.compiled.1765564906280.mjs": true
     },
     "typescript.tsdk": "node_modules/typescript/lib"
 }

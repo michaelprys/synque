@@ -1,4 +1,4 @@
-import type { Tables, TablesInsert } from 'app/database.types';
+import type { Database } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { getAuthUser } from 'src/utils/getAuthUser';
@@ -9,18 +9,21 @@ import { ref } from 'vue';
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
+type FlashcardRow = Database['public']['Tables']['flashcards']['Row'];
+type FlashcardInsert = Database['public']['Tables']['flashcards']['Insert'];
+
 export const useStoreFlashCard = defineStore(
     'storeFlashCard',
     () => {
         const pending = ref(false);
         const error = ref<string | null>(null);
-        const cardData = ref<Tables<'flashcards'>[]>([]);
+        const cardData = ref<FlashcardRow[]>([]);
         const storeStudySettings = useStoreStudySettings();
 
         const review = async (
             cardId: number | null,
             rating: Rating,
-            flashcardData: Omit<TablesInsert<'flashcards'>, 'user_id'>
+            flashcardData: Omit<FlashcardInsert, 'user_id'>
         ) => {
             pending.value = true;
             error.value = null;
@@ -104,7 +107,7 @@ export const useStoreFlashCard = defineStore(
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('language', storeStudySettings.currentTargetLanguage)
-                    .returns<Tables<'flashcards'>[]>();
+                    .returns<FlashcardRow[]>();
 
                 cardData.value = data ?? [];
             } catch (err) {

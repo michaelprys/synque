@@ -19,18 +19,38 @@ export const useStoreGenerateCard = defineStore(
             error.value = null;
 
             try {
-                const res = await fetch(
-                    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}`
+                const pexelsRes = await fetch(
+                    `https://api.pexels.com/v1/search?query=${encodeURIComponent(name)}&per_page=1`,
+                    {
+                        headers: {
+                            Authorization: import.meta.env.VITE_PX_API_KEY
+                        }
+                    }
                 );
 
-                if (!res.ok) {
-                    const errMsg = await res.text();
-                    throw new Error(`${res.status}: ${errMsg}`);
+                if (pexelsRes.ok) {
+                    const pexelsData = await pexelsRes.json();
+
+                    if (pexelsData.photos?.length > 0) {
+                        imageData.value =
+                            pexelsData.photos[0].src.large || pexelsData.photos[0].src.medium || '';
+
+                        return;
+                    }
                 }
 
-                const data = await res.json();
-                const url = data.results?.[0]?.url || '';
-                imageData.value = url ? `${url}?t=${Date.now()}` : '';
+                const openverseRes = await fetch(
+                    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}&page_size=1`
+                );
+
+                if (openverseRes.ok) {
+                    const openverseData = await openverseRes.json();
+
+                    if (openverseData.results?.length > 0) {
+                        const url = openverseData.results?.[0]?.url || '';
+                        imageData.value = url ? `${url}?t=${Date.now()}` : '';
+                    }
+                }
             } catch (err) {
                 console.error(handleError(err));
 
@@ -121,6 +141,7 @@ export const useStoreGenerateCard = defineStore(
         };
 
         return {
+            pending,
             wordData,
             imageData,
             findImage,

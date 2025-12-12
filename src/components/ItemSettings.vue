@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { themes } from 'src/data/themes';
 import { useStorePreferences } from 'src/stores/storePreferences';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { getAuthUser } from 'src/utils/getAuthUser';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
@@ -13,7 +14,6 @@ const storePreferences = useStorePreferences(),
     router = useRouter(),
     modelSplitter = ref(20),
     $q = useQuasar(),
-    modelFontSize = ref(1),
     fontSizeOptions = ref(['Small', 'Medium', 'Large']),
     modelAvatar = ref<File | null>(null),
     isUpdatePwd = ref(true),
@@ -78,6 +78,29 @@ const languageOptions = ref<string[]>([]);
 
 const topics = ref(storeStudySettings.studyTopics);
 
+const handleChangeAvatar = async (file: File | null) => {
+    const success = await storePreferences.changeAvatar(file);
+
+    await storePreferences.loadAvatar();
+
+    $q.notify({
+        type: success ? 'positive' : 'negative',
+        message: success ? 'Avatar updated successfully' : 'Failed to update avatar'
+    });
+};
+
+const activeLanguages = ref<string[]>([]);
+
+onMounted(async () => {
+    languageOptions.value = storeStudySettings.languages.map((l) => l.name);
+
+    const user = await getAuthUser();
+    const { data } = await supabase.from('flashcards').select('language').eq('user_id', user.id);
+
+    activeLanguages.value =
+        data?.map((l) => l.language).filter((l): l is string => l != null) ?? [];
+});
+
 const filterLanguages = (val: string, update: (cb: () => void) => void) => {
     update(() => {
         const needle = val.toLowerCase();
@@ -90,22 +113,6 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
         }
     });
 };
-
-const handleChangeAvatar = async (file: File | null) => {
-    const success = await storePreferences.changeAvatar(file);
-
-    await storePreferences.loadAvatar();
-
-    $q.notify({
-        type: success ? 'positive' : 'negative',
-        message: success ? 'Avatar updated successfully' : 'Failed to update avatar'
-    });
-};
-
-onMounted(async () => {
-    languageOptions.value = storeStudySettings.languages.map((lang) => lang.name);
-    await storePreferences.loadAvatar();
-});
 </script>
 
 <template>
@@ -138,19 +145,18 @@ onMounted(async () => {
                             <div class="title text-subtitle1">
                                 <span>Target language:</span>
 
-                                <!-- TODO: Add a note for languages that are actively being learned  -->
                                 <q-select
                                     v-model="storeStudySettings.currentTargetLanguage"
-                                    color="accent"
-                                    class="q-mt-lg"
                                     :options="languageOptions"
                                     dark
+                                    class="q-mt-lg"
                                     filled
-                                    option-label="name"
-                                    style="width: 33.33%"
                                     use-input
-                                    fill-input
+                                    color="accent"
                                     hide-selected
+                                    style="width: 33.33%"
+                                    option-label="label"
+                                    fill-input
                                     input-debounce="0"
                                     @filter="filterLanguages"
                                     @update:model-value="
@@ -161,13 +167,6 @@ onMounted(async () => {
                                             )
                                     "
                                 >
-                                    <template #no-option>
-                                        <q-item>
-                                            <q-item-section class="text-grey">
-                                                No such language
-                                            </q-item-section>
-                                        </q-item>
-                                    </template>
                                 </q-select>
                             </div>
                             <div class="title text-subtitle1 q-mt-lg">
@@ -428,17 +427,22 @@ onMounted(async () => {
                                 <div class="flex items-center">
                                     <span>Font Size:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
-                                        {{ fontSizeOptions[modelFontSize] }}
+                                        {{ fontSizeOptions[storePreferences.currentFontSize] }}
                                     </q-badge>
                                 </div>
                                 <div>
                                     <q-slider
-                                        v-model="modelFontSize"
+                                        v-model="storePreferences.currentFontSize"
                                         color="accent"
                                         track-color="secondary"
                                         markers
                                         :min="0"
                                         :max="2"
+                                        @update:model-value="
+                                            storePreferences.changeFontSize(
+                                                storePreferences.currentFontSize
+                                            )
+                                        "
                                     />
                                 </div>
                             </div>

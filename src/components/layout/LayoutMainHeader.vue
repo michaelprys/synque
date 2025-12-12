@@ -13,22 +13,6 @@ const storeStudySettings = useStoreStudySettings(),
     pending = ref(false),
     error = ref<string | null>(null);
 
-onMounted(async () => {
-    pending.value = true;
-    error.value = null;
-
-    try {
-        await supabase.auth.onAuthStateChange((event, session) => {
-            user.value = session?.user ?? null;
-            email.value = session?.user.email;
-        });
-    } catch (err) {
-        console.error(handleError(err));
-
-        error.value = handleError(err);
-    }
-});
-
 const router = useRouter(),
     $q = useQuasar(),
     email = ref<string | undefined>(undefined),
@@ -59,6 +43,26 @@ const logout = async () => {
 };
 
 const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
+
+onMounted(async () => {
+    pending.value = true;
+    error.value = null;
+
+    try {
+        await supabase.auth.onAuthStateChange((event, session) => {
+            user.value = session?.user ?? null;
+            email.value = session?.user.email;
+        });
+    } catch (err) {
+        console.error(handleError(err));
+
+        error.value = handleError(err);
+    } finally {
+        pending.value = false;
+    }
+
+    await storePreferences.loadAvatar();
+});
 </script>
 
 <template>
@@ -90,7 +94,7 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
 
             <div class="q-gutter-x-sm flex items-center">
                 <q-btn class="q-ml-md" flat>
-                    <q-img
+                    <img
                         :src="storePreferences.avatarUrl ?? ''"
                         style="
                             width: 1.5rem;
@@ -104,8 +108,16 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
                     <q-menu dark>
                         <div class="row no-wrap q-pa-md" style="width: 100%">
                             <div class="column items-center q-mx-auto">
-                                <q-avatar v-if="user" size="72px">
-                                    <img src="https://unsplash.it/100" />
+                                <q-avatar v-if="user">
+                                    <q-img
+                                        :src="storePreferences.avatarUrl ?? ''"
+                                        style="
+                                            width: 2.5rem;
+                                            height: 2.5rem;
+                                            border-radius: 50%;
+                                            margin-right: 0.5rem;
+                                        "
+                                    />
                                 </q-avatar>
 
                                 <div v-if="user" class="text-subtitle1 q-mt-md q-mb-xs">

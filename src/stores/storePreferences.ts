@@ -12,7 +12,8 @@ export const useStorePreferences = defineStore(
         const theme = ref('Bluemoon'),
             pending = ref(false),
             error = ref<string | null>(null),
-            avatarUrl = ref<string | null>(null);
+            avatarUrl = ref<string | null>(null),
+            currentFontSize = ref(1);
 
         const applyTheme = (name: string) => {
             const selectedTheme: Theme | undefined = themes[name];
@@ -30,6 +31,13 @@ export const useStorePreferences = defineStore(
             setCssVar('warning', selectedTheme.warning);
 
             theme.value = name;
+        };
+
+        const fontSizes = ['12px', '14px', '16px'];
+
+        const changeFontSize = (size: number) => {
+            setCssVar('theme-btn-font-size', fontSizes[size] ?? (fontSizes[1] as string));
+            setCssVar('theme-font-size', fontSizes[size] ?? (fontSizes[1] as string));
         };
 
         const changeAvatar = async (avatarFile: File | null) => {
@@ -92,15 +100,23 @@ export const useStorePreferences = defineStore(
             (newTheme) => {
                 applyTheme(newTheme);
             },
-            {
-                immediate: true
-            }
+            { immediate: true }
+        );
+
+        watch(
+            currentFontSize,
+            (newSize) => {
+                changeFontSize(newSize);
+            },
+            { immediate: true }
         );
 
         return {
             theme,
             avatarUrl,
+            currentFontSize,
             applyTheme,
+            changeFontSize,
             changeAvatar,
             loadAvatar
         };

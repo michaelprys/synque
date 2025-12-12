@@ -18,7 +18,7 @@
                         <p>
                             This is a legal agreement between you and
                             <strong>Synque</strong>
-                            (hereinafter “we”, “us”, or “Synque”).
+                            (hereinafter "we”, "us”, or "Synque”).
                         </p>
 
                         <q-list dark>
@@ -91,7 +91,7 @@
                                         >
                                             synque.copyright@gmail.com </a
                                         ><br />
-                                        We will remove it within 24 hours — no questions asked.
+                                        We will remove it within 24 hours - no questions asked.
                                     </q-item-label>
                                 </q-item-section>
                             </q-item>
@@ -123,7 +123,7 @@
                                         >8. No Warranties & Liability</q-item-label
                                     >
                                     <q-item-label class="q-mt-md">
-                                        Synque is provided “AS IS”. We are not responsible for
+                                        Synque is provided "AS IS”. We are not responsible for
                                         accuracy, availability, or any damage caused by using the
                                         service.<br />
                                         Always keep local backups.

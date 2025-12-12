@@ -1,5 +1,6 @@
 import type { Tables, TablesInsert } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
+import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { getAuthUser } from 'src/utils/getAuthUser';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
@@ -14,6 +15,7 @@ export const useStoreFlashCard = defineStore(
         const pending = ref(false);
         const error = ref<string | null>(null);
         const cardData = ref<Tables<'flashcards'>[]>([]);
+        const storeStudySettings = useStoreStudySettings();
 
         const review = async (
             cardId: number | null,
@@ -101,6 +103,7 @@ export const useStoreFlashCard = defineStore(
                     .from('flashcards')
                     .select('*')
                     .eq('user_id', user.id)
+                    .eq('language', storeStudySettings.currentTargetLanguage)
                     .returns<Tables<'flashcards'>[]>();
 
                 cardData.value = data ?? [];

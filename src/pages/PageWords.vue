@@ -78,14 +78,27 @@ onMounted(async () => {
                             </div>
 
                             <div class="q-pr-sm">
-                                <q-btn dense flat icon="sort" />
-                                <q-btn
-                                    dense
-                                    :to="{ name: 'deleted-words' }"
-                                    class="q-ml-xs"
-                                    flat
-                                    icon="history"
-                                />
+                                <q-btn-dropdown icon="sort" flat>
+                                    <q-list class="bg-primary">
+                                        <q-item v-close-popup clickable>
+                                            <q-item-section>
+                                                <q-item-label>Photos</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+
+                                        <q-item v-close-popup clickable>
+                                            <q-item-section>
+                                                <q-item-label>Videos</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+
+                                        <q-item v-close-popup clickable>
+                                            <q-item-section>
+                                                <q-item-label>Articles</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-btn-dropdown>
                             </div>
                         </div>
                     </div>
@@ -99,6 +112,12 @@ onMounted(async () => {
                             >
                                 <div
                                     class="bg-primary q-pa-md full-width rounded-borders flex justify-between"
+                                    :class="{
+                                        'bg-warning': card.state === '1',
+                                        'bg-positive': card.state === '2',
+                                        'bg-negative': card.state === '3',
+                                        'bg-accent': card.state === '4'
+                                    }"
                                 >
                                     <q-item-section>
                                         <div class="q-gutter-x-md flex items-center">
@@ -109,7 +128,7 @@ onMounted(async () => {
                                                 height="3rem"
                                                 :src="card.image_url ?? undefined"
                                             />
-                                            <span class="text-subtitle1 block">
+                                            <span class="text-subtitle1 text-primary block">
                                                 {{ card.word }}
                                             </span>
                                         </div>
@@ -121,7 +140,7 @@ onMounted(async () => {
                                                 :to="{ name: 'review' }"
                                                 size="sm"
                                                 flat
-                                                color="gray"
+                                                color="primary"
                                                 style="width: 2rem; height: 2rem"
                                                 icon="import_contacts"
                                             ></q-btn>
@@ -129,7 +148,7 @@ onMounted(async () => {
                                             <q-btn
                                                 size="sm"
                                                 flat
-                                                color="gray"
+                                                color="primary"
                                                 style="width: 2rem; height: 2rem"
                                                 icon="delete"
                                                 @click="deleteWord"
@@ -148,10 +167,12 @@ onMounted(async () => {
                     </q-infinite-scroll>
                 </div>
 
-                <div v-else class="q-mt-xl">
+                <div v-else style="margin-top: 7.5rem">
                     <q-img
                         class="rounded-borders"
                         style="max-width: 20rem; max-height: 15rem"
+                        width="320px"
+                        height="240px"
                         src="https://unsplash.it/400"
                     />
                     <span class="q-mt-xl text-h4 block">

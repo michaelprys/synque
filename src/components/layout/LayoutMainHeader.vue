@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import ItemSettings from 'src/components/ItemSettings.vue';
+import { useStorePreferences } from 'src/stores/storePreferences';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const storeStudySettings = useStoreStudySettings();
-
-const pending = ref(false),
+const storeStudySettings = useStoreStudySettings(),
+    storePreferences = useStorePreferences(),
+    pending = ref(false),
     error = ref<string | null>(null);
 
 onMounted(async () => {
@@ -88,8 +89,18 @@ const refDialogSettings = ref<InstanceType<typeof ItemSettings> | null>(null);
             </div>
 
             <div class="q-gutter-x-sm flex items-center">
-                <span class="text-subtitle2 text-bold text-italic">🌀 12</span>
-                <q-btn class="q-ml-md" label="Account" icon="account_circle" flat>
+                <q-btn class="q-ml-md" flat>
+                    <q-img
+                        :src="storePreferences.avatarUrl ?? ''"
+                        style="
+                            width: 1.5rem;
+                            height: 1.5rem;
+                            border-radius: 50%;
+                            margin-right: 0.5rem;
+                        "
+                    />
+                    Account
+
                     <q-menu dark>
                         <div class="row no-wrap q-pa-md" style="width: 100%">
                             <div class="column items-center q-mx-auto">

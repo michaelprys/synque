@@ -18,14 +18,21 @@ const flashcardData = computed<Omit<TablesInsert<'flashcards'>, 'user_id'>>(() =
     language: storeStudySettings.currentTargetLanguage ?? null
 }));
 
-const payload = flashcardData;
-
-onMounted(() => {
+const handleSendWordCardData = () =>
     storeGenerateCard.sendWordCardData(
         storeStudySettings.currentTargetLanguage,
         storeStudySettings.currentTopics,
+        storeGenerateCard.wordData?.word ?? null,
         storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
     );
+
+const handleReview = (rating: Rating) => {
+    storeFlashCard.review(null, rating, flashcardData.value);
+    handleSendWordCardData();
+};
+
+onMounted(() => {
+    handleSendWordCardData();
 });
 </script>
 
@@ -118,31 +125,36 @@ onMounted(() => {
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
                     <q-btn
+                        text-color="primary"
                         color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.review(null, Rating.Again, payload)"
+                        @click="handleReview(Rating.Again)"
                         >Again
                     </q-btn>
                     <q-btn
+                        text-color="primary"
                         color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.review(null, Rating.Hard, payload)"
+                        @click="handleReview(Rating.Hard)"
                         >Hard
                     </q-btn>
                     <q-btn
+                        text-color="primary"
                         color="positive"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.review(null, Rating.Good, payload)"
+                        @click="handleReview(Rating.Good)"
                         >Good
                     </q-btn>
                     <q-btn
+                        text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="storeFlashCard.review(null, Rating.Easy, payload)"
+                        l
+                        @click="handleReview(Rating.Easy)"
                         >Easy</q-btn
                     >
                 </div>

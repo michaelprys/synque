@@ -46,7 +46,12 @@ export const useStoreGenerateCard = defineStore(
             }
         };
 
-        const sendWordCardData = async (language: string, topics: string[], level: string) => {
+        const sendWordCardData = async (
+            language: string,
+            topics: string[],
+            existingWord: string | null,
+            level: string
+        ) => {
             pending.value = true;
             error.value = null;
 
@@ -60,7 +65,7 @@ export const useStoreGenerateCard = defineStore(
                             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
                             apikey: import.meta.env.VITE_SUPABASE_API_KEY
                         },
-                        body: JSON.stringify({ language, topics, level })
+                        body: JSON.stringify({ language, topics, existingWord, level })
                     }
                 );
 

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import BtnClose from 'src/components/BtnClose.vue';
 import { themes } from 'src/data/themes';
 import { useStorePreferences } from 'src/stores/storePreferences';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { getAuthUser } from 'src/utils/getAuthUser';
 import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
@@ -93,35 +91,20 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
     });
 };
 
-const uploadAvatar = async () => {
-    if (!modelAvatar.value) return;
+const handleChangeAvatar = async (file: File | null) => {
+    const success = await storePreferences.changeAvatar(file);
 
-    const file = modelAvatar.value;
+    await storePreferences.loadAvatar();
 
-    const user = await getAuthUser();
-
-    const filePath = `${user.id}/avatar.jpg`;
-
-    const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { cacheControl: '3600', upsert: true });
-
-    if (uploadError) throw uploadError;
-
-    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
-
-    const publicUrl = urlData.publicUrl;
-
-    const { error: dbError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', user.id);
-
-    if (dbError) throw dbError;
+    $q.notify({
+        type: success ? 'positive' : 'negative',
+        message: success ? 'Avatar updated successfully' : 'Failed to update avatar'
+    });
 };
 
-onMounted(() => {
+onMounted(async () => {
     languageOptions.value = storeStudySettings.languages.map((lang) => lang.name);
+    await storePreferences.loadAvatar();
 });
 </script>
 
@@ -151,8 +134,6 @@ onMounted(() => {
                     >
                         <q-tab-panel name="study" class="relative col q-pa-md full-height">
                             <h2 class="text-h5 q-py-lg">Study</h2>
-
-                            <BtnClose />
 
                             <div class="title text-subtitle1">
                                 <span>Target language:</span>
@@ -327,17 +308,21 @@ onMounted(() => {
                         >
                             <h2 class="text-h5 q-py-lg">Profile</h2>
 
-                            <BtnClose />
-
                             <div class="title q-py-lg text-subtitle1 flex items-center">
-                                <q-avatar color="red" text-color="white" />
+                                <q-avatar>
+                                    <q-img
+                                        :src="storePreferences.avatarUrl ?? ''"
+                                        class="full-width full-height"
+                                    />
+                                </q-avatar>
+
                                 <q-file
                                     v-model="modelAvatar"
                                     class="q-ml-sm"
                                     dark
                                     borderless
                                     label="Change Avatar"
-                                    @update:model-value="uploadAvatar"
+                                    @update:model-value="handleChangeAvatar(modelAvatar)"
                                 />
                             </div>
                             <q-form
@@ -409,34 +394,6 @@ onMounted(() => {
                             class="relative q-pa-md col bg-primary full-height"
                         >
                             <h2 class="text-h5 q-py-lg">Preferences</h2>
-
-                            <BtnClose />
-
-                            <div class="text-subtitle1 q-ma-none">Interface language:</div>
-
-                            <q-select
-                                v-model="storeStudySettings.currentTargetLanguage"
-                                class="q-mt-lg"
-                                dark
-                                filled
-                                use-input
-                                color="accent"
-                                hide-selected
-                                option-label="name"
-                                fill-input
-                                input-debounce="0"
-                                style="width: 32%"
-                                :options="languageOptions"
-                                @filter="filterLanguages"
-                            >
-                                <template #no-option>
-                                    <q-item>
-                                        <q-item-section class="text-grey">
-                                            No such language
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
 
                             <div class="title q-py-lg text-subtitle1">
                                 <div>

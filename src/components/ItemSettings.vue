@@ -227,7 +227,7 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                         track-color="secondary"
                                         markers
                                         :min="0"
-                                        :max="3"
+                                        :max="4"
                                         @update:model-value="
                                             (newCurrentLevel) => {
                                                 if (newCurrentLevel !== null) {

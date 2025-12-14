@@ -61,6 +61,8 @@ const handleReview = async (rating: Rating) => {
 };
 
 onMounted(() => {
+    if (storeFlashCard.cardData.length > 0) return;
+
     handleSendWordCardData();
 });
 </script>
@@ -119,7 +121,7 @@ onMounted(() => {
                             width="720px"
                             height="370px"
                         />
-                        <q-btn
+                        <!-- <q-btn
                             class="refresh-btn absolute-top-right"
                             icon="refresh"
                             size="sm"
@@ -127,7 +129,7 @@ onMounted(() => {
                             flat
                             style="width: 2rem; height: 2rem; top: 0.3rem; right: 0.3rem"
                             @click="storeGenerateCard.refreshImage"
-                        />
+                        /> -->
                     </div>
                 </q-card>
 

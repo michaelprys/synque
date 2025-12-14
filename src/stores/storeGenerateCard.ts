@@ -96,7 +96,7 @@ export const useStoreGenerateCard = defineStore(
                 }
 
                 const data = await res.json();
-                wordData.value = JSON.parse(data.text);
+                wordData.value = JSON.parse(data.content);
 
                 if (wordData.value) {
                     await findImage(wordData.value.word);

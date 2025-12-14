@@ -41,7 +41,7 @@ export const useStoreStudySettings = defineStore(
                 'House',
                 'Actions'
             ],
-            levels = ref(['Beginner', 'Intermediate', 'Advanced', 'Native']),
+            levels = ref(['Any', 'Beginner', 'Intermediate', 'Advanced', 'Native']),
             voiceTypes = ref(['Male', 'Female']),
             currentTopics = ref<string[]>([]),
             currentLevel = ref(0),

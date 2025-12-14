@@ -97,6 +97,7 @@ onMounted(async () => {
                     <img
                         :src="storePreferences.avatarUrl ?? ''"
                         style="
+                            object-fit: cover;
                             width: 1.5rem;
                             height: 1.5rem;
                             border-radius: 50%;

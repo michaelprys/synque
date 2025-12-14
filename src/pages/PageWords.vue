@@ -49,8 +49,8 @@ onMounted(async () => {
 
 <template>
     <q-page class="q-ma-sm flex">
-        <section class="q-mx-auto text-center" style="max-width: 80rem; width: 100%">
-            <div style="width: 100%; border-radius: 0.5rem" class="q-mb-xl q-pa-lg">
+        <section class="q-mx-auto text-center" style="max-width: 1280px; width: 100%">
+            <div style="width: 100%; border-radius: 8px" class="q-mb-xl q-pa-lg">
                 <div v-if="storeFlashCard.cardData.length !== 0">
                     <h3 class="text-h4">
                         {{ storeStudySettings.currentTargetLanguage }}:
@@ -60,7 +60,7 @@ onMounted(async () => {
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
                             <q-btn
-                                style="max-width: 12rem; width: 100%"
+                                style="max-width: 192px; width: 100%"
                                 class="q-mx-auto bg-positive"
                                 icon="repeat"
                                 label="Review"
@@ -111,7 +111,7 @@ onMounted(async () => {
                             <q-item
                                 v-for="(card, idx) in storeFlashCard.cardData"
                                 :key="idx"
-                                class="q-pa-sm"
+                                class="q-pa-sm full-width"
                             >
                                 <q-btn
                                     class="q-pa-none bg-primary full-width rounded-borders flex justify-between"
@@ -122,12 +122,12 @@ onMounted(async () => {
                                                 class=""
                                                 style="
                                                     width: 100%;
-                                                    height: 4rem;
-                                                    border-top-left-radius: 3px;
-                                                    border-top-right-radius: 3px;
+                                                    height: 64px;
+                                                    border-top-left-radius: 0.1875rem;
+                                                    border-top-right-radius: 0.1875rem;
                                                 "
-                                                width="3rem"
-                                                height="3rem"
+                                                width="48px"
+                                                height="48px"
                                                 no-spinner
                                                 :src="card.image_url ?? undefined"
                                             >
@@ -136,8 +136,8 @@ onMounted(async () => {
                                                         v-if="storeGenerateCard.pending"
                                                         style="width: 100%; height: 100%"
                                                         type="rect"
-                                                        width="100px"
-                                                        height="100px"
+                                                        width="6.25rem"
+                                                        height="6.25rem"
                                                     />
                                                 </template>
                                             </q-img>
@@ -150,13 +150,13 @@ onMounted(async () => {
 
                                     <q-item-section
                                         side
-                                        style="inset-inline-end: 0.5rem; inset-block-start: 0.5rem"
+                                        style="inset-inline-end: 8px; inset-block-start: 8px"
                                         class="absolute q-pr-none action-buttons"
                                     >
                                         <div class="flex q-gutter-x-sm">
                                             <q-btn
                                                 size="sm"
-                                                style="width: 1rem; height: 1rem"
+                                                style="width: 16px; height: 16px"
                                                 icon="delete"
                                                 @click="deleteWord"
                                             ></q-btn>
@@ -168,18 +168,18 @@ onMounted(async () => {
 
                         <template #loading>
                             <div class="row q-my-md justify-center">
-                                <q-spinner-dots size="40px" />
+                                <q-spinner-dots size="2.5rem" />
                             </div>
                         </template>
                     </q-infinite-scroll>
                 </div>
 
-                <div v-else style="margin-top: 7.5rem">
+                <div v-else style="margin-top: 120px">
                     <q-img
                         class="rounded-borders"
-                        style="max-width: 20rem; max-height: 15rem"
-                        width="320px"
-                        height="240px"
+                        style="max-width: 320px; max-height: 240px"
+                        width="20rem"
+                        height="15rem"
                         src="https://unsplash.it/400"
                     />
                     <span class="q-mt-xl text-h4 block">
@@ -194,7 +194,7 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .word-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(208px, 1fr));
 }
 
 .word-card {
@@ -202,9 +202,9 @@ onMounted(async () => {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 12rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    height: 192px;
+    padding: 16px;
+    border-radius: 8px;
     background-color: var(--q-color-primary);
     overflow: hidden;
     text-align: center;
@@ -212,10 +212,10 @@ onMounted(async () => {
 
 .word-card q-img {
     flex-shrink: 0;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    margin-bottom: 8px;
 }
 
 .word-card span {

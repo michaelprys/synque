@@ -76,7 +76,7 @@ defineExpose({
 const storeStudySettings = useStoreStudySettings();
 const languageOptions = ref<string[]>([]);
 
-const topics = ref(storeStudySettings.studyTopics);
+// const topics = ref(storeStudySettings.studyTopics);
 
 const handleChangeAvatar = async (file: File | null) => {
     const success = await storePreferences.changeAvatar(file);
@@ -189,7 +189,7 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                 </q-select>
                             </div>
 
-                            <div class="title q-mt-lg text-subtitle1">
+                            <!-- <div class="title q-mt-lg text-subtitle1">
                                 <span>Topics:</span>
 
                                 <q-select
@@ -206,9 +206,9 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                         (val) => storeStudySettings.updateSettings('topics', val)
                                     "
                                 />
-                            </div>
+                            </div> -->
 
-                            <div class="title text-subtitle1">
+                            <div class="title text-subtitle1 q-mt-lg">
                                 <div class="flex items-center">
                                     <span>Level:</span>
                                     <q-badge class="q-ml-sm text-subtitle1" color="secondary">
@@ -245,6 +245,7 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                     />
                                 </div>
                             </div>
+
                             <div class="title text-subtitle1">
                                 <div class="flex items-center">
                                     <span>New Cards / Day:</span>

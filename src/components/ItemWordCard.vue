@@ -3,13 +3,16 @@ import type { Database } from 'app/database.types';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { useSendWordCardData } from 'src/use/useSendWordCardData';
+
 import { Rating } from 'ts-fsrs';
 import type { Ref } from 'vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 const storeGenerateCard = useStoreGenerateCard(),
     storeFlashCard = useStoreFlashCard(),
-    storeStudySettings = useStoreStudySettings();
+    storeStudySettings = useStoreStudySettings(),
+    { handleSendWordCardData } = useSendWordCardData();
 
 type FlashcardInsert = Database['public']['Tables']['flashcards']['Insert'];
 
@@ -20,14 +23,6 @@ const flashcardData = computed<Omit<FlashcardInsert, 'user_id'>>(() => ({
     transcription: storeGenerateCard.wordData?.transcription ?? null,
     language: storeStudySettings.currentTargetLanguage ?? null
 }));
-
-const handleSendWordCardData = async () =>
-    await storeGenerateCard.sendWordCardData(
-        storeStudySettings.currentTargetLanguage,
-        storeStudySettings.currentTopics,
-        storeGenerateCard.wordData?.word ?? null,
-        storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
-    );
 
 const pendingAgain = ref(false);
 const pendingHard = ref(false);
@@ -56,14 +51,29 @@ const handleReview = async (rating: Rating) => {
 
     btn.value = true;
     await storeFlashCard.review(null, rating, flashcardData.value);
+
     await handleSendWordCardData();
     btn.value = false;
 };
 
-onMounted(() => {
-    if (storeFlashCard.cardData.length > 0) return;
+watch(
+    () => storeStudySettings.currentTargetLanguage,
 
-    handleSendWordCardData();
+    async (newLang, oldLang) => {
+        if (storeFlashCard.cardData.length > 0 && oldLang === undefined) {
+            return;
+        }
+
+        if (oldLang !== undefined && newLang !== oldLang) {
+            await handleSendWordCardData();
+        }
+    }
+);
+
+onMounted(async () => {
+    if (storeFlashCard.cardData.length === 0 && storeGenerateCard.wordData?.word) {
+        await handleSendWordCardData();
+    }
 });
 </script>
 
@@ -121,15 +131,6 @@ onMounted(() => {
                             width="720px"
                             height="370px"
                         />
-                        <!-- <q-btn
-                            class="refresh-btn absolute-top-right"
-                            icon="refresh"
-                            size="sm"
-                            round
-                            flat
-                            style="width: 2rem; height: 2rem; top: 0.3rem; right: 0.3rem"
-                            @click="storeGenerateCard.refreshImage"
-                        /> -->
                     </div>
                 </q-card>
 

@@ -2,7 +2,6 @@ import { defineBoot } from '#q-app/wrappers';
 import type { User } from '@supabase/supabase-js';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { getAuthUser } from 'src/utils/getAuthUser';
-import handleError from 'src/utils/handleError';
 import supabase from 'src/utils/supabase';
 
 export default defineBoot(async () => {

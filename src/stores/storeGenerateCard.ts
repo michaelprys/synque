@@ -1,18 +1,27 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import handleError from 'src/utils/handleError';
+import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
+
+type GeneratedWord = {
+    word: string;
+    transcription: string;
+    sentence: string;
+};
 
 export const useStoreGenerateCard = defineStore(
     'storeGenerateCard',
     () => {
-        const wordData = ref<{
-                word: string;
-                transcription: string;
-                sentence: string;
-            } | null>(null),
-            imageData = ref<string>(''),
+        const imageData = ref<string>(''),
             pending = ref(false),
-            error = ref<string | null>(null);
+            error = ref<string | null>(null),
+            generatedWords = ref<GeneratedWord[]>([]),
+            wordData = ref<GeneratedWord | null>(null);
+
+        const pickFirstNewWord = (
+            generated: GeneratedWord[],
+            existing: string[]
+        ): GeneratedWord | null => generated.find((w) => !existing.includes(w.word)) ?? null;
 
         const findImage = async (name: string) => {
             pending.value = true;
@@ -68,39 +77,60 @@ export const useStoreGenerateCard = defineStore(
 
         const sendWordCardData = async (
             language: string,
-            topics: string[],
+            // topics: string[],
             existingWord: string | null,
             level: string
         ) => {
             pending.value = true;
             error.value = null;
 
+            const MAX_RETRIES = 3;
+            let attempt = 0;
+
             try {
-                const res = await fetch(
-                    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/synque-card-generation`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
-                            apikey: import.meta.env.VITE_SUPABASE_API_KEY
-                        },
-                        body: JSON.stringify({ language, topics, existingWord, level })
+                let nextWord: GeneratedWord | null = null;
+
+                while (attempt < MAX_RETRIES && !nextWord) {
+                    attempt++;
+                    const res = await fetch(
+                        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/synque-card-generation`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
+                                apikey: import.meta.env.VITE_SUPABASE_API_KEY
+                            },
+                            body: JSON.stringify({ language, existingWord, level })
+                        }
+                    );
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    const data = await res.json();
+                    generatedWords.value = JSON.parse(data.content);
+
+                    const { data: existingCards } = await supabase
+                        .from('flashcards')
+                        .select('word')
+                        .eq('language', language);
+
+                    const existingWords: string[] =
+                        existingCards?.map((c) => c.word).filter((w): w is string => w !== null) ??
+                        [];
+
+                    nextWord = pickFirstNewWord(generatedWords.value, existingWords);
+
+                    if (!nextWord && attempt < MAX_RETRIES) {
+                        console.warn(`Attempt ${attempt} failed, retrying...`);
                     }
-                );
-
-                if (!res.ok) {
-                    const errMsg = await res.text();
-
-                    throw new Error(`${res.status}: ${errMsg}`);
                 }
 
-                const data = await res.json();
-                wordData.value = JSON.parse(data.content);
+                if (!nextWord) throw new Error('No new words found after retries');
 
-                if (wordData.value) {
-                    await findImage(wordData.value.word);
-                }
+                wordData.value = nextWord;
+
+                await findImage(nextWord.word);
             } catch (err) {
                 error.value = handleError(err);
             } finally {

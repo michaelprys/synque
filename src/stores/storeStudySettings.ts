@@ -21,29 +21,29 @@ export const useStoreStudySettings = defineStore(
     'storeStudySettings',
     () => {
         const languages: Language[] = langJson,
-            studyTopics = [
-                'Sports',
-                'Clothing',
-                'Food',
-                'Travel',
-                'Work',
-                'School',
-                'Animals',
-                'Nature',
-                'Technology',
-                'Music',
-                'Art',
-                'Emotions',
-                'Greetings',
-                'Numbers',
-                'Colors',
-                'Family',
-                'House',
-                'Actions'
-            ],
+            // studyTopics = [
+            //     'Sports',
+            //     'Clothing',
+            //     'Food',
+            //     'Travel',
+            //     'Work',
+            //     'School',
+            //     'Animals',
+            //     'Nature',
+            //     'Technology',
+            //     'Music',
+            //     'Art',
+            //     'Emotions',
+            //     'Greetings',
+            //     'Numbers',
+            //     'Colors',
+            //     'Family',
+            //     'House',
+            //     'Actions'
+            // ],
             levels = ref(['Any', 'Beginner', 'Intermediate', 'Advanced', 'Native']),
             voiceTypes = ref(['Male', 'Female']),
-            currentTopics = ref<string[]>([]),
+            // currentTopics = ref<string[]>([]),
             currentLevel = ref(0),
             currentTargetLanguage = ref('English'),
             currentVoiceType = ref('Male'),
@@ -81,7 +81,7 @@ export const useStoreStudySettings = defineStore(
             if (error) return;
 
             if (data) {
-                currentTopics.value = (data.topics as string[] | null) ?? [];
+                // currentTopics.value = (data.topics as string[] | null) ?? [];
                 currentLevel.value = levels.value.indexOf(data.level ?? 'Easy');
                 currentTargetLanguage.value = data.target_language ?? 'English';
                 currentVoiceType.value = data.voice_type ?? 'Male';
@@ -106,10 +106,10 @@ export const useStoreStudySettings = defineStore(
 
         return {
             languages,
-            studyTopics,
+            // studyTopics,
             voiceTypes,
             currentTargetLanguage,
-            currentTopics,
+            // currentTopics,
             currentVoiceType,
             currentVoiceId,
             currentLevel,

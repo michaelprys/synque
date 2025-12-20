@@ -15,10 +15,11 @@ type FlashcardInsert = Database['public']['Tables']['flashcards']['Insert'];
 export const useStoreFlashCard = defineStore(
     'storeFlashCard',
     () => {
-        const pending = ref(false);
-        const error = ref<string | null>(null);
-        const cardData = ref<FlashcardRow[]>([]);
-        const storeStudySettings = useStoreStudySettings();
+        const pending = ref(false),
+            error = ref<string | null>(null),
+            cardData = ref<FlashcardRow[]>([]),
+            storeStudySettings = useStoreStudySettings(),
+            selectedCard = ref<FlashcardRow | null>(null);
 
         const review = async (
             cardId: number | null,
@@ -75,7 +76,7 @@ export const useStoreFlashCard = defineStore(
 
                 if (!cardId) {
                     await supabase.from('flashcards').insert({
-                        user_id: user.id,
+                        user_id: user!.id,
                         word: flashcardData.word ?? null,
                         sentence: flashcardData.sentence ?? null,
                         transcription: flashcardData.transcription ?? null,
@@ -105,7 +106,7 @@ export const useStoreFlashCard = defineStore(
                 const { data } = await supabase
                     .from('flashcards')
                     .select('*')
-                    .eq('user_id', user.id)
+                    .eq('user_id', user!.id)
                     .eq('language', storeStudySettings.currentTargetLanguage)
                     .returns<FlashcardRow[]>();
 
@@ -118,7 +119,11 @@ export const useStoreFlashCard = defineStore(
             }
         };
 
-        return { cardData, review, loadFlashCard };
+        const selectCard = (card: FlashcardRow) => {
+            selectedCard.value = card;
+        };
+
+        return { cardData, selectedCard, review, loadFlashCard, selectCard };
     },
     { persist: true }
 );

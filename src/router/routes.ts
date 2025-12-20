@@ -6,17 +6,24 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/LayoutMain.vue'),
         children: [
             { path: '', component: () => import('pages/PageIndex.vue'), name: 'home' },
-            { path: 'learn', component: () => import('pages/PageLearn.vue'), name: 'learn' },
+            {
+                path: 'learn',
+                component: () => import('pages/PageLearn.vue'),
+                name: 'learn',
+                meta: { requiresAuth: true }
+            },
             {
                 path: 'words',
                 component: () => import('pages/PageWords.vue'),
-                name: 'words'
+                name: 'words',
+                meta: { requiresAuth: true }
             },
-            // {
-            //     path: 'deleted-words',
-            //     component: () => import('pages/PageDeletedWords.vue'),
-            //     name: 'deleted-words'
-            // },
+            {
+                path: 'review/:word',
+                component: () => import('pages/PageReview.vue'),
+                name: 'review',
+                meta: { requiresAuth: true }
+            },
             { path: 'login', component: () => import('pages/PageLogin.vue'), name: 'login' },
             { path: 'sign-up', component: () => import('pages/PageSignUp.vue'), name: 'sign-up' },
             {

@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { Database } from 'app/database.types';
 import { useQuasar } from 'quasar';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
-
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const storeStudySettings = useStoreStudySettings(),
-    storeGenerateCard = useStoreGenerateCard();
+    storeGenerateCard = useStoreGenerateCard(),
+    router = useRouter();
 
 defineProps({
     title: {
@@ -15,6 +17,8 @@ defineProps({
         default: ''
     }
 });
+
+type FlashcardRow = Database['public']['Tables']['flashcards']['Row'];
 
 const createItems = () => Array.from({ length: 30 }, () => ({}));
 const storeFlashCard = useStoreFlashCard(),
@@ -42,6 +46,12 @@ const deleteWord = () => {
         .onDismiss(() => {});
 };
 
+const handleSelectCard = (card: FlashcardRow) => {
+    storeFlashCard.selectCard(card);
+
+    router.push({ name: 'review', params: { word: card.word } });
+};
+
 onMounted(async () => {
     await storeFlashCard.loadFlashCard();
 });
@@ -60,6 +70,7 @@ onMounted(async () => {
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
                             <q-btn
+                                :to="{ name: 'review' }"
                                 style="max-width: 192px; width: 100%"
                                 class="q-mx-auto bg-positive"
                                 icon="repeat"
@@ -112,6 +123,8 @@ onMounted(async () => {
                                 v-for="(card, idx) in storeFlashCard.cardData"
                                 :key="idx"
                                 class="q-pa-sm full-width"
+                                clickable
+                                @click="handleSelectCard(card)"
                             >
                                 <q-btn
                                     class="q-pa-none bg-primary full-width rounded-borders flex justify-between"

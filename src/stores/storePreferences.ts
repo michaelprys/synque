@@ -48,7 +48,7 @@ export const useStorePreferences = defineStore(
 
             try {
                 const user = await getAuthUser();
-                const filePath = `${user.id}/avatar`;
+                const filePath = `${user!.id}/avatar`;
 
                 const { error: uploadError } = await supabase.storage
                     .from('avatars')
@@ -64,7 +64,7 @@ export const useStorePreferences = defineStore(
 
                 const { error: dbError } = await supabase
                     .from('profiles')
-                    .upsert({ id: user.id, avatar_url: publicUrl });
+                    .upsert({ id: user!.id, avatar_url: publicUrl });
 
                 if (dbError) throw dbError;
 

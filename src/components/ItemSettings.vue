@@ -95,7 +95,10 @@ onMounted(async () => {
     languageOptions.value = storeStudySettings.languages.map((l) => l.name);
 
     const user = await getAuthUser();
-    const { data } = await supabase.from('flashcards').select('language').eq('user_id', user.id);
+    const { data } = await supabase
+        .from('flashcards')
+        .select('language')
+        .eq('user_id', user!.id ?? null);
 
     activeLanguages.value =
         data?.map((l) => l.language).filter((l): l is string => l != null) ?? [];
@@ -154,7 +157,7 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                     use-input
                                     color="accent"
                                     hide-selected
-                                    style="width: 33.33%"
+                                    style="max-width: 13.75rem"
                                     option-label="label"
                                     fill-input
                                     input-debounce="0"
@@ -179,7 +182,7 @@ const filterLanguages = (val: string, update: (cb: () => void) => void) => {
                                     :options="storeStudySettings.voiceTypes"
                                     dark
                                     filled
-                                    style="width: 33.33%"
+                                    style="max-width: 13.75rem"
                                     input-debounce="0"
                                     @update:model-value="
                                         (val) =>

@@ -94,7 +94,7 @@ const onReset = () => {
                     <q-btn
                         type="submit"
                         color="secondary"
-                        style="width: 17.1875rem; opacity: 75%; border-radius: 0.375rem"
+                        style="width: 17.1875rem; border-radius: 0.375rem"
                         size="lg"
                         :loading="pending"
                     >

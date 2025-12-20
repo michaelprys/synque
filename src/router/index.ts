@@ -1,4 +1,5 @@
 import { defineRouter } from '#q-app/wrappers';
+import { getAuthUser } from 'src/utils/getAuthUser';
 import {
     createMemoryHistory,
     createRouter,
@@ -31,6 +32,24 @@ export default defineRouter(function (/* { store, ssrContext } */) {
         // quasar.conf.js -> build -> vueRouterMode
         // quasar.conf.js -> build -> publicPath
         history: createHistory(process.env.VUE_ROUTER_BASE)
+    });
+
+    Router.beforeEach(async (to, from, next) => {
+        const user = await getAuthUser();
+
+        const isAuthenticated = !!user;
+
+        if (to.meta.requiresAuth) {
+            if (isAuthenticated) {
+                next();
+            } else
+                next({
+                    name: 'login',
+                    query: { redirect: to.fullPath }
+                });
+        } else {
+            next();
+        }
     });
 
     return Router;

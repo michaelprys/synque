@@ -29,7 +29,7 @@ export default defineBoot(async () => {
     try {
         user = await getAuthUser();
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 
     await handleLoadSettings(user);

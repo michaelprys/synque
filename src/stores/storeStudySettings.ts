@@ -96,7 +96,7 @@ export const useStoreStudySettings = defineStore(
 
                 await supabase
                     .from('study_settings')
-                    .upsert({ [field]: value, user_id: user.id }, { onConflict: 'user_id' });
+                    .upsert({ [field]: value, user_id: user!.id }, { onConflict: 'user_id' });
             } catch (err) {
                 console.error(err);
             }

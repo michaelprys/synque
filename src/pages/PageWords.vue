@@ -139,11 +139,10 @@ onMounted(async () => {
                                 v-for="(card, idx) in storeFlashCard.cardData"
                                 :key="idx"
                                 class="q-pa-sm full-width"
-                                clickable
-                                @click="handleSelectCard(card)"
                             >
                                 <q-btn
                                     class="q-pa-none bg-primary full-width rounded-borders flex justify-between"
+                                    @click="handleSelectCard(card)"
                                 >
                                     <q-item-section class="q-mt-none q-pt-none">
                                         <div class="column items-center">

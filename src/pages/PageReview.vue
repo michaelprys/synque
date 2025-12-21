@@ -1,40 +1,63 @@
 <script setup lang="ts">
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
-import { computed, ref } from 'vue';
+import { computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const storeFlashCard = useStoreFlashCard(),
-    pendingPrev = ref(false),
-    pendingNext = ref(false);
+const storeFlashCard = useStoreFlashCard();
+const route = useRoute();
+const router = useRouter();
 
 const currentIndex = computed(() => {
     if (!storeFlashCard.selectedCard) return -1;
-
     return storeFlashCard.cardData.findIndex((card) => card.id === storeFlashCard.selectedCard!.id);
 });
 
-const prevCard = computed(() => {
-    const prevIdx = currentIndex.value - 1;
-
-    return prevIdx >= 0 ? storeFlashCard.cardData[prevIdx] : null;
-});
-
-const nextCard = computed(() => {
-    const nextIdx = currentIndex.value + 1;
-
-    return nextIdx < storeFlashCard.cardData.length ? storeFlashCard.cardData[nextIdx] : null;
-});
-
 const goPrev = () => {
-    if (prevCard.value) {
-        storeFlashCard.selectedCard = prevCard.value;
+    const prevIdx = currentIndex.value - 1;
+    if (prevIdx >= 0 && prevIdx < storeFlashCard.cardData.length) {
+        const prevCard = storeFlashCard.cardData[prevIdx]!;
+        storeFlashCard.selectedCard = prevCard;
+        if (prevCard.word) {
+            updateUrl(prevCard.word);
+        }
     }
 };
 
 const goNext = () => {
-    if (nextCard.value) {
-        storeFlashCard.selectedCard = nextCard.value;
+    const nextIdx = currentIndex.value + 1;
+    if (nextIdx >= 0 && nextIdx < storeFlashCard.cardData.length) {
+        const nextCard = storeFlashCard.cardData[nextIdx]!;
+        storeFlashCard.selectedCard = nextCard;
+        if (nextCard.word) {
+            updateUrl(nextCard.word);
+        }
     }
 };
+
+const updateUrl = (word: string) => {
+    if (route.params.word !== word) {
+        router.replace({ name: 'review', params: { word } });
+    }
+};
+
+watch(
+    () => route.params.word as string,
+    (newWord) => {
+        if (!newWord) return;
+
+        const card = storeFlashCard.cardData.find((c) => c.word === newWord);
+        if (card) {
+            storeFlashCard.selectedCard = card;
+        } else if (storeFlashCard.cardData.length > 0) {
+            const first = storeFlashCard.cardData[0]!;
+            storeFlashCard.selectedCard = first;
+            if (first.word) {
+                updateUrl(first.word);
+            }
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
@@ -51,20 +74,17 @@ const goNext = () => {
                         style="display: grid; grid-template-columns: repeat(3, 1fr)"
                     >
                         <span
-                            content
                             class="text-h3 text-lowercase col-2"
                             style="grid-column: 2; justify-self: center"
                         >
                             {{ storeFlashCard.selectedCard?.word }}
                         </span>
                     </div>
-
                     <div class="flex-center q-mt-md q-gutter-x-sm flex">
                         <q-btn icon="volume_down" flat round size="lg" padding="xs" />
                         <span class="text-lowercase text-h6" style="opacity: 60%"></span>
                     </div>
                 </div>
-
                 <q-card
                     class="q-mt-lg flex-center full-width flex bg-dark"
                     style="border-radius: 0.375rem"
@@ -79,40 +99,30 @@ const goNext = () => {
                         />
                     </div>
                 </q-card>
-
                 <div class="column items-center">
                     <p class="text-h5 q-mt-lg full-width" style="max-width: 36.25rem">
                         {{ storeFlashCard.selectedCard?.sentence }}
                     </p>
-
                     <q-btn class="q-mt-md" icon="volume_down" flat round size="lg" padding="xs" />
                 </div>
-
                 <div class="flex q-gutter-x-xl q-mt-xl">
                     <q-btn
-                        :loading="pendingPrev"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         @click="goPrev"
-                        >Prev
-                        <template #loading>
-                            <q-spinner-facebook />
-                        </template>
+                    >
+                        Prev
                     </q-btn>
-
                     <q-btn
-                        :loading="pendingNext"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         @click="goNext"
-                        >Next
-                        <template #loading>
-                            <q-spinner-facebook />
-                        </template>
+                    >
+                        Next
                     </q-btn>
                 </div>
             </div>

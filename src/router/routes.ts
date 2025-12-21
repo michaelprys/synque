@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'words',
                 component: () => import('pages/PageWords.vue'),
                 name: 'words',
+                props: true,
                 meta: { requiresAuth: true }
             },
             {

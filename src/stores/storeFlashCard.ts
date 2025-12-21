@@ -21,7 +21,7 @@ export const useStoreFlashCard = defineStore(
             storeStudySettings = useStoreStudySettings(),
             selectedCard = ref<FlashcardRow | null>(null);
 
-        const review = async (
+        const addCard = async (
             cardId: number | null,
             rating: Rating,
             flashcardData: Omit<FlashcardInsert, 'user_id'>
@@ -123,7 +123,7 @@ export const useStoreFlashCard = defineStore(
             selectedCard.value = card;
         };
 
-        return { cardData, selectedCard, review, loadFlashCard, selectCard };
+        return { cardData, selectedCard, addCard, loadFlashCard, selectCard };
     },
     { persist: true }
 );

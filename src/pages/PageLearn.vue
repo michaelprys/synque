@@ -28,7 +28,7 @@ const pendingHard = ref(false);
 const pendingGood = ref(false);
 const pendingEasy = ref(false);
 
-const handleReview = async (rating: Rating) => {
+const handleAddCard = async (rating: Rating) => {
     let btn: Ref<boolean> | undefined;
 
     switch (rating) {
@@ -49,7 +49,7 @@ const handleReview = async (rating: Rating) => {
     }
 
     btn.value = true;
-    await storeFlashCard.review(null, rating, flashcardData.value);
+    await storeFlashCard.addCard(null, rating, flashcardData.value);
 
     await handleSendWordCardData();
     btn.value = false;
@@ -161,7 +161,7 @@ onMounted(async () => {
                         color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleReview(Rating.Again)"
+                        @click="handleAddCard(Rating.Again)"
                         >Again
                         <template #loading>
                             <q-spinner-facebook />
@@ -173,7 +173,7 @@ onMounted(async () => {
                         color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleReview(Rating.Hard)"
+                        @click="handleAddCard(Rating.Hard)"
                         >Hard
                         <template #loading>
                             <q-spinner-facebook />
@@ -185,7 +185,7 @@ onMounted(async () => {
                         color="positive"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleReview(Rating.Good)"
+                        @click="handleAddCard(Rating.Good)"
                         >Good
                         <template #loading>
                             <q-spinner-facebook />
@@ -198,7 +198,7 @@ onMounted(async () => {
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
                         l
-                        @click="handleReview(Rating.Easy)"
+                        @click="handleAddCard(Rating.Easy)"
                         >Easy
                         <template #loading>
                             <q-spinner-facebook />

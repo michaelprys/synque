@@ -52,6 +52,21 @@ const handleSelectCard = (card: FlashcardRow) => {
     router.push({ name: 'review', params: { word: card.word } });
 };
 
+const reviewCard = () => {
+    const cards = storeFlashCard.cardData;
+
+    if (cards.length === 0) return;
+
+    const firstCard = cards[0]!;
+
+    storeFlashCard.selectCard(firstCard);
+
+    router.push({
+        name: 'review',
+        params: { word: firstCard.word ?? 'unknown' }
+    });
+};
+
 onMounted(async () => {
     await storeFlashCard.loadFlashCard();
 });
@@ -75,6 +90,7 @@ onMounted(async () => {
                                 class="q-mx-auto bg-positive"
                                 icon="repeat"
                                 label="Review"
+                                @click="reviewCard"
                             />
                         </div>
 

@@ -1,7 +1,40 @@
 <script setup lang="ts">
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
+import { computed, ref } from 'vue';
 
-const storeFlashCard = useStoreFlashCard();
+const storeFlashCard = useStoreFlashCard(),
+    pendingPrev = ref(false),
+    pendingNext = ref(false);
+
+const currentIndex = computed(() => {
+    if (!storeFlashCard.selectedCard) return -1;
+
+    return storeFlashCard.cardData.findIndex((card) => card.id === storeFlashCard.selectedCard!.id);
+});
+
+const prevCard = computed(() => {
+    const prevIdx = currentIndex.value - 1;
+
+    return prevIdx >= 0 ? storeFlashCard.cardData[prevIdx] : null;
+});
+
+const nextCard = computed(() => {
+    const nextIdx = currentIndex.value + 1;
+
+    return nextIdx < storeFlashCard.cardData.length ? storeFlashCard.cardData[nextIdx] : null;
+});
+
+const goPrev = () => {
+    if (prevCard.value) {
+        storeFlashCard.selectedCard = prevCard.value;
+    }
+};
+
+const goNext = () => {
+    if (nextCard.value) {
+        storeFlashCard.selectedCard = nextCard.value;
+    }
+};
 </script>
 
 <template>
@@ -56,12 +89,13 @@ const storeFlashCard = useStoreFlashCard();
                 </div>
 
                 <div class="flex q-gutter-x-xl q-mt-xl">
-                    <!-- <q-btn
+                    <q-btn
                         :loading="pendingPrev"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
+                        @click="goPrev"
                         >Prev
                         <template #loading>
                             <q-spinner-facebook />
@@ -74,11 +108,12 @@ const storeFlashCard = useStoreFlashCard();
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
+                        @click="goNext"
                         >Next
                         <template #loading>
                             <q-spinner-facebook />
                         </template>
-                    </q-btn> -->
+                    </q-btn>
                 </div>
             </div>
         </section>

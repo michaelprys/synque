@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 type GeneratedWord = {
     word: string;
+    englishWord: string;
     transcription: string;
     sentence: string;
 };
@@ -41,8 +42,16 @@ export const useStoreGenerateCard = defineStore(
                     const pexelsData = await pexelsRes.json();
 
                     if (pexelsData.photos?.length > 0) {
+                        const src = pexelsData.photos[0].src;
+
                         imageData.value =
-                            pexelsData.photos[0].src.large || pexelsData.photos[0].src.medium || '';
+                            src.original ||
+                            src.large ||
+                            src.large2x ||
+                            src.landscape ||
+                            src.portrait ||
+                            src.medium ||
+                            '';
 
                         return;
                     }
@@ -108,6 +117,9 @@ export const useStoreGenerateCard = defineStore(
                     if (!res.ok) throw new Error(await res.text());
 
                     const data = await res.json();
+
+                    console.log('alldata: ', data);
+
                     generatedWords.value = JSON.parse(data.content);
 
                     const { data: existingCards } = await supabase
@@ -130,7 +142,7 @@ export const useStoreGenerateCard = defineStore(
 
                 wordData.value = nextWord;
 
-                await findImage(nextWord.word);
+                await findImage(nextWord.englishWord);
             } catch (err) {
                 error.value = handleError(err);
             } finally {

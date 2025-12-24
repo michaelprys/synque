@@ -4,6 +4,7 @@ import { useQuasar } from 'quasar';
 import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import supabase from 'src/utils/supabase';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -33,17 +34,40 @@ const onLoad = (index: number, done: () => void) => {
     }, 2000);
 };
 
-const deleteWord = () => {
+const deleteWord = (cardId: FlashcardRow['id']) => {
     $q.dialog({
-        title: 'Delete',
-        message: 'Are you sure you want to delete the word?',
-        ok: { push: true, color: 'info' },
-        cancel: { push: true, color: 'info' },
-        persistent: false
-    })
-        .onOk(() => {})
-        .onCancel(() => {})
-        .onDismiss(() => {});
+        title: 'Delete word',
+        message: `Are you sure you want to delete this word"?`,
+        persistent: true,
+        color: 'negative',
+        // @ts-expect-error - quasar types are broken for dialog options
+        cardClass: 'bg-secondary text-white',
+        titleClass: 'text-white',
+        ok: {
+            label: 'Delete',
+            color: 'white',
+            textColor: 'primary'
+        },
+        cancel: {
+            label: 'Cancel',
+            flat: true,
+            color: 'white'
+        }
+    }).onOk(async () => {
+        const { error } = await supabase.from('flashcards').delete().eq('id', cardId);
+
+        if (error) {
+            $q.notify({
+                type: 'negative',
+                message: `Error deleting word: ${error.message}`
+            });
+            return;
+        }
+
+        storeFlashCard.cardData = storeFlashCard.cardData.filter((c) => c.id !== cardId);
+
+        $q.notify({ message: `"Word deleted` });
+    });
 };
 
 const handleSelectCard = (card: FlashcardRow) => {
@@ -74,8 +98,8 @@ onMounted(async () => {
 
 <template>
     <q-page class="q-ma-sm flex">
-        <section class="q-mx-auto text-center" style="max-width: 1280px; width: 100%">
-            <div style="width: 100%; border-radius: 8px" class="q-mb-xl q-pa-lg">
+        <section class="q-mx-auto text-center" style="max-width: 80rem; width: 100%">
+            <div style="width: 100%; border-radius: 0.5rem" class="q-mb-xl q-pa-lg">
                 <div v-if="storeFlashCard.cardData.length !== 0">
                     <h3 class="text-h4">
                         {{ storeStudySettings.currentTargetLanguage }}:
@@ -86,7 +110,7 @@ onMounted(async () => {
                         <div class="full-width q-mt-lg flex items-center">
                             <q-btn
                                 :to="{ name: 'review' }"
-                                style="max-width: 192px; width: 100%"
+                                style="max-width: 12rem; width: 100%"
                                 class="q-mx-auto bg-positive"
                                 icon="repeat"
                                 label="Review"
@@ -134,80 +158,104 @@ onMounted(async () => {
                     </div>
 
                     <q-infinite-scroll :offset="150" @load="onLoad">
-                        <q-list class="word-list q-mt-sm q-gutter-xs" dark>
-                            <q-item
-                                v-for="(card, idx) in storeFlashCard.cardData"
-                                :key="idx"
-                                class="q-pa-sm full-width"
-                            >
-                                <q-btn
-                                    class="q-pa-none bg-primary full-width rounded-borders flex justify-between"
-                                    @click="handleSelectCard(card)"
+                        <div class="word-list-container q-mt-md">
+                            <div class="word-list q-gutter-md">
+                                <q-item
+                                    v-for="(card, idx) in storeFlashCard.cardData"
+                                    :key="idx"
+                                    class="q-pa-sm full-width"
+                                    style="
+                                        border-top-left-radius: 3px;
+                                        border-top-right-radius: 3px;
+                                    "
                                 >
-                                    <q-item-section class="q-mt-none q-pt-none">
-                                        <div class="column items-center">
-                                            <q-img
-                                                class=""
-                                                style="
-                                                    width: 100%;
-                                                    height: 64px;
-                                                    border-top-left-radius: 0.1875rem;
-                                                    border-top-right-radius: 0.1875rem;
-                                                "
-                                                width="48px"
-                                                height="48px"
-                                                no-spinner
-                                                :src="card.image_url ?? undefined"
-                                            >
-                                                <template #default>
-                                                    <q-skeleton
-                                                        v-if="storeGenerateCard.pending"
-                                                        style="width: 100%; height: 100%"
-                                                        type="rect"
-                                                        width="6.25rem"
-                                                        height="6.25rem"
-                                                    />
-                                                </template>
-                                            </q-img>
-                                        </div>
-
-                                        <span class="q-my-md text-subtitle2 block">
-                                            {{ card.word }}
-                                        </span>
-                                    </q-item-section>
-
-                                    <q-item-section
-                                        side
-                                        style="inset-inline-end: 8px; inset-block-start: 8px"
-                                        class="absolute q-pr-none action-buttons"
+                                    <q-btn
+                                        class="q-pa-none bg-primary full-width rounded-borders flex justify-between"
+                                        @click="handleSelectCard(card)"
                                     >
-                                        <div class="flex q-gutter-x-sm">
-                                            <q-btn
-                                                size="sm"
-                                                style="width: 16px; height: 16px"
-                                                icon="delete"
-                                                @click="deleteWord"
-                                            ></q-btn>
-                                        </div>
-                                    </q-item-section>
-                                </q-btn>
-                            </q-item>
-                        </q-list>
+                                        <q-item-section class="q-mt-none q-pt-none">
+                                            <div
+                                                class="column items-center"
+                                                style="
+                                                    border-top-left-radius: 3px;
+                                                    border-top-right-radius: 3px;
+                                                "
+                                            >
+                                                <q-img
+                                                    style="
+                                                        width: 100%;
+                                                        height: 64px;
+                                                        border-top-left-radius: 3px;
+                                                        border-top-right-radius: 3px;
+                                                    "
+                                                    width="3rem"
+                                                    height="3rem"
+                                                    no-spinner
+                                                    :src="
+                                                        card.image_url
+                                                            ? card.image_url.includes(
+                                                                  'images.pexels.com'
+                                                              )
+                                                                ? card.image_url.split('?')[0] +
+                                                                  '?auto=compress&cs=tinysrgb&w=400&h=400'
+                                                                : card.image_url
+                                                            : undefined
+                                                    "
+                                                    loading="lazy"
+                                                >
+                                                    <template #default>
+                                                        <q-skeleton
+                                                            v-if="storeGenerateCard.pending"
+                                                            style="width: 100%; height: 100%"
+                                                            type="rect"
+                                                            width="100px"
+                                                            height="100px"
+                                                        />
+                                                    </template>
+                                                </q-img>
+                                            </div>
+
+                                            <span class="q-my-md text-subtitle2 block">
+                                                {{ card.word }}
+                                            </span>
+                                        </q-item-section>
+
+                                        <q-item-section
+                                            side
+                                            style="
+                                                inset-inline-end: 0.5rem;
+                                                inset-block-start: 0.5rem;
+                                            "
+                                            class="absolute q-pr-none action-buttons"
+                                        >
+                                            <div class="flex q-gutter-x-sm">
+                                                <q-btn
+                                                    size="sm"
+                                                    style="width: 1rem; height: 1rem"
+                                                    icon="delete"
+                                                    @click.stop="deleteWord(card.id)"
+                                                ></q-btn>
+                                            </div>
+                                        </q-item-section>
+                                    </q-btn>
+                                </q-item>
+                            </div>
+                        </div>
 
                         <template #loading>
                             <div class="row q-my-md justify-center">
-                                <q-spinner-dots size="2.5rem" />
+                                <q-spinner-dots size="40px" />
                             </div>
                         </template>
                     </q-infinite-scroll>
                 </div>
 
-                <div v-else style="margin-top: 120px">
+                <div v-else style="margin-top: 7.5rem">
                     <q-img
                         class="rounded-borders"
-                        style="max-width: 320px; max-height: 240px"
-                        width="20rem"
-                        height="15rem"
+                        style="max-width: 20rem; max-height: 15rem"
+                        width="320px"
+                        height="240px"
                         src="https://unsplash.it/400"
                     />
                     <span class="q-mt-xl text-h4 block">
@@ -220,9 +268,19 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+.word-list-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 .word-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(208px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 15rem));
+    gap: 0.5rem;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
 }
 
 .word-card {
@@ -230,9 +288,9 @@ onMounted(async () => {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 192px;
-    padding: 16px;
-    border-radius: 8px;
+    height: 12rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
     background-color: var(--q-color-primary);
     overflow: hidden;
     text-align: center;
@@ -240,10 +298,10 @@ onMounted(async () => {
 
 .word-card q-img {
     flex-shrink: 0;
-    width: 64px;
-    height: 64px;
-    border-radius: 8px;
-    margin-bottom: 8px;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .word-card span {

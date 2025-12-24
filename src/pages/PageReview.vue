@@ -3,9 +3,9 @@ import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const storeFlashCard = useStoreFlashCard();
-const route = useRoute();
-const router = useRouter();
+const storeFlashCard = useStoreFlashCard(),
+    route = useRoute(),
+    router = useRouter();
 
 const currentIndex = computed(() => {
     if (!storeFlashCard.selectedCard) return -1;
@@ -105,8 +105,9 @@ watch(
                     </p>
                     <q-btn class="q-mt-md" icon="volume_down" flat round size="lg" padding="xs" />
                 </div>
-                <div class="flex q-gutter-x-xl q-mt-xl">
+                <div class="flex q-gutter-x-lg q-mt-xl">
                     <q-btn
+                        :disable="currentIndex <= 0"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
@@ -116,6 +117,7 @@ watch(
                         Prev
                     </q-btn>
                     <q-btn
+                        :disable="currentIndex === storeFlashCard.cardData.length - 1"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"

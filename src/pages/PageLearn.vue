@@ -23,10 +23,10 @@ const flashcardData = computed<Omit<FlashcardInsert, 'user_id'>>(() => ({
     language: storeStudySettings.currentTargetLanguage ?? null
 }));
 
-const pendingAgain = ref(false);
-const pendingHard = ref(false);
-const pendingGood = ref(false);
-const pendingEasy = ref(false);
+const pendingAgain = ref(false),
+    pendingHard = ref(false),
+    pendingGood = ref(false),
+    pendingEasy = ref(false);
 
 const handleAddCard = async (rating: Rating) => {
     let btn: Ref<boolean> | undefined;
@@ -54,6 +54,10 @@ const handleAddCard = async (rating: Rating) => {
     await handleSendWordCardData();
     btn.value = false;
 };
+
+const isAnyLoading = computed(() => {
+    return pendingAgain.value || pendingHard.value || pendingGood.value || pendingEasy.value;
+});
 
 watch(
     () => storeStudySettings.currentTargetLanguage,
@@ -157,6 +161,7 @@ onMounted(async () => {
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
                     <q-btn
                         :loading="pendingAgain"
+                        :disable="isAnyLoading"
                         text-color="primary"
                         color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
@@ -169,6 +174,7 @@ onMounted(async () => {
                     </q-btn>
                     <q-btn
                         :loading="pendingHard"
+                        :disable="isAnyLoading"
                         text-color="primary"
                         color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
@@ -181,6 +187,7 @@ onMounted(async () => {
                     </q-btn>
                     <q-btn
                         :loading="pendingGood"
+                        :disable="isAnyLoading"
                         text-color="primary"
                         color="positive"
                         style="width: 8rem; border-radius: 0.375rem"
@@ -193,11 +200,11 @@ onMounted(async () => {
                     </q-btn>
                     <q-btn
                         :loading="pendingEasy"
+                        :disable="isAnyLoading"
                         text-color="primary"
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        l
                         @click="handleAddCard(Rating.Easy)"
                         >Easy
                         <template #loading>

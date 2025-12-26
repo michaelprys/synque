@@ -27,16 +27,10 @@ const logout = async () => {
 
         if (error) throw error;
 
-        $q.notify({
-            type: 'positive',
-            message: 'Logout successful!'
-        });
+        $q.notify({ position: 'bottom-right', type: 'positive', message: 'Logout successful!' });
         router.push({ name: 'login' });
     } catch (err) {
-        $q.notify({
-            type: 'negative',
-            message: handleError(err)
-        });
+        $q.notify({ position: 'bottom-right', type: 'negative', message: handleError(err) });
     } finally {
         pending.value = false;
     }
@@ -133,10 +127,14 @@ onMounted(async () => {
                                 </span>
 
                                 <q-list class="full-width text-center">
-                                    <q-item v-if="user" v-close-popup class="text-white" clickable>
-                                        <q-item-section @click="refDialogSettings?.openDialog"
-                                            >Properties</q-item-section
-                                        >
+                                    <q-item
+                                        v-if="user"
+                                        v-close-popup
+                                        class="text-white"
+                                        clickable
+                                        @click="refDialogSettings?.openDialog"
+                                    >
+                                        <q-item-section>Properties</q-item-section>
                                     </q-item>
                                     <q-item
                                         v-if="!user"

@@ -5,7 +5,7 @@ import { useStoreFlashCard } from 'src/stores/storeFlashCard';
 import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
 import { useStoreStudySettings } from 'src/stores/storeStudySettings';
 import supabase from 'src/utils/supabase';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeStudySettings = useStoreStudySettings(),
@@ -21,17 +21,49 @@ defineProps({
 
 type FlashcardRow = Database['public']['Tables']['flashcards']['Row'];
 
-const createItems = () => Array.from({ length: 30 }, () => ({}));
 const storeFlashCard = useStoreFlashCard(),
-    search = ref(null),
-    items = ref(createItems()),
-    $q = useQuasar();
+    search = ref(''),
+    $q = useQuasar(),
+    PAGE_SIZE = 10,
+    hasMore = ref(true),
+    totalCards = ref(0),
+    pending = ref(false);
 
-const onLoad = (index: number, done: () => void) => {
-    setTimeout(() => {
-        items.value.push(...createItems());
+const onLoad = async (index: number, done: () => void) => {
+    const from = index * PAGE_SIZE,
+        to = from + PAGE_SIZE - 1;
+
+    pending.value = true;
+
+    const { data, error, count } = await supabase
+        .from('flashcards')
+        .select('*', { count: 'exact' })
+        .ilike('word', `%${search.value}%`)
+        .range(from, to);
+
+    if (error) {
         done();
-    }, 2000);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        done();
+        return;
+    }
+
+    if (!search.value) {
+        totalCards.value = count ?? 0;
+    }
+
+    if (data.length < PAGE_SIZE) {
+        hasMore.value = false;
+    }
+
+    storeFlashCard.cardData.push(...data);
+
+    pending.value = false;
+
+    done();
 };
 
 const deleteWord = (cardId: FlashcardRow['id']) => {
@@ -58,6 +90,7 @@ const deleteWord = (cardId: FlashcardRow['id']) => {
 
         if (error) {
             $q.notify({
+                position: 'bottom-right',
                 type: 'negative',
                 message: `Error deleting word: ${error.message}`
             });
@@ -66,7 +99,7 @@ const deleteWord = (cardId: FlashcardRow['id']) => {
 
         storeFlashCard.cardData = storeFlashCard.cardData.filter((c) => c.id !== cardId);
 
-        $q.notify({ message: `"Word deleted` });
+        $q.notify({ position: 'bottom-right', type: 'positive', message: 'Word deleted' });
     });
 };
 
@@ -91,16 +124,22 @@ const reviewCard = () => {
     });
 };
 
-onMounted(async () => {
-    await storeFlashCard.loadFlashCard();
-});
+watch(
+    search,
+    async () => {
+        storeFlashCard.cardData = [];
+        hasMore.value = true;
+        await onLoad(0, () => {});
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
     <q-page class="q-ma-sm flex">
         <section class="q-mx-auto text-center" style="max-width: 80rem; width: 100%">
             <div style="width: 100%; border-radius: 0.5rem" class="q-mb-xl q-pa-lg">
-                <div v-if="storeFlashCard.cardData.length !== 0">
+                <div>
                     <h3 class="text-h4">
                         {{ storeStudySettings.currentTargetLanguage }}:
                         {{ storeFlashCard.cardData.length }} words
@@ -118,11 +157,12 @@ onMounted(async () => {
                             />
                         </div>
 
-                        <div class="row q-mt-lg items-center justify-between">
-                            <div class="col">
+                        <div class="row q-mt-xl items-center justify-between">
+                            <div class="col flex justify-center">
                                 <q-input
                                     v-model="search"
-                                    class="q-px-sm text-h6"
+                                    class="q-px-sm text-h6 full-width"
+                                    style="max-width: 40rem; width: 100%"
                                     dark
                                     dense
                                     filled
@@ -130,36 +170,14 @@ onMounted(async () => {
                                     placeholder="Search..."
                                 />
                             </div>
-
-                            <div class="q-pr-sm">
-                                <q-btn-dropdown icon="sort" flat>
-                                    <q-list class="bg-primary">
-                                        <q-item v-close-popup clickable>
-                                            <q-item-section>
-                                                <q-item-label>Photos</q-item-label>
-                                            </q-item-section>
-                                        </q-item>
-
-                                        <q-item v-close-popup clickable>
-                                            <q-item-section>
-                                                <q-item-label>Videos</q-item-label>
-                                            </q-item-section>
-                                        </q-item>
-
-                                        <q-item v-close-popup clickable>
-                                            <q-item-section>
-                                                <q-item-label>Articles</q-item-label>
-                                            </q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </q-btn-dropdown>
-                            </div>
                         </div>
                     </div>
+                </div>
 
+                <div v-if="storeFlashCard.cardData.length > 0">
                     <q-infinite-scroll :offset="150" @load="onLoad">
-                        <div class="word-list-container q-mt-md">
-                            <div class="word-list q-gutter-md">
+                        <div class="word-list-container q-mt-lg">
+                            <div class="word-list">
                                 <q-item
                                     v-for="(card, idx) in storeFlashCard.cardData"
                                     :key="idx"
@@ -243,14 +261,24 @@ onMounted(async () => {
                         </div>
 
                         <template #loading>
-                            <div class="row q-my-md justify-center">
+                            <div v-if="hasMore" class="row q-my-md justify-center">
                                 <q-spinner-dots size="40px" />
                             </div>
                         </template>
+
+                        <span
+                            v-if="!hasMore && storeFlashCard.cardData.length"
+                            class="block q-mt-xl text-subtitle1"
+                            >No more words to load.</span
+                        >
                     </q-infinite-scroll>
                 </div>
 
-                <div v-else style="margin-top: 7.5rem">
+                <span v-else-if="search" class="block q-mt-xl text-subtitle1"
+                    >No words found for "{{ search }}"</span
+                >
+
+                <div v-else-if="totalCards === 0" style="margin-top: 7.5rem">
                     <q-img
                         class="rounded-borders"
                         style="max-width: 20rem; max-height: 15rem"
@@ -276,7 +304,7 @@ onMounted(async () => {
 
 .word-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 15rem));
+    grid-template-columns: repeat(auto-fill, 15rem);
     gap: 0.5rem;
     justify-content: center;
     width: fit-content;

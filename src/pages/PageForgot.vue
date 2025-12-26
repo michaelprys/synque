@@ -20,6 +20,7 @@ const sendResetLink = async () => {
         if (error) throw error;
 
         $q.notify({
+            position: 'bottom-right',
             color: 'positive',
             textColor: 'white',
             icon: 'check',
@@ -27,6 +28,7 @@ const sendResetLink = async () => {
         });
     } catch (err) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',

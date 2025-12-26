@@ -17,11 +17,16 @@ const pending = ref(false),
 
 const setNewPassword = async () => {
     if (!isReady.value) {
-        $q.notify({ color: 'negative', message: 'Link is invalid or expired' });
+        $q.notify({
+            position: 'bottom-right',
+            color: 'negative',
+            message: 'Link is invalid or expired'
+        });
     }
 
     if (newPassword.value !== confirmNewPassword.value) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             icon: 'warning',
             message: "Passwords don't match"
@@ -41,6 +46,7 @@ const setNewPassword = async () => {
         if (error) throw error;
 
         $q.notify({
+            position: 'bottom-right',
             color: 'positive',
             icon: 'check',
             message: 'New password has been successfully set!'
@@ -49,6 +55,7 @@ const setNewPassword = async () => {
         router.push({ name: 'home' });
     } catch (err) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
@@ -69,6 +76,7 @@ onMounted(() => {
         if (event === 'PASSWORD_RECOVERY') {
             isReady.value = true;
             $q.notify({
+                position: 'bottom-right',
                 color: 'positive',
                 message: 'Link is valid - please enter new password'
             });

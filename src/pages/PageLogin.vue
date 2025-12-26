@@ -26,6 +26,7 @@ const login = async () => {
         if (error) throw error;
 
         $q.notify({
+            position: 'bottom-right',
             color: 'positive',
             icon: 'check',
             message: `Sign in successful!`
@@ -34,6 +35,7 @@ const login = async () => {
         router.push({ name: 'home' });
     } catch (err) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',

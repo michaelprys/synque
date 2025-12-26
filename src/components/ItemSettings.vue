@@ -26,6 +26,7 @@ const storePreferences = useStorePreferences(),
 const updatePassword = async () => {
     if (password.value !== confirmPassword.value) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             icon: 'warning',
             message: "Passwords don't match"
@@ -44,15 +45,13 @@ const updatePassword = async () => {
         if (error) throw error;
 
         $q.notify({
+            position: 'bottom-right',
             type: 'positive',
             message: 'The password was updated'
         });
         router.push({ name: 'home' });
     } catch (err) {
-        $q.notify({
-            type: 'negative',
-            message: handleError(err)
-        });
+        $q.notify({ position: 'bottom-right', type: 'negative', message: handleError(err) });
     } finally {
         pending.value = false;
         password.value = '';
@@ -84,6 +83,7 @@ const handleChangeAvatar = async (file: File | null) => {
     await storePreferences.loadAvatar();
 
     $q.notify({
+        position: 'bottom-right',
         type: success ? 'positive' : 'negative',
         message: success ? 'Avatar updated successfully' : 'Failed to update avatar'
     });

@@ -19,6 +19,7 @@ const router = useRouter(),
 const signUp = async () => {
     if (!termsAccepted.value) {
         $q.notify({
+            position: 'bottom-right',
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
@@ -30,6 +31,7 @@ const signUp = async () => {
 
     if (password.value !== confirmPassword.value) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             icon: 'warning',
             message: "Passwords don't match"
@@ -50,6 +52,7 @@ const signUp = async () => {
         if (error) throw error;
 
         $q.notify({
+            position: 'bottom-right',
             color: 'positive',
             icon: 'check',
             message: 'Sign up successful!'
@@ -58,6 +61,7 @@ const signUp = async () => {
         router.push({ name: 'login' });
     } catch (err) {
         $q.notify({
+            position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Database } from 'app/database.types';
-import { useStoreFlashCard } from 'src/stores/storeFlashCard';
-import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
-import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { useSendWordCardData } from 'src/use/useSendWordCardData';
+import { useStoreFlashCard } from 'stores/flashCard.store';
+import { useStoreGenerateCard } from 'stores/generateCard.store';
+import { useStoreStudySettings } from 'stores/studySettings.store';
+import { useSendWordCardData } from 'src/composables/useSendWordCardData';
 import { Rating } from 'ts-fsrs';
 import type { Ref } from 'vue';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -20,7 +20,7 @@ const flashcardData = computed<Omit<FlashcardInsert, 'user_id'>>(() => ({
     sentence: storeGenerateCard.wordData?.sentence ?? null,
     word: storeGenerateCard.wordData?.word ?? null,
     transcription: storeGenerateCard.wordData?.transcription ?? null,
-    language: storeStudySettings.currentTargetLanguage ?? null
+    language: storeStudySettings.currentTargetLanguage ?? null,
 }));
 
 const pendingAgain = ref(false),
@@ -70,7 +70,7 @@ watch(
         if (oldLang !== undefined && newLang !== oldLang) {
             await handleSendWordCardData();
         }
-    }
+    },
 );
 
 onMounted(async () => {
@@ -86,18 +86,15 @@ onMounted(async () => {
             <h1 class="sr-only">Learn</h1>
             <div
                 class="column bg-primary q-pa-lg q-ma-sm items-center"
-                style="border-radius: 0.5rem"
-            >
+                style="border-radius: 0.5rem">
                 <div class="full-width">
                     <div
                         class="items-center"
-                        style="display: grid; grid-template-columns: repeat(3, 1fr)"
-                    >
+                        style="display: grid; grid-template-columns: repeat(3, 1fr)">
                         <span
                             content
                             class="text-h3 text-lowercase col-2"
-                            style="grid-column: 2; justify-self: center"
-                        >
+                            style="grid-column: 2; justify-self: center">
                             {{ storeGenerateCard.wordData?.word }}
                         </span>
                     </div>
@@ -112,28 +109,25 @@ onMounted(async () => {
                             @click="
                                 storeGenerateCard.synthesizeSpeech(
                                     storeGenerateCard.wordData?.word ?? '',
-                                    storeStudySettings.currentVoiceId ?? ''
+                                    storeStudySettings.currentVoiceId ?? '',
                                 )
-                            "
-                        ></q-btn>
-                        <span class="text-lowercase text-h6" style="opacity: 60%">{{
-                            storeGenerateCard.wordData?.transcription
-                        }}</span>
+                            "></q-btn>
+                        <span class="text-lowercase text-h6" style="opacity: 60%">
+                            {{ storeGenerateCard.wordData?.transcription }}
+                        </span>
                     </div>
                 </div>
 
                 <q-card
                     class="q-mt-lg flex-center full-width flex bg-dark"
-                    style="border-radius: 0.375rem"
-                >
+                    style="border-radius: 0.375rem">
                     <div class="full-width relative bg-dark">
                         <q-img
                             class="full-width"
                             style="border-radius: 0.375rem"
                             :src="storeGenerateCard.imageData"
                             width="720px"
-                            height="370px"
-                        />
+                            height="370px" />
                     </div>
                 </q-card>
 
@@ -152,10 +146,9 @@ onMounted(async () => {
                         @click="
                             storeGenerateCard.synthesizeSpeech(
                                 storeGenerateCard.wordData?.sentence ?? '',
-                                storeStudySettings.currentVoiceId ?? ''
+                                storeStudySettings.currentVoiceId ?? '',
                             )
-                        "
-                    ></q-btn>
+                        "></q-btn>
                 </div>
 
                 <div class="flex-center q-gutter-x-lg q-mt-xl">
@@ -166,8 +159,8 @@ onMounted(async () => {
                         color="negative"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleAddCard(Rating.Again)"
-                        >Again
+                        @click="handleAddCard(Rating.Again)">
+                        Again
                         <template #loading>
                             <q-spinner-facebook />
                         </template>
@@ -179,8 +172,8 @@ onMounted(async () => {
                         color="warning"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleAddCard(Rating.Hard)"
-                        >Hard
+                        @click="handleAddCard(Rating.Hard)">
+                        Hard
                         <template #loading>
                             <q-spinner-facebook />
                         </template>
@@ -192,8 +185,8 @@ onMounted(async () => {
                         color="positive"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleAddCard(Rating.Good)"
-                        >Good
+                        @click="handleAddCard(Rating.Good)">
+                        Good
                         <template #loading>
                             <q-spinner-facebook />
                         </template>
@@ -205,8 +198,8 @@ onMounted(async () => {
                         color="accent"
                         style="width: 8rem; border-radius: 0.375rem"
                         size="lg"
-                        @click="handleAddCard(Rating.Easy)"
-                        >Easy
+                        @click="handleAddCard(Rating.Easy)">
+                        Easy
                         <template #loading>
                             <q-spinner-facebook />
                         </template>

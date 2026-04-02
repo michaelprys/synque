@@ -1,5 +1,5 @@
-import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
-import { useStoreStudySettings } from 'src/stores/storeStudySettings';
+import { useStoreGenerateCard } from 'stores/generateCard.store';
+import { useStoreStudySettings } from 'stores/studySettings.store';
 
 export const useSendWordCardData = () => {
     const storeGenerateCard = useStoreGenerateCard(),
@@ -10,7 +10,7 @@ export const useSendWordCardData = () => {
             storeStudySettings.currentTargetLanguage,
             // storeStudySettings.currentTopics,
             storeGenerateCard.wordData?.word ?? null,
-            storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy'
+            storeStudySettings.levels[storeStudySettings.currentLevel] || 'Easy',
         );
 
     return { handleSendWordCardData };

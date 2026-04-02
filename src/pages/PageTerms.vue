@@ -4,8 +4,7 @@
             <h1 class="sr-only">Terms</h1>
             <div
                 class="q-mb-xl q-pa-lg q-mx-auto"
-                style="border-radius: 0.5rem; max-width: 70rem; width: 100%"
-            >
+                style="border-radius: 0.5rem; max-width: 70rem; width: 100%">
                 <div class="text-center">
                     <h3 class="text-h3 q-mt-md">Terms of Service</h3>
                     <div class="text-subtitle1 q-mt-md text-grey-4">
@@ -35,9 +34,9 @@
 
                             <q-item class="q-pa-none">
                                 <q-item-section class="q-my-md">
-                                    <q-item-label class="text-h5"
-                                        >2. Service Description</q-item-label
-                                    >
+                                    <q-item-label class="text-h5">
+                                        2. Service Description
+                                    </q-item-label>
                                     <q-item-label class="q-mt-md">
                                         Synque is a free AI-powered flashcard app. All decks (text
                                         and images) are generated automatically by artificial
@@ -52,7 +51,9 @@
                                     <q-item-label class="q-mt-md">
                                         Images are automatically sourced from the public internet.
                                         We actively filter and are transitioning to 100 %
-                                        royalty-free sources (Unsplash, Pexels, Pixabay, etc.).<br /><br />
+                                        royalty-free sources (Unsplash, Pexels, Pixabay, etc.).
+                                        <br />
+                                        <br />
                                         All content is provided strictly for personal,
                                         non-commercial learning.
                                     </q-item-label>
@@ -61,17 +62,24 @@
 
                             <q-item class="q-pa-none">
                                 <q-item-section class="q-my-md">
-                                    <q-item-label class="text-h5"
-                                        >4. Your Rights & Restrictions</q-item-label
-                                    >
+                                    <q-item-label class="text-h5">
+                                        4. Your Rights & Restrictions
+                                    </q-item-label>
                                     <q-item-label class="q-mt-md">
-                                        You may:<br />
-                                        • use any deck for personal study<br />
-                                        • export decks for local backup<br /><br />
+                                        You may:
+                                        <br />
+                                        • use any deck for personal study
+                                        <br />
+                                        • export decks for local backup
+                                        <br />
+                                        <br />
 
-                                        You may not:<br />
-                                        • redistribute, sell, or use decks commercially<br />
-                                        • claim AI-generated content as your own original work<br />
+                                        You may not:
+                                        <br />
+                                        • redistribute, sell, or use decks commercially
+                                        <br />
+                                        • claim AI-generated content as your own original work
+                                        <br />
                                         • extract and republish images separately
                                     </q-item-label>
                                 </q-item-section>
@@ -79,18 +87,18 @@
 
                             <q-item class="q-pa-none">
                                 <q-item-section class="q-my-md">
-                                    <q-item-label class="text-h5"
-                                        >5. Copyright Takedown</q-item-label
-                                    >
+                                    <q-item-label class="text-h5">
+                                        5. Copyright Takedown
+                                    </q-item-label>
                                     <q-item-label class="q-mt-md text-weight-medium">
-                                        If you believe any image violates your copyright, write
-                                        to<br />
+                                        If you believe any image violates your copyright, write to
+                                        <br />
                                         <a
                                             href="mailto:synque.copyright@gmail.com"
-                                            class="text-negative"
-                                        >
-                                            synque.copyright@gmail.com </a
-                                        ><br />
+                                            class="text-negative">
+                                            synque.copyright@gmail.com
+                                        </a>
+                                        <br />
                                         We will remove it within 24 hours - no questions asked.
                                     </q-item-label>
                                 </q-item-section>
@@ -98,9 +106,9 @@
 
                             <q-item class="q-pa-none">
                                 <q-item-section class="q-my-md">
-                                    <q-item-label class="text-h5"
-                                        >6. Prohibited Actions</q-item-label
-                                    >
+                                    <q-item-label class="text-h5">
+                                        6. Prohibited Actions
+                                    </q-item-label>
                                     <q-item-label class="q-mt-md">
                                         No illegal use, no attempts to overload or hack the service.
                                     </q-item-label>
@@ -119,13 +127,14 @@
 
                             <q-item class="q-pa-none">
                                 <q-item-section class="q-my-md">
-                                    <q-item-label class="text-h5"
-                                        >8. No Warranties & Liability</q-item-label
-                                    >
+                                    <q-item-label class="text-h5">
+                                        8. No Warranties & Liability
+                                    </q-item-label>
                                     <q-item-label class="q-mt-md">
                                         Synque is provided "AS IS”. We are not responsible for
                                         accuracy, availability, or any damage caused by using the
-                                        service.<br />
+                                        service.
+                                        <br />
                                         Always keep local backups.
                                     </q-item-label>
                                 </q-item-section>
@@ -148,8 +157,7 @@
                             <a
                                 href="mailto:synque.legal@gmail.com"
                                 class="text-negative text-weight-medium text-body1"
-                                style="text-decoration: none"
-                            >
+                                style="text-decoration: none">
                                 synque.info@gmail.com
                             </a>
                         </div>

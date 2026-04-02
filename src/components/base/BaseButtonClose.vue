@@ -6,6 +6,5 @@
         dense
         size="sm"
         icon="close"
-        text-color="black"
-    />
+        text-color="black" />
 </template>

@@ -1,9 +1,10 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { setCssVar } from 'quasar';
-import { Theme, themes } from 'src/data/themes';
-import { getAuthUser } from 'src/utils/getAuthUser';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
+import type { Theme } from 'src/data/themes';
+import { themes } from 'src/data/themes';
+import { getAuthUserUtils } from 'src/utils/getAuthUser.utils';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref, watch } from 'vue';
 
 export const useStorePreferences = defineStore(
@@ -47,22 +48,22 @@ export const useStorePreferences = defineStore(
             error.value = null;
 
             try {
-                const user = await getAuthUser();
+                const user = await getAuthUserUtils();
                 const filePath = `${user!.id}/avatar`;
 
-                const { error: uploadError } = await supabase.storage
+                const { error: uploadError } = await supabaseApi.storage
                     .from('avatars')
                     .upload(filePath, avatarFile, { cacheControl: '3600', upsert: true });
 
                 if (uploadError) throw uploadError;
 
                 const {
-                    data: { publicUrl }
-                } = supabase.storage.from('avatars').getPublicUrl(filePath);
+                    data: { publicUrl },
+                } = supabaseApi.storage.from('avatars').getPublicUrl(filePath);
 
                 if (!publicUrl) throw new Error('Failed to get public URL');
 
-                const { error: dbError } = await supabase
+                const { error: dbError } = await supabaseApi
                     .from('profiles')
                     .upsert({ id: user!.id, avatar_url: publicUrl });
 
@@ -70,7 +71,7 @@ export const useStorePreferences = defineStore(
 
                 return true;
             } catch (err: unknown) {
-                console.error('changeAvatar error:', handleError(err));
+                console.error('changeAvatar error:', handleErrorUtils(err));
                 error.value = err instanceof Error ? err.message : String(err);
             } finally {
                 pending.value = false;
@@ -79,10 +80,10 @@ export const useStorePreferences = defineStore(
 
         const loadAvatar = async () => {
             try {
-                const user = await getAuthUser();
+                const user = await getAuthUserUtils();
                 if (!user) throw new Error('User not logged in');
 
-                const { data, error } = await supabase.storage
+                const { data, error } = await supabaseApi.storage
                     .from('avatars')
                     .createSignedUrl(`${user.id}/avatar`, 60);
 
@@ -100,7 +101,7 @@ export const useStorePreferences = defineStore(
             (newTheme) => {
                 applyTheme(newTheme);
             },
-            { immediate: true }
+            { immediate: true },
         );
 
         watch(
@@ -108,7 +109,7 @@ export const useStorePreferences = defineStore(
             (newSize) => {
                 changeFontSize(newSize);
             },
-            { immediate: true }
+            { immediate: true },
         );
 
         return {
@@ -118,11 +119,11 @@ export const useStorePreferences = defineStore(
             applyTheme,
             changeFontSize,
             changeAvatar,
-            loadAvatar
+            loadAvatar,
         };
     },
 
-    { persist: true }
+    { persist: true },
 );
 
 if (import.meta.hot) {

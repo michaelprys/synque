@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref } from 'vue';
 
 const $q = useQuasar();
@@ -13,8 +13,8 @@ const sendResetLink = async () => {
     pending.value = true;
 
     try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-            redirectTo
+        const { error } = await supabaseApi.auth.resetPasswordForEmail(email.value, {
+            redirectTo,
         });
 
         if (error) throw error;
@@ -24,7 +24,7 @@ const sendResetLink = async () => {
             color: 'positive',
             textColor: 'white',
             icon: 'check',
-            message: 'If this email exists, a reset link has been sent'
+            message: 'If this email exists, a reset link has been sent',
         });
     } catch (err) {
         $q.notify({
@@ -32,7 +32,7 @@ const sendResetLink = async () => {
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: handleError(err)
+            message: handleErrorUtils(err),
         });
     } finally {
         pending.value = false;
@@ -49,12 +49,11 @@ const onReset = () => {
         <section
             id="forgot-password"
             class="column q-pa-lg bg-dark q-mx-auto items-center text-center"
-            style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem"
-        >
+            style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem">
             <h1 class="sr-only">Forgot Password</h1>
-            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center"
-                >Reset Password</span
-            >
+            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center">
+                Reset Password
+            </span>
 
             <q-form class="q-mt-lg full-width" @submit.prevent="sendResetLink" @reset="onReset">
                 <div class="column">
@@ -64,8 +63,7 @@ const onReset = () => {
                         type="email"
                         dark
                         label="Email"
-                        hint="Enter your email where the reset link will be sent"
-                    >
+                        hint="Enter your email where the reset link will be sent">
                         <template #prepend>
                             <q-icon name="mail" />
                         </template>
@@ -78,8 +76,8 @@ const onReset = () => {
                         color="secondary"
                         style="width: 17.1875rem; border-radius: 0.375rem"
                         size="lg"
-                        :loading="pending"
-                        >Send Reset Link
+                        :loading="pending">
+                        Send Reset Link
                     </q-btn>
                 </div>
 

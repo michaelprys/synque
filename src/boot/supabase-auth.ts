@@ -1,36 +1,33 @@
 import { defineBoot } from '#q-app/wrappers';
 import type { User } from '@supabase/supabase-js';
-import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { getAuthUser } from 'src/utils/getAuthUser';
-import supabase from 'src/utils/supabase';
+import { useStoreStudySettings } from 'stores/studySettings.store';
+import { getAuthUserUtils } from 'src/utils/getAuthUser.utils';
+import supabaseApi from 'src/api/supabase.api';
 
 export default defineBoot(async () => {
     const store = useStoreStudySettings();
 
     const handleLoadSettings = async (user: User | null) => {
-        if (user) {
+        if (user?.id) {
             await store.loadSettings(user.id);
         }
     };
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabaseApi.auth.onAuthStateChange((event, session) => {
         const user = session?.user ?? null;
+        const validEvents = ['INITIAL_SESSION', 'SIGNED_IN', 'TOKEN_REFRESHED'];
 
-        if (
-            (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') &&
-            user
-        ) {
-            handleLoadSettings(user);
+        if (validEvents.includes(event) && user) {
+            void handleLoadSettings(user);
         }
     });
 
-    let user: User | null = null;
-
     try {
-        user = await getAuthUser();
+        const user = await getAuthUserUtils();
+        if (user) {
+            await handleLoadSettings(user);
+        }
     } catch (err) {
-        console.error(err);
+        console.error('Auth boot error:', err);
     }
-
-    await handleLoadSettings(user);
 });

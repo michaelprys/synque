@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import LayoutMainFooter from 'src/components/layout/LayoutMainFooter.vue';
-import LayoutMainHeader from 'src/components/layout/LayoutMainHeader.vue';
+import MainFooter from 'components/layout/MainFooter.vue';
+import MainHeader from 'components/layout/MainHeader.vue';
 </script>
 
 <template>
     <q-layout view="lHh Lpr lFf">
-        <LayoutMainHeader />
+        <MainHeader />
 
         <q-page-container style="padding-top: 5.5rem">
             <router-view v-slot="{ Component }">
@@ -15,6 +15,6 @@ import LayoutMainHeader from 'src/components/layout/LayoutMainHeader.vue';
             </router-view>
         </q-page-container>
 
-        <LayoutMainFooter />
+        <MainFooter />
     </q-layout>
 </template>

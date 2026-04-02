@@ -1,22 +1,22 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { getAuthUser } from 'src/utils/getAuthUser';
-import supabase from 'src/utils/supabase';
+import { getAuthUserUtils } from 'src/utils/getAuthUser.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref } from 'vue';
 
 export const useStoreReview = defineStore('storeReview', () => {
     const learned = ref<{ id: string }[] | null>(null);
 
     const reviewLearned = async () => {
-        const user = await getAuthUser();
+        const user = await getAuthUserUtils();
 
-        const { data } = await supabase.from('flashcards').select('id').eq('user_id', user!.id);
+        const { data } = await supabaseApi.from('flashcards').select('id').eq('user_id', user!.id);
 
         learned.value = data;
     };
 
     return {
         learned,
-        reviewLearned
+        reviewLearned,
     };
 });
 

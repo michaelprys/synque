@@ -6,8 +6,7 @@
             <h1 class="sr-only">About</h1>
             <div
                 style="max-width: 70rem; width: 100%; border-radius: 0.5rem"
-                class="q-mb-xl q-pa-lg q-mx-auto"
-            >
+                class="q-mb-xl q-pa-lg q-mx-auto">
                 <div>
                     <h3 class="q-mt-md">What is Synque?</h3>
                     <q-img
@@ -15,8 +14,7 @@
                         style="max-height: 25rem; border-radius: 0.5rem"
                         src="src/assets/images/about/neurons.avif"
                         width="67rem"
-                        height="25rem"
-                    />
+                        height="25rem" />
                     <p class="q-mt-lg text-h6 text-justify">
                         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Porro corrupti
                         dolorum culpa quibusdam placeat maxime deleniti iste ab? Nostrum, cumque
@@ -41,15 +39,13 @@
                             style="width: calc(50% - 1.5rem); height: 25rem; border-radius: 0.5rem"
                             width="32.75rem"
                             height="25rem"
-                            src="src/assets/images/about/spaced-repetition-system.avif"
-                        />
+                            src="src/assets/images/about/spaced-repetition-system.avif" />
                         <q-img
                             class="q-mt-lg"
                             style="width: calc(50% - 1.5rem); height: 25rem; border-radius: 0.5rem"
                             width="32.75rem"
                             height="25rem"
-                            src="src/assets/images/about/white-bear.avif"
-                        />
+                            src="src/assets/images/about/white-bear.avif" />
                     </div>
                     <p class="q-mt-lg text-h6 text-justify">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, vitae dolore
@@ -79,9 +75,7 @@
                         Dolorem, facere?
                     </p>
 
-                    <span class="text-h6 q-mt-lg block">
-                        Learn in sync with your mind &nbsp; ☯
-                    </span>
+                    <span class="text-h6 q-mt-lg block">Learn in sync with your mind &nbsp; ☯</span>
                 </div>
             </div>
         </section>

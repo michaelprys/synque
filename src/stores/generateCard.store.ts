@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref } from 'vue';
 
 type GeneratedWord = {
@@ -21,7 +21,7 @@ export const useStoreGenerateCard = defineStore(
 
         const pickFirstNewWord = (
             generated: GeneratedWord[],
-            existing: string[]
+            existing: string[],
         ): GeneratedWord | null => generated.find((w) => !existing.includes(w.word)) ?? null;
 
         const findImage = async (name: string) => {
@@ -33,9 +33,9 @@ export const useStoreGenerateCard = defineStore(
                     `https://api.pexels.com/v1/search?query=${encodeURIComponent(name)}&per_page=1`,
                     {
                         headers: {
-                            Authorization: import.meta.env.VITE_PX_API_KEY
-                        }
-                    }
+                            Authorization: import.meta.env.VITE_PX_API_KEY,
+                        },
+                    },
                 );
 
                 if (pexelsRes.ok) {
@@ -58,7 +58,7 @@ export const useStoreGenerateCard = defineStore(
                 }
 
                 const openverseRes = await fetch(
-                    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}&page_size=1`
+                    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(name)}&page_size=1`,
                 );
 
                 if (openverseRes.ok) {
@@ -70,9 +70,9 @@ export const useStoreGenerateCard = defineStore(
                     }
                 }
             } catch (err) {
-                console.error(handleError(err));
+                console.error(handleErrorUtils(err));
 
-                error.value = handleError(err);
+                error.value = handleErrorUtils(err);
             } finally {
                 pending.value = false;
             }
@@ -88,7 +88,7 @@ export const useStoreGenerateCard = defineStore(
             language: string,
             // topics: string[],
             existingWord: string | null,
-            level: string
+            level: string,
         ) => {
             pending.value = true;
             error.value = null;
@@ -108,10 +108,10 @@ export const useStoreGenerateCard = defineStore(
                             headers: {
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
-                                apikey: import.meta.env.VITE_SUPABASE_API_KEY
+                                apikey: import.meta.env.VITE_SUPABASE_API_KEY,
                             },
-                            body: JSON.stringify({ language, existingWord, level })
-                        }
+                            body: JSON.stringify({ language, existingWord, level }),
+                        },
                     );
 
                     if (!res.ok) throw new Error(await res.text());
@@ -122,7 +122,7 @@ export const useStoreGenerateCard = defineStore(
 
                     generatedWords.value = JSON.parse(data.content);
 
-                    const { data: existingCards } = await supabase
+                    const { data: existingCards } = await supabaseApi
                         .from('flashcards')
                         .select('word')
                         .eq('language', language);
@@ -144,7 +144,7 @@ export const useStoreGenerateCard = defineStore(
 
                 await findImage(nextWord.englishWord);
             } catch (err) {
-                error.value = handleError(err);
+                error.value = handleErrorUtils(err);
             } finally {
                 pending.value = false;
             }
@@ -159,9 +159,9 @@ export const useStoreGenerateCard = defineStore(
                     headers: {
                         'Content-Type': 'application/json',
                         apikey: import.meta.env.VITE_SUPABASE_API_KEY,
-                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`
+                        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
                     },
-                    body: JSON.stringify({ text, voiceId })
+                    body: JSON.stringify({ text, voiceId }),
                 });
 
                 if (!res.ok) {
@@ -176,7 +176,7 @@ export const useStoreGenerateCard = defineStore(
                     audio.play().catch((e) => console.error('Cannot be played:', e));
                 }
             } catch (err) {
-                console.error(handleError(err));
+                console.error(handleErrorUtils(err));
             } finally {
                 pending.value = false;
             }
@@ -189,10 +189,10 @@ export const useStoreGenerateCard = defineStore(
             findImage,
             sendWordCardData,
             synthesizeSpeech,
-            refreshImage
+            refreshImage,
         };
     },
-    { persist: true }
+    { persist: true },
 );
 
 if (import.meta.hot) {

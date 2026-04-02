@@ -16,8 +16,7 @@
                     size="lg"
                     color="secondary"
                     :to="{ name: 'learn' }"
-                    style="width: 12.8769rem; font-weight: 400; font-size: 1rem"
-                >
+                    style="width: 12.8769rem; font-weight: 400; font-size: 1rem">
                     Start Learning
                 </q-btn>
             </div>

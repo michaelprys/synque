@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -20,7 +20,7 @@ const setNewPassword = async () => {
         $q.notify({
             position: 'bottom-right',
             color: 'negative',
-            message: 'Link is invalid or expired'
+            message: 'Link is invalid or expired',
         });
     }
 
@@ -29,7 +29,7 @@ const setNewPassword = async () => {
             position: 'bottom-right',
             color: 'negative',
             icon: 'warning',
-            message: "Passwords don't match"
+            message: "Passwords don't match",
         });
 
         return;
@@ -39,8 +39,8 @@ const setNewPassword = async () => {
     error.value = null;
 
     try {
-        const { error } = await supabase.auth.updateUser({
-            password: newPassword.value
+        const { error } = await supabaseApi.auth.updateUser({
+            password: newPassword.value,
         });
 
         if (error) throw error;
@@ -49,17 +49,17 @@ const setNewPassword = async () => {
             position: 'bottom-right',
             color: 'positive',
             icon: 'check',
-            message: 'New password has been successfully set!'
+            message: 'New password has been successfully set!',
         });
 
-        router.push({ name: 'home' });
+        await router.push({ name: 'home' });
     } catch (err) {
         $q.notify({
             position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: handleError(err)
+            message: handleErrorUtils(err),
         });
     } finally {
         pending.value = false;
@@ -72,13 +72,13 @@ const onReset = () => {
 };
 
 onMounted(() => {
-    const { data } = supabase.auth.onAuthStateChange((event) => {
+    const { data } = supabaseApi.auth.onAuthStateChange((event) => {
         if (event === 'PASSWORD_RECOVERY') {
             isReady.value = true;
             $q.notify({
                 position: 'bottom-right',
                 color: 'positive',
-                message: 'Link is valid - please enter new password'
+                message: 'Link is valid - please enter new password',
             });
         }
     });
@@ -94,12 +94,11 @@ onMounted(() => {
         <section
             id="reset-password"
             class="column q-pa-lg bg-dark q-mx-auto items-center text-center"
-            style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem"
-        >
+            style="max-width: 33rem; margin-top: 14rem; border-radius: 0.5rem">
             <h1 class="sr-only">Reset Password</h1>
-            <span class="text-h4 col-2" content style="grid-column: 2; justify-self: center"
-                >Reset Password</span
-            >
+            <span class="text-h4 col-2" content style="grid-column: 2; justify-self: center">
+                Reset Password
+            </span>
 
             <q-form class="q-mt-lg full-width" @submit.prevent="setNewPassword" @reset="onReset">
                 <q-input
@@ -108,18 +107,15 @@ onMounted(() => {
                     label="New Password"
                     filled
                     dark
-                    :type="isPwd ? 'password' : 'text'"
-                >
-                    <template #prepend=""> <q-icon name="lock"> </q-icon></template>
+                    :type="isPwd ? 'password' : 'text'">
+                    <template #prepend=""><q-icon name="lock"></q-icon></template>
 
                     <template #append="">
                         <q-icon
                             class="cursor-pointer"
                             :name="isPwd ? 'visibility_off' : 'visibility'"
-                            @click="isPwd = !isPwd"
-                        >
-                        </q-icon
-                    ></template>
+                            @click="isPwd = !isPwd"></q-icon>
+                    </template>
                 </q-input>
 
                 <q-input
@@ -128,18 +124,15 @@ onMounted(() => {
                     label="Confirm New Password"
                     filled
                     dark
-                    :type="isConfirmPwd ? 'password' : 'text'"
-                >
-                    <template #prepend=""> <q-icon name="lock"> </q-icon></template>
+                    :type="isConfirmPwd ? 'password' : 'text'">
+                    <template #prepend=""><q-icon name="lock"></q-icon></template>
 
                     <template #append="">
                         <q-icon
                             class="cursor-pointer"
                             :name="isConfirmPwd ? 'visibility_off' : 'visibility'"
-                            @click="isConfirmPwd = !isConfirmPwd"
-                        >
-                        </q-icon
-                    ></template>
+                            @click="isConfirmPwd = !isConfirmPwd"></q-icon>
+                    </template>
                 </q-input>
 
                 <div class="q-mt-lg">
@@ -147,8 +140,8 @@ onMounted(() => {
                         type="submit"
                         color="secondary"
                         style="width: 17.1875rem; border-radius: 0.375rem"
-                        size="lg"
-                        >Set New Password
+                        size="lg">
+                        Set New Password
                     </q-btn>
                 </div>
 

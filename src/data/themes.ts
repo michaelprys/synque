@@ -22,7 +22,7 @@ export const themes: Record<string, Theme> = {
         negative: '#e08686',
         info: '#8f8fd8',
         warning: '#e0d085',
-        textColor: '#dcdce6'
+        textColor: '#dcdce6',
     },
     Bluemoon: {
         primary: '#0d1422',
@@ -34,7 +34,7 @@ export const themes: Record<string, Theme> = {
         negative: '#e68ba3',
         info: '#7799cc',
         warning: '#d8c080',
-        textColor: '#d8e2f0'
+        textColor: '#d8e2f0',
     },
     Americano: {
         primary: '#151111',
@@ -46,7 +46,7 @@ export const themes: Record<string, Theme> = {
         negative: '#C27C84',
         info: '#9C8679',
         warning: '#B8957E',
-        textColor: '#D9CBC2'
+        textColor: '#D9CBC2',
     },
     Aqua: {
         primary: '#0f1a24',
@@ -58,7 +58,7 @@ export const themes: Record<string, Theme> = {
         negative: '#ff8ba3',
         info: '#5faadd',
         warning: '#ffcc80',
-        textColor: '#e0f0ff'
+        textColor: '#e0f0ff',
     },
     Vice: {
         primary: '#1e152e',
@@ -70,7 +70,7 @@ export const themes: Record<string, Theme> = {
         negative: '#ff99c4',
         info: '#77b8ff',
         warning: '#ffccaa',
-        textColor: '#ffd6ea'
+        textColor: '#ffd6ea',
     },
     Lilaq: {
         primary: '#121523',
@@ -82,6 +82,6 @@ export const themes: Record<string, Theme> = {
         negative: '#e686a3',
         info: '#9696e6',
         warning: '#e0d1b5',
-        textColor: '#e0e0e7'
-    }
+        textColor: '#e0e0e7',
+    },
 };

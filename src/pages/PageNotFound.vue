@@ -1,3 +1,7 @@
+<script setup lang="ts">
+//
+</script>
+
 <template>
     <section class="fullscreen bg-blue q-pa-md flex-center flex text-center">
         <div style="font-size: 30vh">404</div>
@@ -7,7 +11,3 @@
         <q-btn class="q-mt-xl" color="white" unelevated to="/" label="Go Home" no-caps />
     </section>
 </template>
-
-<script setup lang="ts">
-//
-</script>

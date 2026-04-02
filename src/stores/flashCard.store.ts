@@ -1,10 +1,11 @@
 import type { Database } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import { getAuthUser } from 'src/utils/getAuthUser';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
-import { createEmptyCard, fsrs, generatorParameters, Rating, RecordLogItem, State } from 'ts-fsrs';
+import { useStoreStudySettings } from 'stores/studySettings.store';
+import { getAuthUserUtils } from 'src/utils/getAuthUser.utils';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
+import type { Rating, RecordLogItem, State } from 'ts-fsrs';
+import { createEmptyCard, fsrs, generatorParameters } from 'ts-fsrs';
 import { ref } from 'vue';
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
@@ -24,17 +25,17 @@ export const useStoreFlashCard = defineStore(
         const addCard = async (
             cardId: number | null,
             rating: Rating,
-            flashcardData: Omit<FlashcardInsert, 'user_id'>
+            flashcardData: Omit<FlashcardInsert, 'user_id'>,
         ) => {
             pending.value = true;
             error.value = null;
 
             try {
-                const user = await getAuthUser();
+                const user = await getAuthUserUtils();
                 let card = createEmptyCard();
 
                 if (cardId) {
-                    const { data } = await supabase
+                    const { data } = await supabaseApi
                         .from('flashcards')
                         .select('*')
                         .eq('id', cardId.toString())
@@ -49,7 +50,7 @@ export const useStoreFlashCard = defineStore(
                             difficulty: data.difficulty ?? card.difficulty,
                             reps: data.reps ?? card.reps,
                             lapses: data.lapses ?? card.lapses,
-                            state: (data.state as unknown as State) ?? card.state
+                            state: (data.state as unknown as State) ?? card.state,
                         };
                     }
                 }
@@ -71,27 +72,27 @@ export const useStoreFlashCard = defineStore(
                     difficulty: newCard.difficulty,
                     reps: newCard.reps,
                     lapses: newCard.lapses,
-                    state: newCard.state.toString()
+                    state: newCard.state.toString(),
                 };
 
                 if (!cardId) {
-                    await supabase.from('flashcards').insert({
+                    await supabaseApi.from('flashcards').insert({
                         user_id: user!.id,
                         word: flashcardData.word ?? null,
                         sentence: flashcardData.sentence ?? null,
                         transcription: flashcardData.transcription ?? null,
                         image_url: flashcardData.image_url ?? null,
                         language: flashcardData.language ?? null,
-                        ...fsrsFields
+                        ...fsrsFields,
                     });
                 } else {
-                    await supabase
+                    await supabaseApi
                         .from('flashcards')
                         .update(fsrsFields)
                         .eq('id', cardId.toString());
                 }
             } catch (err) {
-                error.value = handleError(err);
+                error.value = handleErrorUtils(err);
             } finally {
                 pending.value = false;
             }
@@ -102,8 +103,8 @@ export const useStoreFlashCard = defineStore(
             error.value = null;
 
             try {
-                const user = await getAuthUser();
-                const { data } = await supabase
+                const user = await getAuthUserUtils();
+                const { data } = await supabaseApi
                     .from('flashcards')
                     .select('*')
                     .eq('user_id', user!.id)
@@ -112,7 +113,7 @@ export const useStoreFlashCard = defineStore(
 
                 cardData.value = data ?? [];
             } catch (err) {
-                error.value = handleError(err);
+                error.value = handleErrorUtils(err);
                 console.error(error.value);
             } finally {
                 pending.value = false;
@@ -125,7 +126,7 @@ export const useStoreFlashCard = defineStore(
 
         return { cardData, selectedCard, addCard, loadFlashCard, selectCard };
     },
-    { persist: true }
+    { persist: true },
 );
 
 if (import.meta.hot) {

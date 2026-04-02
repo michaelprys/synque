@@ -7,11 +7,12 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "dev": "quasar dev",
-        "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{ts,js,cjs,mjs,vue}\"",
-        "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+        "type-check": "vue-tsc --noEmit",
+        "lint:fix": "eslint --fix \"src/**/*.{ts,js,cjs,mjs,vue}\"",
+        "format": "prettier --write \"src/**/*.{ts,vue,scss,css,js}\"",
         "test": "echo \"No test specified\" && exit 0",
-        "build": "quasar build",
+        "dev": "quasar dev",
+        "build": "bun lint:fix && bun style:lint:fix && bun format && quasar build",
         "postinstall": "quasar prepare"
     },
     "dependencies": {

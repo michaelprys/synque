@@ -1,8 +1,8 @@
-import { Database } from 'app/database.types';
+import type { Database } from 'app/database.types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import langJson from 'src/data/languages.json';
-import { getAuthUser } from 'src/utils/getAuthUser';
-import supabase from 'src/utils/supabase';
+import { getAuthUserUtils } from 'src/utils/getAuthUser.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref, watch } from 'vue';
 
 type Voice = {
@@ -59,7 +59,7 @@ export const useStoreStudySettings = defineStore(
             }
 
             let voice = lang.voices.find(
-                (v) => v.type.toLowerCase() === currentVoiceType.value.toLowerCase()
+                (v) => v.type.toLowerCase() === currentVoiceType.value.toLowerCase(),
             );
 
             if (!voice) {
@@ -72,7 +72,7 @@ export const useStoreStudySettings = defineStore(
         };
 
         const loadSettings = async (userId: string) => {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseApi
                 .from('study_settings')
                 .select<'*', StudySettings>('*')
                 .eq('user_id', userId)
@@ -92,9 +92,9 @@ export const useStoreStudySettings = defineStore(
 
         const updateSettings = async (field: string, value: string | string[] | number | null) => {
             try {
-                const user = await getAuthUser();
+                const user = await getAuthUserUtils();
 
-                await supabase
+                await supabaseApi
                     .from('study_settings')
                     .upsert({ [field]: value, user_id: user!.id }, { onConflict: 'user_id' });
             } catch (err) {
@@ -118,10 +118,10 @@ export const useStoreStudySettings = defineStore(
             loadSettings,
             updateSettings,
             currentNewCardsPerDay,
-            currentMaxReviewsPerDay
+            currentMaxReviewsPerDay,
         };
     },
-    { persist: true }
+    { persist: true },
 );
 
 if (import.meta.hot) {

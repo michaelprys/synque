@@ -1,137 +1,129 @@
 <script setup lang="ts">
 import type { Database } from 'app/database.types';
 import { useQuasar } from 'quasar';
-import { useStoreFlashCard } from 'src/stores/storeFlashCard';
-import { useStoreGenerateCard } from 'src/stores/storeGenerateCard';
-import { useStoreStudySettings } from 'src/stores/storeStudySettings';
-import supabase from 'src/utils/supabase';
+import { useStoreFlashCard } from 'stores/flashCard.store';
+import { useStoreGenerateCard } from 'stores/generateCard.store';
+import { useStoreStudySettings } from 'stores/studySettings.store';
+import supabaseApi from 'src/api/supabase.api';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const storeStudySettings = useStoreStudySettings(),
-    storeGenerateCard = useStoreGenerateCard(),
-    router = useRouter();
+type FlashcardRow = Database['public']['Tables']['flashcards']['Row'];
+
+const storeStudySettings = useStoreStudySettings();
+const storeGenerateCard = useStoreGenerateCard();
+const storeFlashCard = useStoreFlashCard();
+const router = useRouter();
+const $q = useQuasar();
 
 defineProps({
     title: {
         type: String,
-        default: ''
-    }
+        default: '',
+    },
 });
 
-type FlashcardRow = Database['public']['Tables']['flashcards']['Row'];
+const search = ref('');
+const PAGE_SIZE = 10;
+const hasMore = ref(true);
+const totalCards = ref(0);
+const pending = ref(false);
 
-const storeFlashCard = useStoreFlashCard(),
-    search = ref(''),
-    $q = useQuasar(),
-    PAGE_SIZE = 10,
-    hasMore = ref(true),
-    totalCards = ref(0),
-    pending = ref(false);
-
-const onLoad = async (index: number, done: () => void) => {
-    const from = index * PAGE_SIZE,
-        to = from + PAGE_SIZE - 1;
+const onLoad = async (index: number, done: (stop?: boolean) => void) => {
+    const from = index * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     pending.value = true;
 
-    const { data, error, count } = await supabase
-        .from('flashcards')
-        .select('*', { count: 'exact' })
-        .ilike('word', `%${search.value}%`)
-        .range(from, to);
+    try {
+        const { data, error, count } = await supabaseApi
+            .from('flashcards')
+            .select('*', { count: 'exact' })
+            .ilike('word', `%${search.value}%`)
+            .range(from, to);
 
-    if (error) {
+        if (error || !data || data.length === 0) {
+            done(true);
+            return;
+        }
+
+        if (!search.value) {
+            totalCards.value = count ?? 0;
+        }
+
+        if (data.length < PAGE_SIZE) {
+            hasMore.value = false;
+        }
+
+        storeFlashCard.cardData.push(...data);
         done();
-        return;
+    } finally {
+        pending.value = false;
     }
-
-    if (!data || data.length === 0) {
-        done();
-        return;
-    }
-
-    if (!search.value) {
-        totalCards.value = count ?? 0;
-    }
-
-    if (data.length < PAGE_SIZE) {
-        hasMore.value = false;
-    }
-
-    storeFlashCard.cardData.push(...data);
-
-    pending.value = false;
-
-    done();
 };
 
 const deleteWord = (cardId: FlashcardRow['id']) => {
     $q.dialog({
         title: 'Delete word',
-        message: `Are you sure you want to delete this word"?`,
+        message: 'Are you sure you want to delete this word?',
         persistent: true,
         color: 'negative',
-        // @ts-expect-error - quasar types are broken for dialog options
-        cardClass: 'bg-secondary text-white',
-        titleClass: 'text-white',
         ok: {
             label: 'Delete',
             color: 'white',
-            textColor: 'primary'
+            textColor: 'primary',
         },
         cancel: {
             label: 'Cancel',
             flat: true,
-            color: 'white'
-        }
-    }).onOk(async () => {
-        const { error } = await supabase.from('flashcards').delete().eq('id', cardId);
+            color: 'white',
+        },
+    }).onOk(() => {
+        void (async () => {
+            const { error } = await supabaseApi.from('flashcards').delete().eq('id', cardId);
 
-        if (error) {
-            $q.notify({
-                position: 'bottom-right',
-                type: 'negative',
-                message: `Error deleting word: ${error.message}`
-            });
-            return;
-        }
+            if (error) {
+                $q.notify({
+                    position: 'bottom-right',
+                    type: 'negative',
+                    message: `Error deleting word: ${error.message}`,
+                });
+                return;
+            }
 
-        storeFlashCard.cardData = storeFlashCard.cardData.filter((c) => c.id !== cardId);
-
-        $q.notify({ position: 'bottom-right', type: 'positive', message: 'Word deleted' });
+            storeFlashCard.cardData = storeFlashCard.cardData.filter((c) => c.id !== cardId);
+            $q.notify({ position: 'bottom-right', type: 'positive', message: 'Word deleted' });
+        })();
     });
 };
 
-const handleSelectCard = (card: FlashcardRow) => {
+const handleSelectCard = async (card: FlashcardRow) => {
     storeFlashCard.selectCard(card);
-
-    router.push({ name: 'review', params: { word: card.word } });
+    await router.push({ name: 'review', params: { word: card.word } });
 };
 
-const reviewCard = () => {
+const reviewCard = async () => {
     const cards = storeFlashCard.cardData;
-
     if (cards.length === 0) return;
 
-    const firstCard = cards[0]!;
-
-    storeFlashCard.selectCard(firstCard);
-
-    router.push({
-        name: 'review',
-        params: { word: firstCard.word ?? 'unknown' }
-    });
+    const firstCard = cards[0];
+    if (firstCard) {
+        storeFlashCard.selectCard(firstCard);
+        await router.push({
+            name: 'review',
+            params: { word: firstCard.word ?? 'unknown' },
+        });
+    }
 };
 
 watch(
     search,
-    async () => {
+    () => {
         storeFlashCard.cardData = [];
         hasMore.value = true;
-        await onLoad(0, () => {});
+        void onLoad(0, () => {});
     },
-    { immediate: true }
+    { immediate: true },
 );
 </script>
 
@@ -148,13 +140,11 @@ watch(
                     <div class="column">
                         <div class="full-width q-mt-lg flex items-center">
                             <q-btn
-                                :to="{ name: 'review' }"
                                 style="max-width: 12rem; width: 100%"
                                 class="q-mx-auto bg-positive"
                                 icon="repeat"
                                 label="Review"
-                                @click="reviewCard"
-                            />
+                                @click="void reviewCard()" />
                         </div>
 
                         <div class="row q-mt-xl items-center justify-between">
@@ -167,8 +157,7 @@ watch(
                                     dense
                                     filled
                                     debounce="300"
-                                    placeholder="Search..."
-                                />
+                                    placeholder="Search..." />
                             </div>
                         </div>
                     </div>
@@ -185,20 +174,17 @@ watch(
                                     style="
                                         border-top-left-radius: 3px;
                                         border-top-right-radius: 3px;
-                                    "
-                                >
+                                    ">
                                     <q-btn
                                         class="q-pa-none bg-primary full-width rounded-borders flex justify-between"
-                                        @click="handleSelectCard(card)"
-                                    >
+                                        @click="void handleSelectCard(card)">
                                         <q-item-section class="q-mt-none q-pt-none">
                                             <div
                                                 class="column items-center"
                                                 style="
                                                     border-top-left-radius: 3px;
                                                     border-top-right-radius: 3px;
-                                                "
-                                            >
+                                                ">
                                                 <q-img
                                                     style="
                                                         width: 100%;
@@ -210,29 +196,22 @@ watch(
                                                     height="3rem"
                                                     no-spinner
                                                     :src="
-                                                        card.image_url
-                                                            ? card.image_url.includes(
-                                                                  'images.pexels.com'
-                                                              )
-                                                                ? card.image_url.split('?')[0] +
-                                                                  '?auto=compress&cs=tinysrgb&w=400&h=400'
-                                                                : card.image_url
-                                                            : undefined
+                                                        card.image_url?.includes(
+                                                            'images.pexels.com',
+                                                        )
+                                                            ? card.image_url.split('?')[0] +
+                                                              '?auto=compress&cs=tinysrgb&w=400&h=400'
+                                                            : card.image_url || undefined
                                                     "
-                                                    loading="lazy"
-                                                >
+                                                    loading="lazy">
                                                     <template #default>
                                                         <q-skeleton
                                                             v-if="storeGenerateCard.pending"
                                                             style="width: 100%; height: 100%"
-                                                            type="rect"
-                                                            width="100px"
-                                                            height="100px"
-                                                        />
+                                                            type="rect" />
                                                     </template>
                                                 </q-img>
                                             </div>
-
                                             <span class="q-my-md text-subtitle2 block">
                                                 {{ card.word }}
                                             </span>
@@ -240,19 +219,17 @@ watch(
 
                                         <q-item-section
                                             side
+                                            class="absolute q-pr-none action-buttons"
                                             style="
                                                 inset-inline-end: 0.5rem;
                                                 inset-block-start: 0.5rem;
-                                            "
-                                            class="absolute q-pr-none action-buttons"
-                                        >
+                                            ">
                                             <div class="flex q-gutter-x-sm">
                                                 <q-btn
                                                     size="sm"
                                                     style="width: 1rem; height: 1rem"
                                                     icon="delete"
-                                                    @click.stop="deleteWord(card.id)"
-                                                ></q-btn>
+                                                    @click.stop="deleteWord(card.id)" />
                                             </div>
                                         </q-item-section>
                                     </q-btn>
@@ -268,15 +245,15 @@ watch(
 
                         <span
                             v-if="!hasMore && storeFlashCard.cardData.length"
-                            class="block q-mt-xl text-subtitle1"
-                            >No more words to load.</span
-                        >
+                            class="block q-mt-xl text-subtitle1">
+                            No more words to load.
+                        </span>
                     </q-infinite-scroll>
                 </div>
 
-                <span v-else-if="search" class="block q-mt-xl text-subtitle1"
-                    >No words found for "{{ search }}"</span
-                >
+                <span v-else-if="search" class="block q-mt-xl text-subtitle1">
+                    No words found for "{{ search }}"
+                </span>
 
                 <div v-else-if="totalCards === 0" style="margin-top: 7.5rem">
                     <q-img
@@ -284,8 +261,7 @@ watch(
                         style="max-width: 20rem; max-height: 15rem"
                         width="320px"
                         height="240px"
-                        src="https://unsplash.it/400"
-                    />
+                        src="https://unsplash.it/400" />
                     <span class="q-mt-xl text-h4 block">
                         No words yet. Start learning and your words will appear here.
                     </span>
@@ -309,33 +285,5 @@ watch(
     justify-content: center;
     width: fit-content;
     max-width: 100%;
-}
-
-.word-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 12rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background-color: var(--q-color-primary);
-    overflow: hidden;
-    text-align: center;
-}
-
-.word-card q-img {
-    flex-shrink: 0;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.word-card span {
-    flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 </style>

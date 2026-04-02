@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import handleError from 'src/utils/handleError';
-import supabase from 'src/utils/supabase';
+import handleErrorUtils from 'src/utils/handleError.utils';
+import supabaseApi from 'src/api/supabase.api';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -18,9 +18,9 @@ const login = async () => {
     error.value = null;
 
     try {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabaseApi.auth.signInWithPassword({
             email: email.value,
-            password: password.value
+            password: password.value,
         });
 
         if (error) throw error;
@@ -29,17 +29,17 @@ const login = async () => {
             position: 'bottom-right',
             color: 'positive',
             icon: 'check',
-            message: `Sign in successful!`
+            message: `Sign in successful!`,
         });
 
-        router.push({ name: 'home' });
+        await router.push({ name: 'home' });
     } catch (err) {
         $q.notify({
             position: 'bottom-right',
             color: 'negative',
             textColor: 'white',
             icon: 'warning',
-            message: handleError(err) ?? 'Incorrect login or password'
+            message: handleErrorUtils(err) ?? 'Incorrect login or password',
         });
     } finally {
         pending.value = false;
@@ -57,12 +57,11 @@ const onReset = () => {
         <section
             id="login"
             class="column q-pa-lg bg-dark q-mx-auto items-center text-center"
-            style="max-width: 33rem; margin-top: 13rem; border-radius: 0.5rem"
-        >
+            style="max-width: 33rem; margin-top: 13rem; border-radius: 0.5rem">
             <h1 class="sr-only">Login</h1>
-            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center"
-                >Login</span
-            >
+            <span content class="text-h4 col-2" style="grid-column: 2; justify-self: center">
+                Login
+            </span>
 
             <q-form class="q-mt-lg full-width" @submit.prevent="login" @reset="onReset">
                 <q-input v-model="email" standout type="email" dark label="Email">
@@ -77,8 +76,7 @@ const onReset = () => {
                     label="Password"
                     filled
                     dark
-                    :type="isPwd ? 'password' : 'text'"
-                >
+                    :type="isPwd ? 'password' : 'text'">
                     <template #prepend>
                         <q-icon name="lock" />
                     </template>
@@ -87,8 +85,7 @@ const onReset = () => {
                         <q-icon
                             :name="isPwd ? 'visibility_off' : 'visibility'"
                             class="cursor-pointer"
-                            @click="isPwd = !isPwd"
-                        />
+                            @click="isPwd = !isPwd" />
                     </template>
                 </q-input>
 
@@ -98,8 +95,7 @@ const onReset = () => {
                         color="secondary"
                         style="width: 17.1875rem; border-radius: 0.375rem"
                         size="lg"
-                        :loading="pending"
-                    >
+                        :loading="pending">
                         Login
                     </q-btn>
                 </div>
@@ -108,15 +104,13 @@ const onReset = () => {
                     <RouterLink
                         class="text-subtitle1"
                         :to="{ name: 'forgot-password' }"
-                        style="width: 6.875rem"
-                    >
-                        Forgot</RouterLink
-                    >
+                        style="width: 6.875rem">
+                        Forgot
+                    </RouterLink>
                     <RouterLink
                         class="text-subtitle1"
                         :to="{ name: 'sign-up' }"
-                        style="width: 6.875rem"
-                    >
+                        style="width: 6.875rem">
                         Sign Up
                     </RouterLink>
                 </div>

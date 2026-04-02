@@ -1,43 +1,30 @@
-# Synque (synque)
+# 🧬 Synque
 
-Flip -> Recall -> Repeat
+**Flip -> Recall -> Repeat**
 
-## Install the dependencies
+AI-powered language learning application designed for efficient long-term retention.
+
+> **Status:** This project is currently in active development. This is a **Demo Version** for experimental use.
+
+## Features
+
+*   **Llama 3 Powered:** Automated generation of high-quality flashcards across multiple languages using advanced LLMs.
+*   **Adaptive FSRS:** Integrated Free Spaced Repetition Scheduler that individually adapts to your personal memory patterns and performance.
+*   **Visual Association:** Automated context-aware image generation to strengthen memory through visual cues.
+*   **ElevenLabs Integration:** Realistic AI voiceovers for both target words and their contextual sentences.
+*   **Phonetics:** Every card includes accurate transcriptions for better pronunciation.
+*   **Auto-Library:** Instantly save generated cards to your personal collection for systematic review.
+*   **Customizable Study:** Fine-tune your learning flow with adjustable daily limits and study preferences.
+
+## Setup
 
 ```bash
-yarn
-# or
-npm install
-```
+# Install dependencies
+pnpm install
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-
-```bash
+# Start development mode
 quasar dev
 ```
 
-### Lint the files
-
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-### Format the files
-
-```bash
-yarn format
-# or
-npm run format
-```
-
-### Build the app for production
-
-```bash
-quasar build
-```
-
-### Customize the configuration
-
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+---
+*Built with Quasar Framework, Supabase, and Llama 3.*
